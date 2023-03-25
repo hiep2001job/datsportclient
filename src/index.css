@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: Lora, sans-serif !important;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    background-color: none;
+  }
+}
+@layer components {
+  .style-text-date {
+    @apply uppercase text-color_date font-bold;
+  }
+  .input-primary {
+    @apply py-2 px-2 pr-4 text-sm border-b outline-none bg-none rounded-sm;
+  }
+  .input-primary-signup {
+    @apply py-1 px-2 pr-4 text-sm border-b outline-none bg-none rounded-sm;
+  }
+  .btn-primary {
+    @apply relative z-10 w-28 h-40 shadow-md bg-color_yellow block rounded-sm ml-auto cursor-pointer hover:bg-yellow-300
+      transition-all before:content-[''] before:w-full before:h-full before:absolute  before:top-1 before:left-1 before:border-black before:border-b-2 before:border-r-2;
+  }
+  .btn-cancel {
+    @apply w-24 h-9 bg-white block rounded-sm ml-auto border border-sky-600 cursor-pointer;
+  }
+}
