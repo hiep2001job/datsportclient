@@ -2,22 +2,19 @@ import React, { useEffect, useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { MdShoppingCart } from "react-icons/md";
 import { TfiSearch } from "react-icons/tfi";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import Logo from "../../assets/images/logo.avif";
-import { brandActions } from "../../redux/brandActions";
-import { categoryActions } from "../../redux/categoryActions";
-import { productActions } from "../../redux/productActions";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import brandApi from "../../api/brand";
+import categoryApi from "../../api/category";
+import productApi from "../../api/product";
+import Logo from "../../assets/images/logo.png";
 import ProfileMenu from "./profile_menu/ProfileMenu";
 const Header = () => {
-  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(false);
   const [dataCategory, setDataCategory] = useState([]);
   const [dataProduct, setDataProduct] = useState([]);
   const [dataBrands, setDataBrands] = useState([]);
-  const handleClickCategoryItem = async (id) => {
-    const rs = await dispatch(productActions.getProductByCategoryId(id));
-  };
+
   const open = Boolean(anchorEl);
   const handleClickProfile = () => {
     setAnchorEl(!anchorEl);
@@ -27,24 +24,24 @@ const Header = () => {
   };
   const getAllDataCategory = async () => {
     try {
-      const rsData = await dispatch(categoryActions.getAll(1));
-      setDataCategory(rsData.payload);
+      const rsData = await categoryApi.getAll(1);
+      setDataCategory(rsData);
     } catch (error) {
       return error;
     }
   };
   const getAllDataProduct = async () => {
     try {
-      const rsData = await dispatch(productActions.getAll(1));
-      setDataProduct(rsData.payload);
+      const rsData = await productApi.getAll(1);
+      setDataProduct(rsData);
     } catch (error) {
       return error;
     }
   };
   const getAllDataBrand = async () => {
     try {
-      const rsData = await dispatch(brandActions.getAll(1));
-      setDataBrands(rsData.payload);
+      const rsData = await brandApi.getAll(1);
+      setDataBrands(rsData);
     } catch (error) {
       return error;
     }
@@ -61,29 +58,28 @@ const Header = () => {
   return (
     <div
       id="header"
-      className="relative flex items-baseline justify-between w-full h-auto border-b pb-2
-  "
+      className="fixed z-50 bg-slate-50 shadow-sm flex items-baseline justify-between w-full h-auto border-b pb-2"
     >
       <div
         className="h-full w-36 cursor-pointer ml-9 flex pt-2"
         onClick={() => navigate("/home")}
       >
         <img
-          className="w-full h-12 object-cover"
+          className="w-full h-12 mt-1 object-contain"
           src={Logo}
           alt="logo web app"
         />
       </div>
       {/* menu list  */}
       <ul className="mr-auto ml-20">
-        <Link to="">
+        <Link to="/home">
           <li className="group mr-5 relative text-lg inline-block">
             <p className="uppercase font-semibold hover:opacity-60 transition-all duration-100">
               Home
             </p>
           </li>
         </Link>
-        <Link to="">
+        <Link to={`/product-listing/1`}>
           <li className="group mr-5 relative text-lg inline-block">
             <p className="uppercase font-semibold  hover:opacity-60 transition-all duration-100 ">
               Category
@@ -92,13 +88,11 @@ const Header = () => {
               <ul className="">
                 {dataCategory?.map((category, idx) => {
                   return (
-                    <Link path="" key={idx}>
-                      <li
-                        className="py-1 px-2 pr-3 text-15 border-b hover:bg-slate-50"
-                        onClick={() =>
-                          handleClickCategoryItem(category.categoryId)
-                        }
-                      >
+                    <Link
+                      to={`/product-listing/${category.categoryId}`}
+                      key={idx}
+                    >
+                      <li className="py-1 px-2 pr-3 text-15 border-b hover:bg-slate-50">
                         {category?.categoryName}
                       </li>
                     </Link>
@@ -135,7 +129,7 @@ const Header = () => {
             </p>
           </li>
         </Link>
-        <Link to="">
+        <Link to="about">
           <li className="group mr-5  relative text-lg inline-block ">
             <p className="uppercase font-semibold hover:opacity-60 transition-all duration-100 ">
               About

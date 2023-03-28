@@ -2,25 +2,29 @@ import { Checkbox, FormControlLabel, Menu, MenuItem } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit, MdOutlineMoreHoriz } from "react-icons/md";
-import { useDispatch } from "react-redux";
 import productApi from "../../api/product";
 import Button from "../../share/button/Button";
 import DeleteForm from "../../share/form_delete/FormDelete";
 import LoadingSpinner from "../../share/loading_spinner/LoadingSpinner";
 import TableGeneral from "../../share/table_general/TableGeneral";
 import ModalAdd from "./modal_add/ModalAdd";
+import ModalEdit from "./modal_edit/ModalEdit";
 
 const Product = () => {
   const [isOpenModalAdd, setIsOpenModalAdd] = useState(false);
+  const [isOpenModalEdit, setIsOpenModalEdit] = useState(false);
   const [isDeleteForm, setIsDeleteForm] = useState(false);
   const [allDataProduct, setAllDataProduct] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState({});
   const handleClose = () => {
     setIsOpenModalAdd(false);
   };
   const handleCloseForm = () => {
     setIsDeleteForm(false);
+  };
+  const handleCloseEditForm = () => {
+    setIsOpenModalEdit(false);
   };
   const handleCloseMenu = () => {
     setAnchorEl(null);
@@ -28,6 +32,10 @@ const Product = () => {
 
   const handleClickIconDelete = () => {
     setIsDeleteForm(true);
+    setAnchorEl(null);
+  };
+  const handleClickEditIcon = () => {
+    setIsOpenModalEdit(true);
     setAnchorEl(null);
   };
   const handleClickDeleteProduct = async () => {
@@ -49,7 +57,6 @@ const Product = () => {
       setIsLoading(false);
     }
   };
-  const handleClickEditProduct = async () => {};
   const handleChangeCheckboxColor = () => {};
   const handleChangeCheckboxSize = () => {};
 
@@ -57,6 +64,7 @@ const Product = () => {
     try {
       setIsLoading(true);
       const rs = await productApi.getAll(-1);
+      console.log("getall rs", rs);
       setAllDataProduct(rs);
     } catch (error) {
       console.log("error", error);
@@ -86,9 +94,9 @@ const Product = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-  const handleClickIconActions = async (event, product) => {
-    await setAnchorEl(event.currentTarget);
-    await setProduct(product);
+  const handleClickIconActions = (event, product) => {
+    setAnchorEl(event.currentTarget);
+    setProduct(product);
   };
 
   const renderBodyDataTable = () => {
@@ -264,9 +272,11 @@ const Product = () => {
         dateUpdate: product.productUpdateDate,
         status: product.productStatus,
         actions: (
-          <div className="flex justify-center">
+          <div
+            className="flex justify-center"
+            onClick={(event) => handleClickIconActions(event, product)}
+          >
             <MdOutlineMoreHoriz
-              onClick={(event) => handleClickIconActions(event, product)}
               size={25}
               className="hover:cursor-pointer hover:bg-gray-400 rounded-full"
             />
@@ -294,6 +304,15 @@ const Product = () => {
         <TableGeneral headers={header} body={renderBodyDataTable()} />
       </div>
       <div>
+        {isOpenModalEdit && (
+          <ModalEdit
+            product={product}
+            isOpenModalEdit={isOpenModalEdit}
+            setIsOpenModalEdit={setIsOpenModalEdit}
+            handleClose={handleCloseEditForm}
+            getAll={getAll}
+          />
+        )}
         {isOpenModalAdd && (
           <ModalAdd
             isOpenModalAdd={isOpenModalAdd}
@@ -312,7 +331,7 @@ const Product = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClickEditProduct}>
+        <MenuItem onClick={handleClickEditIcon}>
           <MdEdit size={20} color="#ecec34" />
           Edit
         </MenuItem>

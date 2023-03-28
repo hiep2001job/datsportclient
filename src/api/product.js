@@ -10,10 +10,19 @@ const productApi = {
       console.log("error", error);
     }
   },
+  getProductByProductId: async (id) => {
+    try {
+      const rs = await axiosClient.get(`${BASE_URL}/getproductbyid/${id}`);
+      return rs.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  },
   getProductByCategoryId: async (id) => {
     try {
-      const rs = await axiosClient.get(`${BASE_URL}/searchproductbyca
-      tegoryid/${id}`);
+      const rs = await axiosClient.get(
+        `${BASE_URL}/searchproductbycategoryid/${id}`
+      );
       return rs.data;
     } catch (error) {
       console.log("error", error);
@@ -32,7 +41,10 @@ const productApi = {
 
   createProduct: async (payload) => {
     try {
-      const rs = axiosClient.post(`${BASE_ADMIN_URL}/createproduct`, payload);
+      const rs = await axiosClient.post(
+        `${BASE_ADMIN_URL}/createproduct`,
+        payload
+      );
       return rs.data;
     } catch (error) {
       console.log("error", error);
@@ -41,7 +53,10 @@ const productApi = {
   // update aka delete
   updateProduct: async (payload) => {
     try {
-      const rs = axiosClient.post(`${BASE_ADMIN_URL}/updateproduct`, payload);
+      const rs = await axiosClient.post(
+        `${BASE_ADMIN_URL}/updateproduct`,
+        payload
+      );
       return rs.data;
     } catch (error) {
       console.log("error", error);

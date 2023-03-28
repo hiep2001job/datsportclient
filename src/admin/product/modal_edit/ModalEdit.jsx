@@ -20,20 +20,22 @@ import categoryApi from "../../../api/category";
 import productApi from "../../../api/product";
 import LoadingSpinner from "../../../share/loading_spinner/LoadingSpinner";
 
-import "./ModalAdd.css";
+import "./ModalEdit.css";
 
-export default function ModalAdd({
-  isOpenModalAdd,
-  setIsOpenModalAdd,
+export default function ModalEdit({
+  isOpenModalEdit,
+  setIsOpenModalEdit,
   handleClose,
+  product,
   getAll,
 }) {
   const [dataCategory, setDataCategory] = useState([]);
   const [dataBrands, setDataBrands] = useState([]);
   const [file, setFile] = useState(null);
+  // const [dataProductId, setDataProductId] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [base64URL, setBase64URL] = useState("");
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, setValue } = useForm({
     defaultValues: {
       productName: "",
       productDescription: "",
@@ -42,86 +44,76 @@ export default function ModalAdd({
       productQuantity: "",
       productPrice: 1,
       productImage: "",
+      productSize1: "",
+      productSize2: "",
+      productSize3: "",
+      productSize4: "",
+      productSize5: "",
+      color1: "",
+      color2: "",
+      color3: "",
+      color4: "",
+      color5: "",
+      productStatus: "",
     },
   });
-  const username = useSelector((state) => state.auth.data?.userName);
-  const [productSizes, setProductSizes] = useState({
-    productSize1: "",
-    productSize2: "",
-    productSize3: "",
-    productSize4: "",
-    productSize5: "",
-  });
-  const [productColors, setProductColors] = useState({
-    color1: "",
-    color2: "",
-    color3: "",
-    color4: "",
-    color5: "",
-  });
+  const currentDay = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+
   const handleChangeCheckboxSize = (e) => {
     const { value, checked, name } = e.target;
     if (checked) {
-      setProductSizes((val) => ({
-        ...val,
-        [name]: value,
-      }));
+      setValue(name, value);
     } else {
-      setProductSizes((val) => ({
-        ...val,
-        [name]: "",
-      }));
+      setValue(name, "");
     }
   };
   const handleChangeCheckboxColor = (e) => {
     const { value, checked, name } = e.target;
     if (checked) {
-      setProductColors((val) => ({
-        ...val,
-        [name]: value,
-      }));
+      setValue(name, value);
     } else {
-      setProductColors((val) => ({
-        ...val,
-        [name]: "",
-      }));
+      setValue(name, "");
     }
   };
+
+  useEffect(() => {
+    if (product.productId) {
+      setValue("productName", product.productName);
+      setValue("productDescription", product.productDescription);
+      setValue("categoryId", product.categoryId);
+      setValue("brandId", product.brandId);
+      setValue("productQuantity", product.productQuantity);
+      setValue("productPrice", product.productPrice);
+      setValue("productImage", product.productImage);
+      setValue("productSize1", product.productSize1);
+      setValue("productSize2", product.productSize2);
+      setValue("productSize3", product.productSize3);
+      setValue("productSize4", product.productSize4);
+      setValue("productSize5", product.productSize5);
+      setValue("color1", product.color1);
+      setValue("color2", product.color2);
+      setValue("color3", product.color3);
+      setValue("color4", product.color4);
+      setValue("color5", product.color5);
+      setValue("productCreateDate", product.productCreateDate);
+      setValue("productCreateDate", product.productCreateDate);
+      setValue("productUpdateUser", product.productUpdateUser);
+      setValue("productCreateUser", product.productCreateUser);
+      setValue("productStatus", product.productStatus);
+      setValue("productUpdateDate", currentDay);
+    }
+  }, [product, setValue, currentDay]);
+
   const handleSubmitForm = async (data) => {
-    const currentDay = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-    const {
-      brandId,
-      categoryId,
-      productDescription,
-      productName,
-      productPrice,
-      productQuantity,
-    } = data;
-    const dataRs = {
-      productImage: base64URL,
-      ...productColors,
-      ...productSizes,
-      brandId,
-      categoryId,
-      productDescription,
-      productPrice,
-      productName,
-      productQuantity,
-      productCreateDate: currentDay,
-      productCreateUser: username,
-      productUpdateDate: currentDay,
-      productUpdateUser: username,
-      productStatus: 1,
-    };
     try {
       setIsLoading(true);
-      const rs = await productApi.createProduct(dataRs);
-      return rs;
+      const rs = await productApi.updateProduct(data);
+      return rs.data;
     } catch (error) {
       console.log("error", error);
     } finally {
       getAll();
-      setIsOpenModalAdd(false);
+      setIsOpenModalEdit(false);
       setIsLoading(false);
     }
   };
@@ -183,12 +175,12 @@ export default function ModalAdd({
   return (
     <>
       <Dialog
-        open={isOpenModalAdd}
+        open={isOpenModalEdit}
         style={{ height: "100%" }}
         onClose={handleClose}
       >
-        <DialogTitle className="font-semibold text-20 uppercase">
-          Add product form
+        <DialogTitle className="font-bold text-20 uppercase">
+          Edit Product Form
         </DialogTitle>
         <DialogContent>
           <form className="w-full overflow-hidden">
@@ -204,7 +196,7 @@ export default function ModalAdd({
                   <Controller
                     name="categoryId"
                     control={control}
-                    render={({ field: { onChange, value } }) => (
+                    render={({ field }) => (
                       <FormControl sx={{ minWidth: "100%" }}>
                         <InputLabel id="select-category">Category</InputLabel>
                         <Select
@@ -212,8 +204,7 @@ export default function ModalAdd({
                           id="select-category"
                           label="Category"
                           name="categoryId"
-                          onChange={onChange}
-                          value={value}
+                          {...field}
                         >
                           {dataCategory.map((category) => (
                             <MenuItem
@@ -243,7 +234,6 @@ export default function ModalAdd({
                           id="select-brand"
                           label="Brand"
                           name="brandId"
-                          defaultValue=""
                           {...field}
                         >
                           {dataBrands.map((brand) => (
@@ -299,15 +289,12 @@ export default function ModalAdd({
                     <TextField
                       autoFocus
                       margin="dense"
-                      id="name"
-                      name="productQuantity"
                       label="Product Quantity"
                       type="number"
                       fullWidth
                       variant="standard"
                       size="small"
                       className="textField"
-                      {...field}
                     />
                   )}
                 />
@@ -336,6 +323,7 @@ export default function ModalAdd({
                   >
                     Product Image:
                   </label>
+                  {/* <img src={product.productImage} alt="" /> */}
                   <input
                     accept="image/*"
                     id="raised-button-file"
@@ -348,115 +336,204 @@ export default function ModalAdd({
                 </div>
                 <div>
                   <label>Product Sizes:</label>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="productSize1"
-                        value="S"
-                        onChange={handleChangeCheckboxSize}
+                  <Controller
+                    name="productSize1"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="productSize1"
+                            value="S"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxSize}
+                          />
+                        }
+                        label="S"
                       />
-                    }
-                    label="S"
+                    )}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="productSize2"
-                        value="M"
-                        onChange={handleChangeCheckboxSize}
+                  <Controller
+                    name="productSize2"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="productSize2"
+                            value="M"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxSize}
+                          />
+                        }
+                        label="M"
                       />
-                    }
-                    label="M"
+                    )}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="productSize3"
-                        value="L"
-                        onChange={handleChangeCheckboxSize}
+                  <Controller
+                    name="productSize3"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="productSize3"
+                            value="L"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxSize}
+                          />
+                        }
+                        label="L"
                       />
-                    }
-                    label="L"
+                    )}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="productSize4"
-                        value="XL"
-                        onChange={handleChangeCheckboxSize}
+                  <Controller
+                    name="productSize4"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="productSize4"
+                            value="XL"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxSize}
+                          />
+                        }
+                        label="XL"
                       />
-                    }
-                    label="XL"
+                    )}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="productSize5"
-                        value="XXL"
-                        onChange={handleChangeCheckboxSize}
+                  <Controller
+                    name="productSize5"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="productSize5"
+                            value="XXL"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxSize}
+                          />
+                        }
+                        label="XXL"
                       />
-                    }
-                    label="XXL"
+                    )}
                   />
                 </div>
+                {/* product color  */}
                 <div>
                   <label>Product Colors:</label>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="color1"
-                        value="Blue"
-                        onChange={handleChangeCheckboxColor}
+                  <Controller
+                    name="color1"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="color1"
+                            value="Blue"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxColor}
+                          />
+                        }
+                        label="Blue"
                       />
-                    }
-                    label="Blue"
+                    )}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="color2"
-                        value="Black"
-                        onChange={handleChangeCheckboxColor}
+                  <Controller
+                    name="color2"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="color2"
+                            value="Black"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxColor}
+                          />
+                        }
+                        label="Black"
                       />
-                    }
-                    label="Black"
+                    )}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="color3"
-                        value="White"
-                        onChange={handleChangeCheckboxColor}
+                  <Controller
+                    name="color3"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="color3"
+                            value="White"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxColor}
+                          />
+                        }
+                        label="White"
                       />
-                    }
-                    label="White"
+                    )}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="color4"
-                        value="Green"
-                        onChange={handleChangeCheckboxColor}
+                  <Controller
+                    name="color4"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="color4"
+                            value="Green"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxColor}
+                          />
+                        }
+                        label="Green"
                       />
-                    }
-                    label="Green"
+                    )}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="color5"
-                        value="Red"
-                        onChange={handleChangeCheckboxColor}
+                  <Controller
+                    name="color5"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="color5"
+                            value="Red"
+                            checked={!!value}
+                            onChange={handleChangeCheckboxColor}
+                          />
+                        }
+                        label="Red"
                       />
-                    }
-                    label="Red"
+                    )}
+                  />
+                </div>
+                {/* product Status  */}
+                <div>
+                  <label>Product Status:</label>
+                  <Controller
+                    name="productStatus"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        id="select-status"
+                        label="product Status"
+                        {...field}
+                      >
+                        <MenuItem value={0}>0</MenuItem>
+                        <MenuItem value={1}>1</MenuItem>
+                      </Select>
+                    )}
                   />
                 </div>
               </div>
             </div>
             <div className="flex justify-end ml-auto mt-8">
               <button
-                onClick={() => setIsOpenModalAdd(false)}
+                onClick={() => setIsOpenModalEdit(false)}
                 className="mr-2 border cursor-pointer hover:border-slate-800 border-slate-200 px-2 font-semibold py-2"
               >
                 Cancel
@@ -466,7 +543,7 @@ export default function ModalAdd({
                 type="button"
                 onClick={handleSubmit(handleSubmitForm)}
               >
-                Add
+                Edit
               </button>
             </div>
           </form>

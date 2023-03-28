@@ -16,6 +16,8 @@ import UserProfile from "../pages/user_profile/UserProfile";
 import UserPassword from "../pages/user_password/UserPassword";
 import InfoProfile from "../pages/info_profile/InfoProfile";
 import UserBill from "../pages/user_bill/UserBill";
+import ProductListing from "../pages/product_listing/ProductListing";
+import About from "../pages/about/About";
 
 const Router = () => {
   const authToken = useSelector((state) => state.auth.authToken);
@@ -54,6 +56,8 @@ const Router = () => {
             <Route path="bill" element={<UserBill />} />
           </Route>
           <Route path="detail-product/:id" element={<DetailProduct />} />
+          <Route path="product-listing/:id" element={<ProductListing />} />
+          <Route path="about" element={<About />} />
         </Route>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/example" element={<Example />} />

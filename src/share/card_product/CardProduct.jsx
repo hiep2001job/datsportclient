@@ -5,22 +5,21 @@ const CardProduct = ({
   image,
   price,
   name,
-  brand,
-  category,
   group,
-  state,
   alt_img,
   qty_slider,
   product_id,
 }) => {
   return (
     <Link to={`detail-product/${product_id}`}>
-      <div className="w-[calc(100%)] h-auto px-1 cursor-pointer rounded group">
-        <div className={` relative ${qty_slider === 3 ? "h-400" : "h-72"}`}>
+      <div className="w-full h-auto px-1 cursor-pointer rounded group">
+        <div
+          className={`relative w-full ${qty_slider === 3 ? "h-400" : "h-72"}`}
+        >
           <img
             className="w-full h-full object-cover rounded group-hover:scale-105 transition-all duration-75"
-            src="https://images.unsplash.com/photo-1616615965190-08884c4d85c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8YWRkaWRhc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
             alt={alt_img || "default img alt"}
+            src={image}
           />
           <div className="flex justify-end absolute right-0 -bottom-4 group-hover:-translate-y-2 duration-75">
             <p

@@ -2,6 +2,16 @@
 import axios from "axios";
 import authApi from "../api/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
+export const updateUser = createAsyncThunk(
+  "auth/update",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const rs = await authApi.updateUser(payload);
+      return rs.data;
+    } catch (error) {}
+  }
+);
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {

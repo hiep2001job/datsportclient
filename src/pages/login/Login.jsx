@@ -16,11 +16,11 @@ const Login = () => {
   );
 
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   if (success) {
-  //     navigate("/");
-  //   }
-  // }, [navigate, success]);
+  useEffect(() => {
+    if (success) {
+      navigate("/");
+    }
+  }, [navigate, success]);
 
   // ==== handleFunciton ====
 
