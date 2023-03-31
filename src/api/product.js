@@ -1,6 +1,7 @@
-import axiosClient from "./axiosClient";
-const BASE_URL = "http://localhost:8080/api";
-const BASE_ADMIN_URL = " http://localhost:8080/admin";
+import axiosClient from './axiosClient';
+
+const BASE_URL = "http://localhost:8081/api";
+const BASE_ADMIN_URL = " http://localhost:8081/admin";
 const productApi = {
   getAll: async (id) => {
     try {

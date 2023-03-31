@@ -1,12 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
-import { loginUser } from "../../redux/authActions";
-import googleLogo from "../../assets/images/google-logo.svg";
-import loginLogo from "../../assets/images/logo.png";
-import { BiShow } from "react-icons/bi";
-import LoadingSpinner from "../../share/loading_spinner/LoadingSpinner";
+import './Login.scss';
+
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import { useForm } from 'react-hook-form';
+import { BiShow } from 'react-icons/bi';
+import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import googleLogo from '../../assets/images/google-logo.svg';
+import loginLogo from '../../assets/images/logo.png';
+import { loginUser } from '../../redux/authActions';
+import LoadingSpinner from '../../share/loading_spinner/LoadingSpinner';
+
 const Login = () => {
   // ==== hook ====
   const navigate = useNavigate();
@@ -70,19 +81,18 @@ const Login = () => {
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <div className="w-full h-screen flex justify-center items-center bg-white">
-          <div className="flex justify-center items-center h-3/4 w-2/3 rounded-sm shadow-md lg:w-full md:w-full lg:shadow-none  sm:w-full sm:shadow-none">
-            <div className="h-4/5 w-2/3 lg:w-2/3 md:w-2/3 sm:hidden">
+        <div className="login-wrapper">
+          <div className="login-form">
+            <div className="login-form-logo-wrapper">
               <img
-                className="h-full w-full pl-8 object-contain"
+                className="login-form-logo"
                 src={loginLogo}
                 alt="background left"
               />
             </div>
-            <div className="h-4/5 w-1/3 px-6 py-8 rounded-sm sm:w-full items-center justify-center flex-col mt-auto mb-auto">
+            <div className="form-area">
               <h2
-                className="text-black
-                 font-bold text-40 uppercase text-center mb-4"
+                className="title"
               >
                 Login
               </h2>
@@ -113,7 +123,7 @@ const Login = () => {
 
                   <span
                     onClick={handleClickToggleShowPassword}
-                    className=" cursor-pointer absolute right-2 top-1/2"
+                    className="show-password"
                   >
                     <BiShow size={15} />
                   </span>
@@ -121,16 +131,16 @@ const Login = () => {
                 <small className="text-red-500">
                   {errors?.password && errors.password.message}
                 </small>
-                <div className="flex justify-between mt-2 mb-1 w-full">
+                <div className="login-option">
                   <small
                     onClick={handleClickForgotPassword}
-                    className="text-text cursor-pointer underline hover:text-color_date"
+                    className="login-option-item"
                   >
                     Forgot password?
                   </small>
                   <small
                     onClick={handleClickRedirectSignUp}
-                    className="text-text cursor-pointer underline hover:text-color_date"
+                    className="login-option-item"
                   >
                     Sign up?
                   </small>
@@ -139,13 +149,13 @@ const Login = () => {
                   <div className="flex">
                     <button
                       type="submit"
-                      className="btn-primary w-full text-15 uppercase font-bold"
+                      className="btn-primary w-full login-button"
                     >
                       Login
                     </button>
                   </div>
                   <div className="w-full mt-4">
-                    <div className="w-full flex items-center justify-center border border-text_desc p-1 rounded-sm hover:border-text cursor-pointer">
+                    <div className="w-full login-option-orther">
                       <img
                         className="mr-2"
                         src={googleLogo}

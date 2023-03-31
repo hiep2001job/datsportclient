@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { FiUser } from "react-icons/fi";
-import { MdShoppingCart } from "react-icons/md";
-import { TfiSearch } from "react-icons/tfi";
-import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import brandApi from "../../api/brand";
-import categoryApi from "../../api/category";
-import productApi from "../../api/product";
-import Logo from "../../assets/images/logo.png";
-import ProfileMenu from "./profile_menu/ProfileMenu";
+import './Header.scss';
+
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import { FiUser } from 'react-icons/fi';
+import { MdShoppingCart } from 'react-icons/md';
+import { TfiSearch } from 'react-icons/tfi';
+import { useSelector } from 'react-redux';
+import {
+  Link,
+  useNavigate,
+} from 'react-router-dom';
+
+import brandApi from '../../api/brand';
+import categoryApi from '../../api/category';
+import productApi from '../../api/product';
+import Logo from '../../assets/images/logo.png';
+import ProfileMenu from './profile_menu/ProfileMenu';
+
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(false);
   const [dataCategory, setDataCategory] = useState([]);
@@ -58,33 +69,33 @@ const Header = () => {
   return (
     <div
       id="header"
-      className="fixed z-50 bg-slate-50 shadow-sm flex items-baseline justify-between w-full h-auto border-b pb-2"
+      className="header-wrapper"
     >
       <div
-        className="h-full w-36 cursor-pointer ml-9 flex pt-2"
+        className="logo-wrapper"
         onClick={() => navigate("/home")}
       >
         <img
-          className="w-full h-12 mt-1 object-contain"
+          className="logo"
           src={Logo}
           alt="logo web app"
         />
       </div>
       {/* menu list  */}
-      <ul className="mr-auto ml-20">
+      <ul className="navbar">
         <Link to="/home">
-          <li className="group mr-5 relative text-lg inline-block">
-            <p className="uppercase font-semibold hover:opacity-60 transition-all duration-100">
+          <li className="navbar-item">
+            <p className="navbar-item-text">
               Home
             </p>
           </li>
         </Link>
         <Link to={`/product-listing/1`}>
-          <li className="group mr-5 relative text-lg inline-block">
-            <p className="uppercase font-semibold  hover:opacity-60 transition-all duration-100 ">
+          <li className="navbar-item">
+            <p className="navbar-item-text">
               Category
             </p>
-            <div className="absolute w-44 h-auto top-full left-0 invisible opacity-0 pb-10 z-50 bg-white group-hover:visible group-hover:opacity-100 transition-all duration-300">
+            <div className="navbar-dropdown">
               <ul className="">
                 {dataCategory?.map((category, idx) => {
                   return (
@@ -92,7 +103,7 @@ const Header = () => {
                       to={`/product-listing/${category.categoryId}`}
                       key={idx}
                     >
-                      <li className="py-1 px-2 pr-3 text-15 border-b hover:bg-slate-50">
+                      <li className="navbar-dropdown-item hover:bg-slate-50">
                         {category?.categoryName}
                       </li>
                     </Link>
@@ -103,11 +114,11 @@ const Header = () => {
           </li>
         </Link>
         <Link to="">
-          <li className="group mr-5 relative text-lg inline-block ">
-            <p className="uppercase font-semibold   hover:opacity-60 transition-all duration-100">
+          <li className="navbar-item ">
+            <p className="navbar-item-text">
               Brand
             </p>
-            <div className="absolute w-44 h-auto top-full left-0 invisible opacity-0 pb-10 z-50 bg-white  group-hover:visible group-hover:opacity-100 transition-all duration-300">
+            <div className="navbar-dropdown">
               <ul className="">
                 {dataBrands?.map((brand) => {
                   return (
@@ -123,15 +134,15 @@ const Header = () => {
           </li>
         </Link>
         <Link to="">
-          <li className="group mr-5 relative text-lg inline-block">
-            <p className="uppercase font-semibold hover:opacity-60 transition-all duration-100 ">
+          <li className="navbar-item">
+            <p className="navbar-item-text ">
               Post
             </p>
           </li>
         </Link>
         <Link to="about">
-          <li className="group mr-5  relative text-lg inline-block ">
-            <p className="uppercase font-semibold hover:opacity-60 transition-all duration-100 ">
+          <li className="navbar-item">
+            <p className="navbar-item-text ">
               About
             </p>
           </li>
@@ -139,26 +150,26 @@ const Header = () => {
       </ul>
 
       {/* search engine  */}
-      <div className="flex items-center w-56 h-8 ml-auto mr-48 relative">
+      <div className="search-box">
         <input
           type="text"
-          className="h-full pl-3 outline-none border px-1 rounded"
+          className="search-box-input"
         />
-        <div className="absolute top-1/4 right-6">
+        <div className="search-icon">
           <TfiSearch size={20} />
         </div>
-        <div className="flex justify-center items-stretch ml-4">
+        <div className="cart-icon">
           <div>
             <MdShoppingCart size={25} />
           </div>
-          <div className="flex relative group">
+          <div className="user-group">
             {!success ? (
-              <ul className="flex justify-center items-center">
+              <ul className="user-group-menu">
                 <Link to="/login">
-                  <li className="mr-1 border-b border-text">Login</li>
+                  <li className="user-group-menu-item">Login</li>
                 </Link>
                 <Link to="/signup">
-                  <li className="border-b  border-text">Signup</li>
+                  <li className="user-group-menu-item">Signup</li>
                 </Link>
               </ul>
             ) : (

@@ -1,8 +1,9 @@
-import React from "react";
-import Header from "../../share/header/Header";
-import Footer from "../footer/Footer";
-import Home from "../home/Home";
-import { Outlet } from "react-router-dom";
+import React from 'react';
+
+import { Outlet } from 'react-router-dom';
+
+import Header from '../../share/header/Header';
+import Footer from '../footer/Footer';
 
 const GlobalNavigation = () => {
   return (

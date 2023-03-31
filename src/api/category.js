@@ -1,5 +1,6 @@
-import axiosClient from "./axiosClient";
-const BASE_URL = "http://localhost:8080/api";
+import axiosClient from './axiosClient';
+
+const BASE_URL = "http://localhost:8081/api";
 const categoryApi = {
   getAll: async (id) => {
     try {
