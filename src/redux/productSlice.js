@@ -8,6 +8,9 @@ const productSlice = createSlice({
     success: false,
     error: null,
     dataProductByCategoryId: [],
+    dataProductByBrandId: [],
+    dataProductHot: [],
+    dataNewProducts: [],
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -17,6 +20,7 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(productActions.getAll.fulfilled, (state, { payload }) => {
+        state.dataNewProducts.push(payload)
         state.loading = false;
         state.error = null;
         state.success = true;

@@ -25,49 +25,8 @@ import {
 import CardProduct from '../../share/card_product/CardProduct';
 import Title from '../../share/Title/Title';
 
-const ProductSection = ({ sectionName, productList }) => {
-  const data = [
-    {
-      productId: 1,
-      productImage:
-        "https://down-vn.img.susercontent.com/file/sg-11134201-22090-m8j2dwol22hvc0",
-      productPrice: 150000,
-      productName:
-        "Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
-      productDescription:
-        "Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
-    },
-    {
-      productId: 1,
-      productImage:
-        "https://down-vn.img.susercontent.com/file/sg-11134201-22090-m8j2dwol22hvc0",
-      productPrice: 150000,
-      productName:
-        "Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
-      productDescription:
-        "Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
-    },
-    {
-      productId: 1,
-      productImage:
-        "https://down-vn.img.susercontent.com/file/sg-11134201-22090-m8j2dwol22hvc0",
-      productPrice: 150000,
-      productName:
-        "Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
-      productDescription:
-        "Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
-    },
-    {
-      productId: 1,
-      productImage:
-        "https://down-vn.img.susercontent.com/file/sg-11134201-22090-m8j2dwol22hvc0",
-      productPrice: 150000,
-      productName:
-        "Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
-      productDescription:
-        "Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
-    },
-  ];
+const ProductSection = ({ sectionName, productList,data }) => {
+ 
   return (
     <Container>
       <Row>
@@ -81,7 +40,7 @@ const ProductSection = ({ sectionName, productList }) => {
               slidesPerView={3}
               spaceBetween={15}
               keyboard={true}
-              loop
+              
               speed={200}
               modules={[Navigation, Pagination]}
               className="mySwiper"
