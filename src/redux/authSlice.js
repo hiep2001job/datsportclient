@@ -11,6 +11,7 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     success: false,
+    userDetail: 'ok'
   },
   reducers: {
     updateUser: (state, action) => {
@@ -59,4 +60,6 @@ const authSlice = createSlice({
   },
 });
 export const { logout, setCredentials } = authSlice.actions;
+export const selectUserDetail = (state) => state.auth.data;
+
 export default authSlice.reducer;

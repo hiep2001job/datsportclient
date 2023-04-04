@@ -16,7 +16,9 @@ const authApi = {
   },
   updateProfile: async (payload) => {
     const url = `${BASE_URL}/api/updateinforaccount`;
-    return await axiosClient.post(url, payload);
+    const rs =  await axiosClient.post(url, payload);
+    console.log("rs: ", rs)
+    return rs;
   },
   changePassword: async (payload) => {
     const url = `${BASE_URL}/api/changepassword`;

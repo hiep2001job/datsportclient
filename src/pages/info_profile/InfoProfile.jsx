@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../share/button/Button";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 import {
   Card,
   CardBody,
@@ -20,66 +23,95 @@ import {
 } from "reactstrap";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
+import imageApi from "../../api/img";
 
 //import images
 import progileBg from "../../assets/images/profile-bg.jpg";
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
 import { useDispatch, useSelector } from "react-redux";
+
+import { selectUserDetail } from "../../redux/authSlice";
 import useUserDetail from "../../hooks/useUserDetail";
 import { updateProfile } from "../../redux/authActions";
+import { useEffect } from "react";
+
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .required("Email cannot be empty!")
+    .matches(
+      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+      "Invalid email address"
+    ),
+  userfullname: yup.string().required("Fullname cannot be empty!"),
+  gender: yup
+    .string()
+    .required("Let's choose gender!")
+    .notOneOf(["Select your gender"], "Let's choose gender!"),
+  phone: yup
+    .string()
+    .required("Phone cannot be empty!")
+    .min(10, "Phone number be at least 10 characters")
+    .max(11, "Phone number maximum of 11 characters"),
+  address: yup.string().required("Address cannot be empty!"),
+});
 
 const InfoProfile = () => {
   const dispatch = useDispatch();
   const userDetail = useUserDetail();
+  const userDetailInfor = useSelector(selectUserDetail);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: "onBlur",
+    defaultValues: { ...userDetail },
+  });
+
+  const onSubmit = (data) => {
+    const newData = { ...data, id: userDetail.id };
+    dispatch(updateProfile(newData));
+  };
+
+  useEffect(() => {
+    // Set  defaulValue
+    setValue("email", userDetail.email);
+    setValue("userfullname", userDetail.userfullname);
+    setValue("gender", userDetail.gender);
+    setValue("address", userDetail.address);
+    setValue("phone", userDetail.phone);
+  }, [userDetail]);
 
   const [activeTab, setActiveTab] = useState("1");
 
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
-  const handleClickBtnSubmit = (data) => {
-    dispatch(updateProfile(data));
-  };
 
-  const handleErrors = (errors) => {};
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    mode: "onBlur",
-    defaultValues:{...userDetail}
-  });
-  const profileOptions = {
-    email: {
-      required: "Email cannot be empty!",
-      pattern: {
-        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        message: "Invalid email address",
-      },
-    },
-    userfullname: {
-      required: "Fullname cannot be empty!",
-    },
-    gender: {
-      required: "Let's choose gender!",
-    },
+  useEffect(() => {
+    console.log("userDetailInfor: ", userDetailInfor);
+  }, [userDetailInfor]);
 
-    phone: {
-      required: "Phone cannot be empty!",
-
-      minLength: {
-        value: 10,
-        message: "Phone number be at least 10 characters",
-      },
-      maxLength: {
-        value: 11,
-        message: "Phone number maximum of 11 characters",
-      },
-    },
-    address: {
-      required: "Address cannot be empty!",
-    },
+  // handle change event of input file
+  const onChangeFile = async (event) => {
+    const imageUrl = event.target.files[0];
+    await imageApi
+      .uploadImage(imageUrl)
+      .then((res) => {
+        console.log("upload anh thành công!: ", res);
+      })
+      .catch((error) => {
+        console.error(error);
+        // const snackBarPayload = {
+        //   type: "error",
+        //   message: "Tải hình ảnh không thành công!",
+        // };
+        // dispatch(openSnackbar(snackBarPayload));
+      });
   };
 
   return (
@@ -98,10 +130,12 @@ const InfoProfile = () => {
                         alt="user-profile"
                       />
                       <div className="avatar-xs p-0 rounded-circle profile-photo-edit">
-                        <Input
+                        <input
                           id="profile-img-file-input"
                           type="file"
                           className="profile-img-file-input"
+                          accept="image/*" onChange={onChangeFile} 
+                          name="image"
                         />
                         <Label
                           htmlFor="profile-img-file-input"
@@ -156,13 +190,28 @@ const InfoProfile = () => {
                 <CardBody className="p-4">
                   <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
-                      <Form
-                        onSubmit={handleSubmit(
-                          handleClickBtnSubmit,
-                          handleErrors
-                        )}
-                      >
+                      <form onSubmit={handleSubmit(onSubmit)}>
                         <Row>
+                          <Col lg={6}>
+                            <div className="mb-3">
+                              <Label
+                                htmlFor="emailInput"
+                                className="form-label"
+                              >
+                                Email
+                              </Label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="emailInput"
+                                placeholder="Enter your email"
+                                name="email"
+                                {...register("email")}
+                              />
+                              <p>{errors?.email?.message}</p>
+                            </div>
+                          </Col>
+
                           <Col lg={6}>
                             <div className="mb-3">
                               <Label
@@ -171,93 +220,19 @@ const InfoProfile = () => {
                               >
                                 Full name
                               </Label>
-                              <Input
+                              <input
                                 type="text"
                                 className="form-control"
                                 id="fullnameInput"
                                 placeholder="Enter your full name"
                                 name="userfullname"
-                               
-                                {...register(
-                                  "userfullname",
-                                  profileOptions.userfullname
-                                )}
+                                {...register("userfullname")}
                               />
-                              <small className="text-red-500">
-                                {errors?.userfullname &&
-                                  errors.userfullname.message}
-                              </small>
+                              <p>{errors?.userfullname?.message}</p>
                             </div>
                           </Col>
 
                           <Col lg={6}>
-                            <div className="mb-3">
-                              <Label
-                                htmlFor="phonenumberInput"
-                                className="form-label"
-                              >
-                                Phone Number
-                              </Label>
-                              <Input
-                                type="text"
-                                className="form-control"
-                                id="phonenumberInput"
-                                placeholder="Enter your phone number"
-                               
-                                name="phone"
-                                {...register("phone", profileOptions.phone)}
-                              />
-                              <small className="text-red-500">
-                                {errors?.phone && errors.phone.message}
-                              </small>
-                            </div>
-                          </Col>
-                          <Col lg={6}>
-                            <div className="mb-3">
-                              <Label
-                                htmlFor="addressInput"
-                                className="form-label"
-                              >
-                                Address
-                              </Label>
-                              <Input
-                                type="text"
-                                className="form-control"
-                                id="addressInput"
-                                placeholder="Enter Address"
-                                name="address"
-                               
-                                {...register("address", profileOptions.address)}
-                              />{" "}
-                              <small className="text-red-500">
-                                {errors?.address && errors.address.message}
-                              </small>
-                            </div>
-                          </Col>
-                          <Col lg={6}>
-                            <div className="mb-3">
-                              <Label
-                                htmlFor="emailInput"
-                                className="form-label"
-                              >
-                                Email Address
-                              </Label>
-                              <Input
-                                type="email"
-                                className="form-control"
-                                id="email"
-                                placeholder="Enter your email"
-                                name="email"
-                               
-                                {...register("email", profileOptions.email)}
-                              />
-                              <small className="text-red-500">
-                                {errors?.email && errors.email.message}
-                              </small>
-                            </div>
-                          </Col>
-
-                          <Col lg={12}>
                             <div className="mb-3">
                               <Label
                                 htmlFor="skillsInput"
@@ -268,7 +243,7 @@ const InfoProfile = () => {
                               <select
                                 className="form-select mb-3"
                                 name="gender"
-                                {...register("gender", profileOptions.gender)}
+                                {...register("gender")}
                               >
                                 <option>Select your gender </option>
                                 <option value="1">Male</option>
@@ -281,10 +256,50 @@ const InfoProfile = () => {
                             </div>
                           </Col>
 
+                          <Col lg={6}>
+                            <div className="mb-3">
+                              <Label
+                                htmlFor="phoneInput"
+                                className="form-label"
+                              >
+                                Phone Number
+                              </Label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="phoneInput"
+                                placeholder="Enter your phone number"
+                                name="phone"
+                                {...register("phone")}
+                              />
+                              <p>{errors?.phone?.message}</p>
+                            </div>
+                          </Col>
+
+                          <Col lg={6}>
+                            <div className="mb-3">
+                              <Label
+                                htmlFor="addressInput"
+                                className="form-label"
+                              >
+                                Address
+                              </Label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="addressInput"
+                                placeholder="Enter your address"
+                                name="address"
+                                {...register("address")}
+                              />
+                              <p>{errors?.address?.message}</p>
+                            </div>
+                          </Col>
+
                           <Col lg={12}>
                             <div className="hstack gap-2 justify-content-end">
                               <button type="submit" className="btn btn-primary">
-                                Updates
+                                Update
                               </button>
                               <button
                                 type="button"
@@ -295,7 +310,7 @@ const InfoProfile = () => {
                             </div>
                           </Col>
                         </Row>
-                      </Form>
+                      </form>
                     </TabPane>
 
                     <TabPane tabId="2">

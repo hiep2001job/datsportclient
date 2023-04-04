@@ -1,6 +1,7 @@
 // authActions.js
 import axios from "axios";
 import authApi from "../api/auth";
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getProfile = createAsyncThunk(
@@ -33,18 +34,21 @@ export const getProfile = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
   "auth/updateProfile",
   async (
-    { username, email, password, phone, gender, address },
+    { id, userfullname, email, password, phone, gender, address },
     { rejectWithValue }
   ) => {
     try {
       const rs = await authApi.updateProfile({
-        username,
+        id,
+        userfullname,
         email,
         password,
         phone,
         gender,
         address,
       });
+      
+      return rs.data;
     } catch (error) {
       // return custom error message from backend if present
       if (error.response && error.response.data.message) {
