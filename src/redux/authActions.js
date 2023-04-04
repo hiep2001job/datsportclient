@@ -3,13 +3,56 @@ import axios from "axios";
 import authApi from "../api/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const updateUser = createAsyncThunk(
-  "auth/update",
-  async (payload, { rejectWithValue }) => {
+export const getProfile = createAsyncThunk(
+  "auth/profile",
+  async (
+    { username, email, password, phone, gender, address },
+    { rejectWithValue }
+  ) => {
     try {
-      const rs = await authApi.updateUser(payload);
-      return rs.data;
-    } catch (error) {}
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      await axios.post(
+        `http://localhost:8080/api/register`,
+        { username, email, password, phone, address, gender },
+        config
+      );
+    } catch (error) {
+      // return custom error message from backend if present
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+export const updateProfile = createAsyncThunk(
+  "auth/updateProfile",
+  async (
+    { username, email, password, phone, gender, address },
+    { rejectWithValue }
+  ) => {
+    try {
+      const rs = await authApi.updateProfile({
+        username,
+        email,
+        password,
+        phone,
+        gender,
+        address,
+      });
+    } catch (error) {
+      // return custom error message from backend if present
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
   }
 );
 export const loginUser = createAsyncThunk(

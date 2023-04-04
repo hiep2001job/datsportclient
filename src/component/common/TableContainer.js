@@ -24,7 +24,7 @@ import {
   TicketsListGlobalFilter,
   NFTRankingGlobalFilter,
   TaskListGlobalFilter
-} from "../../Components/Common/GlobalSearchFilter";
+} from "../../component/common/GlobalSearchFilter";
 
 // Define a default UI for filtering
 function GlobalFilter({

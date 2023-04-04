@@ -1,14 +1,13 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+
 import "./ProfileMenu.scss";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 export default function ProfileMenu({ handleClose, anchorEl, open }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
+
   const handleClickLogout = async () => {
     await dispatch(logout());
     navigate("/");
@@ -18,7 +17,7 @@ export default function ProfileMenu({ handleClose, anchorEl, open }) {
   };
   return (
     <div>
-      <Menu
+      {/* <Menu
         id="demo-positioned-menu"
         aria-labelledby="demo-positioned-button"
         anchorEl={anchorEl}
@@ -35,7 +34,7 @@ export default function ProfileMenu({ handleClose, anchorEl, open }) {
       >
         <MenuItem onClick={handleClickProfile}>Profile</MenuItem>
         <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
-      </Menu>
+      </Menu> */}
     </div>
   );
 }

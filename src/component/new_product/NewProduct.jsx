@@ -1,69 +1,60 @@
-import React from "react";
-import { GrNext, GrPrevious } from "react-icons/gr";
-import { Navigation, Pagination } from "swiper";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/scrollbar";
-import { Swiper, SwiperSlide } from "swiper/react";
-import CardProduct from "../../share/card_product/CardProduct";
-import Title from "../../share/Title/Title";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/scrollbar';
+
+import React from 'react';
+
+import {
+  GrNext,
+  GrPrevious,
+} from 'react-icons/gr';
+import {
+  Navigation,
+  Pagination,
+} from 'swiper';
+import {
+  Swiper,
+  SwiperSlide,
+} from 'swiper/react';
+
+import CardProduct from '../../share/card_product/CardProduct';
+import Title from '../../share/Title/Title';
 
 const NewProduct = () => {
   const data = [
     {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
+      productId:1,
+      productImage:"https://down-vn.img.susercontent.com/file/sg-11134201-22090-m8j2dwol22hvc0",
+      productPrice:150000,
+      productName:"Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
+      productDescription:"Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại"
+    
     },
     {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
+      productId:1,
+      productImage:"https://down-vn.img.susercontent.com/file/sg-11134201-22090-m8j2dwol22hvc0",
+      productPrice:150000,
+      productName:"Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
+      productDescription:"Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại"
+    
     },
     {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
+      productId:1,
+      productImage:"https://down-vn.img.susercontent.com/file/sg-11134201-22090-m8j2dwol22hvc0",
+      productPrice:150000,
+      productName:"Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
+      productDescription:"Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại"
+    
     },
     {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
+      productId:1,
+      productImage:"https://down-vn.img.susercontent.com/file/sg-11134201-22090-m8j2dwol22hvc0",
+      productPrice:150000,
+      productName:"Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại",
+      productDescription:"Áo khoác cadigan nam nữ chất cotton tổ ong cao cấp, dễ mặc dễ phối đồ, hợp mọi thời đại"
+    
     },
-    {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
-    },
-    {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
-    },
-    {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
-    },
-    {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
-    },
-    {
-      alt_img: "hello image",
-      price: "2.300.000",
-      name: "addidas",
-      group: "Nu auth",
-    },
+   
   ];
   return (
     <div className="w-full px-3">
@@ -86,16 +77,10 @@ const NewProduct = () => {
               prevEl: ".button-prev-slide",
             }}
           >
-            {data.map((slide, idx) => {
+            {data.map((product, idx) => {
               return (
                 <SwiperSlide key={idx}>
-                  <CardProduct
-                    alt_img={slide.alt_img}
-                    price={slide.price}
-                    name={slide.name}
-                    group={slide.group}
-                    qty_slider={5}
-                  />
+                  <CardProduct {...product} />
                 </SwiperSlide>
               );
             })}

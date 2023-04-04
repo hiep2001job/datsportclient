@@ -1,31 +1,31 @@
-import './Header.scss';
+import "./Header.scss";
 
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from "react";
+import { Dropdown, DropdownMenu, DropdownToggle, Form } from 'reactstrap';
+import { FiUser } from "react-icons/fi";
+import { MdShoppingCart } from "react-icons/md";
+import { TfiSearch } from "react-icons/tfi";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
-import { FiUser } from 'react-icons/fi';
-import { MdShoppingCart } from 'react-icons/md';
-import { TfiSearch } from 'react-icons/tfi';
-import { useSelector } from 'react-redux';
-import {
-  Link,
-  useNavigate,
-} from 'react-router-dom';
-
-import brandApi from '../../api/brand';
-import categoryApi from '../../api/category';
-import productApi from '../../api/product';
-import Logo from '../../assets/images/logo.png';
-import ProfileMenu from './profile_menu/ProfileMenu';
+import brandApi from "../../api/brand";
+import categoryApi from "../../api/category";
+import productApi from "../../api/product";
+import Logo from "../../assets/images/logo.png";
+import ProfileMenu from "./profile_menu/ProfileMenu";
+import ProfileDropdown from "./profile_dropdown/ProfileDropdown";
+import SearchOption from "./search_option/SearchOption";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(false);
   const [dataCategory, setDataCategory] = useState([]);
   const [dataProduct, setDataProduct] = useState([]);
   const [dataBrands, setDataBrands] = useState([]);
+  const [search, setSearch] = useState(false);
 
+  const toogleSearch = () => {
+      setSearch(!search);
+  };
   const open = Boolean(anchorEl);
   const handleClickProfile = () => {
     setAnchorEl(!anchorEl);
@@ -66,35 +66,23 @@ const Header = () => {
   // call api
   const navigate = useNavigate();
   const { success } = useSelector((state) => state.auth);
+  const authToken = useSelector((state) => state.auth.authToken);
+
   return (
-    <div
-      id="header"
-      className="header-wrapper"
-    >
-      <div
-        className="logo-wrapper"
-        onClick={() => navigate("/home")}
-      >
-        <img
-          className="logo"
-          src={Logo}
-          alt="logo web app"
-        />
+    <div id="header" className="header-wrapper">
+      <div className="logo-wrapper" onClick={() => navigate("/home")}>
+        <img className="logo" src={Logo} alt="logo web app" />
       </div>
       {/* menu list  */}
       <ul className="navbar">
         <Link to="/home">
           <li className="navbar-item">
-            <p className="navbar-item-text">
-              Home
-            </p>
+            <p className="navbar-item-text">Home</p>
           </li>
         </Link>
-        <Link to={`/product-listing/1`}>
+
           <li className="navbar-item">
-            <p className="navbar-item-text">
-              Category
-            </p>
+            <p className="navbar-item-text">Category</p>
             <div className="navbar-dropdown">
               <ul className="">
                 {dataCategory?.map((category, idx) => {
@@ -112,17 +100,14 @@ const Header = () => {
               </ul>
             </div>
           </li>
-        </Link>
-        <Link to="">
+
           <li className="navbar-item ">
-            <p className="navbar-item-text">
-              Brand
-            </p>
+            <p className="navbar-item-text">Brand</p>
             <div className="navbar-dropdown">
               <ul className="">
-                {dataBrands?.map((brand) => {
+                {dataBrands?.map((brand, idx) => {
                   return (
-                    <Link path="" key={brand?.brand_id}>
+                    <Link path="" key={idx}>
                       <li className="py-1 px-2 pr-3 text-15 border-b hover:bg-slate-50">
                         {brand?.brand_name}
                       </li>
@@ -132,38 +117,28 @@ const Header = () => {
               </ul>
             </div>
           </li>
-        </Link>
-        <Link to="">
+
+        <Link to="/post">
           <li className="navbar-item">
-            <p className="navbar-item-text ">
-              Post
-            </p>
+            <p className="navbar-item-text ">Post</p>
           </li>
         </Link>
         <Link to="about">
           <li className="navbar-item">
-            <p className="navbar-item-text ">
-              About
-            </p>
+            <p className="navbar-item-text ">About</p>
           </li>
         </Link>
       </ul>
 
-      {/* search engine  */}
+      {/* search area  */}
       <div className="search-box">
-        <input
-          type="text"
-          className="search-box-input"
-        />
-        <div className="search-icon">
-          <TfiSearch size={20} />
-        </div>
+        <SearchOption />
         <div className="cart-icon">
           <div>
             <MdShoppingCart size={25} />
           </div>
           <div className="user-group">
-            {!success ? (
+            {!authToken ? (
               <ul className="user-group-menu">
                 <Link to="/login">
                   <li className="user-group-menu-item">Login</li>
@@ -173,23 +148,91 @@ const Header = () => {
                 </Link>
               </ul>
             ) : (
-              <>
-                <button onClick={handleClickProfile}>
-                  <FiUser size={25} />
-                </button>
-                <ProfileMenu
-                  open={open}
-                  handleClick={handleClickProfile}
-                  handleClose={handleCloseProfile}
-                  anchorEl={anchorEl}
-                />
-              </>
+              <ProfileDropdown />
             )}
           </div>
         </div>
       </div>
       {/* user & cart  */}
     </div>
+    // <React.Fragment>
+    //   <header id="page-topbar" className="header-wrapper" >
+    //     <div className="layout-width">
+    //       <div className="navbar-header">
+    //         <div className="d-flex">
+    //           <div className="navbar-brand-box horizontal-logo">
+    //             <Link to="/" className="logo logo-dark">
+    //               <span className="logo-sm">
+    //                 <img src={Logo} alt="" height="22" />
+    //               </span>
+    //               <span className="logo-lg">
+    //                 <img src={Logo} alt="" height="17" />
+    //               </span>
+    //             </Link>
+
+    //             <Link to="/" className="logo logo-light">
+    //               <span className="logo-sm">
+    //                 <img src={Logo} alt="" height="22" />
+    //               </span>
+    //               <span className="logo-lg">
+    //                 <img src={Logo} alt="" height="17" />
+    //               </span>
+    //             </Link>
+    //           </div>
+
+             
+
+    //           <SearchOption />
+    //         </div>
+
+    //         <div className="d-flex align-items-center">
+    //           <Dropdown
+    //             isOpen={search}
+    //             toggle={toogleSearch}
+    //             className="d-md-none topbar-head-dropdown header-item"
+    //           >
+    //             <DropdownToggle
+    //               type="button"
+    //               tag="button"
+    //               className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
+    //             >
+    //               <i className="bx bx-search fs-22"></i>
+    //             </DropdownToggle>
+    //             <DropdownMenu className="dropdown-menu-lg dropdown-menu-end p-0">
+    //               <Form className="p-3">
+    //                 <div className="form-group m-0">
+    //                   <div className="input-group">
+    //                     <input
+    //                       type="text"
+    //                       className="form-control"
+    //                       placeholder="Search ..."
+    //                       aria-label="Recipient's username"
+    //                     />
+    //                     <button className="btn btn-primary" type="submit">
+    //                       <i className="mdi mdi-magnify"></i>
+    //                     </button>
+    //                   </div>
+    //                 </div>
+    //               </Form>
+    //             </DropdownMenu>
+    //           </Dropdown>
+
+
+    //           {/* MyCartDropdwon */}
+    //           {/* <MyCartDropdown /> */}
+
+           
+
+    //           {/* NotificationDropdown */}
+    //           {/* <NotificationDropdown /> */}
+
+    //           {/* ProfileDropdown */}
+    //           <ProfileDropdown />
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </header>
+    // </React.Fragment>
   );
 };
 

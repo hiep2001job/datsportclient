@@ -1,351 +1,451 @@
-import { Checkbox, FormControlLabel, Menu, MenuItem } from "@mui/material";
-import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { MdDelete, MdEdit, MdOutlineMoreHoriz } from "react-icons/md";
-import productApi from "../../api/product";
-import Button from "../../share/button/Button";
-import DeleteForm from "../../share/form_delete/FormDelete";
-import LoadingSpinner from "../../share/loading_spinner/LoadingSpinner";
-import TableGeneral from "../../share/table_general/TableGeneral";
-import ModalAdd from "./modal_add/ModalAdd";
-import ModalEdit from "./modal_edit/ModalEdit";
+import React, { useEffect, useState, useMemo } from "react";
 
-const Product = () => {
-  const [isOpenModalAdd, setIsOpenModalAdd] = useState(false);
-  const [isOpenModalEdit, setIsOpenModalEdit] = useState(false);
-  const [isDeleteForm, setIsDeleteForm] = useState(false);
-  const [allDataProduct, setAllDataProduct] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [product, setProduct] = useState({});
-  const handleClose = () => {
-    setIsOpenModalAdd(false);
-  };
-  const handleCloseForm = () => {
-    setIsDeleteForm(false);
-  };
-  const handleCloseEditForm = () => {
-    setIsOpenModalEdit(false);
-  };
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
+import {
+  Container,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu,
+  Nav,
+  NavItem,
+  NavLink,
+  UncontrolledCollapse,
+  Row,
+  Card,
+  CardHeader,
+  Col,
+} from "reactstrap";
+import classnames from "classnames";
 
-  const handleClickIconDelete = () => {
-    setIsDeleteForm(true);
-    setAnchorEl(null);
-  };
-  const handleClickEditIcon = () => {
-    setIsOpenModalEdit(true);
-    setAnchorEl(null);
-  };
-  const handleClickDeleteProduct = async () => {
-    const currentUpdateDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-    try {
-      setIsLoading(true);
-      const rs = await productApi.updateProduct({
-        ...product,
-        productStatus: 0,
-        productUpdateDate: currentUpdateDate,
-      });
-      return rs;
-    } catch (error) {
-      console.log("error", error);
-    } finally {
-      getAll();
-      setAnchorEl(null);
-      setIsDeleteForm(false);
-      setIsLoading(false);
-    }
-  };
-  const handleChangeCheckboxColor = () => {};
-  const handleChangeCheckboxSize = () => {};
+import { toast, ToastContainer } from 'react-toastify';
 
-  const getAll = async () => {
-    try {
-      setIsLoading(true);
-      const rs = await productApi.getAll(-1);
-      console.log("getall rs", rs);
-      setAllDataProduct(rs);
-    } catch (error) {
-      console.log("error", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+// RangeSlider
+import Nouislider from "nouislider-react";
+import "nouislider/distribute/nouislider.css";
+import DeleteModal from "../../component/common/DeleteModal";
+
+import BreadCrumb from "../../component/common/BreadCrumb";
+import TableContainer from "../../component/common/TableContainer";
+import { Rating, Published, Price } from "./EcommerceProductCol";
+//Import data
+import { productsData } from "../../common/data";
+
+//Import actions
+// import { getProducts as onGetProducts, deleteProducts } from "../../store/ecommerce/action";
+import { isEmpty } from "lodash";
+import Select from "react-select";
+
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+
+const SingleOptions = [
+  { value: 'Watches', label: 'Watches' },
+  { value: 'Headset', label: 'Headset' },
+  { value: 'Sweatshirt', label: 'Sweatshirt' },
+  { value: '20% off', label: '20% off' },
+  { value: '4 star', label: '4 star' },
+];
+
+const Product = (props) => {
+  const dispatch = useDispatch();
+
+  const { products } = []
+  // const { products } = useSelector((state) => ({
+  //   products: state.Ecommerce.products,
+  // }));
+
+  const [productList, setProductList] = useState([]);
+  const [activeTab, setActiveTab] = useState("1");
+  const [selectedMulti, setselectedMulti] = useState(null);
+  const [product, setProduct] = useState(null);
+
+  function handleMulti(selectedMulti) {
+    setselectedMulti(selectedMulti);
+  }
+
+  // useEffect(() => {
+  //   if (products && !products.length) {
+  //     dispatch(onGetProducts());
+  //   }
+  // }, [dispatch, products]);
+
   useEffect(() => {
-    getAll();
+    setProductList(products);
+  }, [products]);
+
+  useEffect(() => {
+    if (!isEmpty(products)) setProductList(products);
+  }, [products]);
+
+  const toggleTab = (tab, type) => {
+    if (activeTab !== tab) {
+      setActiveTab(tab);
+      let filteredProducts = products;
+      if (type !== "all") {
+        filteredProducts = products.filter((product) => product.status === type);
+      }
+      setProductList(filteredProducts);
+    }
+  };
+
+  const [cate, setCate] = useState("all");
+
+  const categories = (category) => {
+    let filteredProducts = products;
+    if (category !== "all") {
+      filteredProducts = products.filter((product) => product.category === category);
+    }
+    setProductList(filteredProducts);
+    setCate(category);
+  };
+
+  useEffect(() => {
+    onUpdate([0, 2000]);
   }, []);
 
-  const header = [
-    "No",
-    "Category",
-    "Brand",
-    "Image",
-    "Colors",
-    "Sizes",
-    "Name",
-    "Price",
-    "Qty",
-    "Date Create",
-    "Date Update",
-    "Status",
-    "Actions",
-  ];
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  const onUpdate = (value) => {
+    setProductList(
+      productsData.filter(
+        (product) => product.price >= value[0] && product.price <= value[1],
+        document.getElementById("minCost").value = value[0],
+        document.getElementById("maxCost").value = value[1],
+      )
+    );
+  };
+  const [ratingvalues, setRatingvalues] = useState([]);
+  /*
+  on change rating checkbox method
+  */
+  const onChangeRating = value => {
+    setProductList(productsData.filter(product => product.rating >= value));
 
-  const handleClickIconActions = (event, product) => {
-    setAnchorEl(event.currentTarget);
-    setProduct(product);
+    var modifiedRating = [...ratingvalues];
+    modifiedRating.push(value);
+    setRatingvalues(modifiedRating);
   };
 
-  const renderBodyDataTable = () => {
-    return allDataProduct.map((product, idx) => {
-      return {
-        id: <span className="font-bold">{idx + 1}</span>,
-        // eslint-disable-next-line jsx-a11y/alt-text
-        category: product.categoryId,
-        brand: product.brandId,
-        image: <img src={product.productImage} alt="" />,
-        colors: (
-          <div>
-            <label
-              style={{
-                display: "block",
-                textAlign: "start",
-                fontWeight: "bold",
-              }}
-            >
-              Product Colors:
-            </label>
-            <div
-              style={{
-                maxWidth: "450px",
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                fontSize: "11px",
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="color1"
-                    value={product.color1}
-                    checked={!!product.color1}
-                    onChange={handleChangeCheckboxColor}
-                  />
-                }
-                label="Blue"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="color2"
-                    value={product.color2}
-                    checked={!!product.color2}
-                    onChange={handleChangeCheckboxColor}
-                  />
-                }
-                label="Black"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="color3"
-                    value={product.color3}
-                    checked={!!product.color3}
-                    onChange={handleChangeCheckboxColor}
-                  />
-                }
-                label="White"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="color4"
-                    value={product.color4}
-                    checked={!!product.color4}
-                    onChange={handleChangeCheckboxColor}
-                  />
-                }
-                label="Green"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="color5"
-                    value={product.color5}
-                    checked={!!product.color5}
-                    onChange={handleChangeCheckboxColor}
-                  />
-                }
-                label="Red"
-              />
-            </div>
-          </div>
-        ),
-        sizes: (
-          <div>
-            <label
-              style={{
-                display: "block",
-                textAlign: "start",
-                fontWeight: "bold",
-              }}
-            >
-              Product Sizes:
-            </label>
-            <div
-              style={{
-                maxWidth: "450px",
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                fontSize: "11px",
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="productSize1"
-                    value="S"
-                    checked={!!product.productSize1}
-                    onChange={handleChangeCheckboxSize}
-                  />
-                }
-                label="S"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="productSize2"
-                    value="M"
-                    checked={!!product.productSize2}
-                    onChange={handleChangeCheckboxSize}
-                  />
-                }
-                label="M"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="productSize3"
-                    value="L"
-                    onChange={handleChangeCheckboxSize}
-                    checked={!!product.productSize3}
-                  />
-                }
-                label="L"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="productSize4"
-                    value="XL"
-                    onChange={handleChangeCheckboxSize}
-                    checked={!!product.productSize4}
-                  />
-                }
-                label="XL"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="productSize5"
-                    value="XXL"
-                    onChange={handleChangeCheckboxSize}
-                    checked={!!product.productSize5}
-                  />
-                }
-                label="XXL"
-              />
-            </div>
-          </div>
-        ),
-        name: product.productName,
-        price: product.productPrice,
-        Qty: product.productQuantity,
-        dateCreate: product.productCreateDate,
-        dateUpdate: product.productUpdateDate,
-        status: product.productStatus,
-        actions: (
-          <div
-            className="flex justify-center"
-            onClick={(event) => handleClickIconActions(event, product)}
-          >
-            <MdOutlineMoreHoriz
-              size={25}
-              className="hover:cursor-pointer hover:bg-gray-400 rounded-full"
-            />
-          </div>
-        ),
-      };
+  const onUncheckMark = (value) => {
+    var modifiedRating = [...ratingvalues];
+    const modifiedData = (modifiedRating || []).filter(x => x !== value);
+    /*
+    find min values
+    */
+    var filteredProducts = productsData;
+    if (modifiedData && modifiedData.length && value !== 1) {
+      var minValue = Math.min(...modifiedData);
+      if (minValue && minValue !== Infinity) {
+        filteredProducts = productsData.filter(
+          product => product.rating >= minValue
+        );
+        setRatingvalues(modifiedData);
+      }
+    } else {
+      filteredProducts = productsData;
+    }
+    setProductList(filteredProducts);
+  };
+
+  //delete order
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteModalMulti, setDeleteModalMulti] = useState(false);
+
+  const onClickDelete = (product) => {
+    setProduct(product);
+    setDeleteModal(true);
+  };
+
+  const handleDeleteProduct = () => {
+    if (product) {
+      // dispatch(deleteProducts(product._id));
+      setDeleteModal(false);
+    }
+  };
+
+
+  // Display Delete Button
+  const [dele, setDele] = useState(0);
+  const displayDelete = () => {
+    const ele = document.querySelectorAll(".productCheckBox:checked");
+    const del = document.getElementById("selection-element");
+    setDele(ele.length);
+    if (ele.length === 0) {
+      del.style.display = 'none';
+    } else {
+      del.style.display = 'block';
+    }
+  };
+
+  // Delete Multiple
+  const deleteMultiple = () => {
+    const ele = document.querySelectorAll(".productCheckBox:checked");
+    const del = document.getElementById("selection-element");
+    ele.forEach((element) => {
+      // dispatch(deleteProducts(element.value));
+      setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
+      del.style.display = 'none';
     });
   };
 
-  return (
-    <div className="w-full h-full">
-      <header className="flex justify-between pt-3">
-        <div className="ml-auto mr-2">
-          <Button
-            onClick={() => setIsOpenModalAdd(true)}
-            text="add product"
-            height="h-12"
-            fontsize="text-15"
-          />
-        </div>
-      </header>
+  const columns = useMemo(() => [
+    {
+      Header: "#",
+      Cell: (cell) => {
+        return <input type="checkbox" className="productCheckBox form-check-input" value={cell.row.original._id} onClick={() => displayDelete()} />;
+      },
+    },
+    {
+      Header: "Product",
+      Cell: (product) => (
+        <>
+          <div className="d-flex align-items-center">
+            <div className="flex-shrink-0 me-3">
+              <div className="avatar-sm bg-light rounded p-1">
+                <img
+                  src={process.env.REACT_APP_API_URL + "/images/products/" + product.row.original.image}
+                  alt=""
+                  className="img-fluid d-block"
+                />
+              </div>
+            </div>
+            <div className="flex-grow-1">
+              <h5 className="fs-14 mb-1">
+                <Link
+                  to="/apps-ecommerce-product-details"
+                  className="text-dark"
+                >
+                  {" "}
+                  {product.row.original.name}
+                </Link>
+              </h5>
+              <p className="text-muted mb-0">
+                Category :{" "}
+                <span className="fw-medium">
+                  {" "}
+                  {product.row.original.category}
+                </span>
+              </p>
+            </div>
+          </div>
+        </>
+      ),
+    },
+    {
+      Header: "Stock",
+      accessor: "stock",
+      filterable: false,
+    },
+    {
+      Header: "Price",
+      accessor: "price",
+      filterable: false,
+      Cell: (cellProps) => {
+        return <Price {...cellProps} />;
+      },
+    },
+    
+    {
+      Header: "Published",
+      accessor: "publishedDate",
+      filterable: false,
+      Cell: (cellProps) => {
+        return <Published {...cellProps} />;
+      },
+    },
+    {
+      Header: "Action",
+      Cell: (cellProps) => {
+        return (
+          <UncontrolledDropdown>
+            <DropdownToggle
+              href="#"
+              className="btn-soft-secondary btn-sm"
+              tag="button"
+            >
+              <i className="ri-more-fill" />
+            </DropdownToggle>
+            <DropdownMenu className="dropdown-menu-end">
+              <DropdownItem href="apps-ecommerce-product-details">
+                <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
+                View
+              </DropdownItem>
 
-      {/* content list product  */}
-      <div className="w-full h-500">
-        <TableGeneral headers={header} body={renderBodyDataTable()} />
-      </div>
-      <div>
-        {isOpenModalEdit && (
-          <ModalEdit
-            product={product}
-            isOpenModalEdit={isOpenModalEdit}
-            setIsOpenModalEdit={setIsOpenModalEdit}
-            handleClose={handleCloseEditForm}
-            getAll={getAll}
-          />
-        )}
-        {isOpenModalAdd && (
-          <ModalAdd
-            isOpenModalAdd={isOpenModalAdd}
-            setIsOpenModalAdd={setIsOpenModalAdd}
-            handleClose={handleClose}
-            getAll={getAll}
-          />
-        )}
-      </div>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleCloseMenu}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        <MenuItem onClick={handleClickEditIcon}>
-          <MdEdit size={20} color="#ecec34" />
-          Edit
-        </MenuItem>
-        <MenuItem onClick={handleClickIconDelete}>
-          <MdDelete color="#e02a2a" size={20} />
-          Delete
-        </MenuItem>
-      </Menu>
-      <DeleteForm
-        isOpen={isDeleteForm}
-        handleClose={handleCloseForm}
-        handleDeleteProduct={handleClickDeleteProduct}
+              <DropdownItem href="apps-ecommerce-add-product">
+                <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
+                Edit
+              </DropdownItem>
+
+              <DropdownItem divider />
+              <DropdownItem
+                href="#"
+                onClick={() => {
+                  const productData = cellProps.row.original;
+                  onClickDelete(productData);
+                }}
+              >
+                <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
+                Delete
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        );
+      },
+    },
+  ],
+    []
+  );
+  document.title = "Products | Velzon - React Admin & Dashboard Template";
+
+  return (
+    <div className="page-content">
+      <ToastContainer closeButton={false} limit={1} />
+      <DeleteModal
+        show={deleteModal}
+        onDeleteClick={handleDeleteProduct}
+        onCloseClick={() => setDeleteModal(false)}
       />
-      {isLoading && <LoadingSpinner />}
+      <DeleteModal
+        show={deleteModalMulti}
+        onDeleteClick={() => {
+          deleteMultiple();
+          setDeleteModalMulti(false);
+        }}
+        onCloseClick={() => setDeleteModalMulti(false)}
+      />
+      <Container fluid>
+        <BreadCrumb title="Products" pageTitle="Ecommerce" />
+        <Row>
+          
+
+          <div className="col-xl-9 col-lg-8">
+            <div>
+              <div className="card">
+                <div className="card-header border-0">
+                  <div className="row align-items-center">
+                    <div className="col">
+                      <Nav
+                        className="nav-tabs-custom card-header-tabs border-bottom-0"
+                        role="tablist"
+                      >
+                        <NavItem>
+                          <NavLink
+                            className={classnames(
+                              { active: activeTab === "1" },
+                              "fw-semibold"
+                            )}
+                            onClick={() => {
+                              toggleTab("1", "all");
+                            }}
+                            href="#"
+                          >
+                            All{" "}
+                            <span className="badge badge-soft-danger align-middle rounded-pill ms-1">
+                              12
+                            </span>
+                          </NavLink>
+                        </NavItem>
+                        <NavItem>
+                          <NavLink
+                            className={classnames(
+                              { active: activeTab === "2" },
+                              "fw-semibold"
+                            )}
+                            onClick={() => {
+                              toggleTab("2", "published");
+                            }}
+                            href="#"
+                          >
+                            Published{" "}
+                            <span className="badge badge-soft-danger align-middle rounded-pill ms-1">
+                              5
+                            </span>
+                          </NavLink>
+                        </NavItem>
+                        <NavItem>
+                          <NavLink
+                            className={classnames(
+                              { active: activeTab === "3" },
+                              "fw-semibold"
+                            )}
+                            onClick={() => {
+                              toggleTab("3", "draft");
+                            }}
+                            href="#"
+                          >
+                            Draft
+                          </NavLink>
+                        </NavItem>
+                      </Nav>
+                    </div>
+                    <div className="col-auto">
+                      <div id="selection-element">
+                        <div className="my-n1 d-flex align-items-center text-muted">
+                          Select{" "}
+                          <div
+                            id="select-content"
+                            className="text-body fw-semibold px-1"
+                          >{dele}</div>{" "}
+                          Result{" "}
+                          <button
+                            type="button"
+                            className="btn btn-link link-danger p-0 ms-3"
+                            onClick={() => setDeleteModalMulti(true)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card-body pt-0">
+                  {productList && productList.length > 0 ? (
+                    <TableContainer
+                      columns={columns}
+                      data={(productList || [])}
+                      isGlobalFilter={true}
+                      isAddUserList={false}
+                      customPageSize={10}
+                      divClass="table-responsive mb-1"
+                      tableClass="mb-0 align-middle table-borderless"
+                      theadClass="table-light text-muted"
+                      isProductsFilter={true}
+                      SearchPlaceholder='Search Products...'
+                    />
+                  ) : (
+                    <div className="py-4 text-center">
+                      <div>
+                        <lord-icon
+                          src="https://cdn.lordicon.com/msoeawqm.json"
+                          trigger="loop"
+                          colors="primary:#405189,secondary:#0ab39c"
+                          style={{ width: "72px", height: "72px" }}
+                        ></lord-icon>
+                      </div>
+
+                      <div className="mt-4">
+                        <h5>Sorry! No Result Found</h5>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* <div className="card-body">
+                  <TabContent className="text-muted">
+                    <TabPane>
+                      <div
+                        id="table-product-list-all"
+                        className="table-card gridjs-border-none pb-2"
+                      >
+                      </div>
+                    </TabPane>
+                  </TabContent>
+                </div> */}
+              </div>
+            </div>
+          </div>
+        </Row>
+      </Container>
     </div>
   );
 };

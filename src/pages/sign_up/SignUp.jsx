@@ -75,6 +75,7 @@ const Login = () => {
       required: "Address cannot be empty!",
     },
   };
+
   return (
     <React.Fragment>
       <div className="w-full h-screen flex justify-center items-center bg-white">

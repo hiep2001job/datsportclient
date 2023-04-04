@@ -1,6 +1,5 @@
 import axiosClient from './axiosClient';
-
-const BASE_URL = "http://localhost:8081";
+const BASE_URL = `${process.env.REACT_APP_API_URL}`;
 const brandApi = {
   getAll: async (status) => {
     const url = `${BASE_URL}/api/getallbrandbystatus/${status}`;
@@ -24,6 +23,16 @@ const brandApi = {
     const url = `${BASE_URL}/admin/updatebrand`;
     try {
       const rs = await axiosClient.post(url, payload);
+      return rs.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  },
+  getById: async (payload) => {
+    try {
+      const rs = await axiosClient.get(
+        `${BASE_URL}/api/getbrandbyid/${payload}`,
+      );
       return rs.data;
     } catch (error) {
       console.log("error", error);

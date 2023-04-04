@@ -1,10 +1,19 @@
 import axiosClient from './axiosClient';
 
-const BASE_URL = "http://localhost:8081/api";
+const BASE_URL = "http://localhost:8081";
 const categoryApi = {
-  getAll: async (id) => {
+  getAll: async (status) => {
     try {
-      const url = `${BASE_URL}/findallcategorybystatus/${id}`;
+      const url = `${BASE_URL}/api/findallcategorybystatus/${status}`;
+      const rs = await axiosClient.get(url, status);
+      return rs.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  },
+  getById: async (id) => {
+    try {
+      const url = `${BASE_URL}/api/getcategorybyid/${id}`;
       const rs = await axiosClient.get(url, id);
       return rs.data;
     } catch (error) {

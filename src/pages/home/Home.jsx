@@ -1,17 +1,20 @@
-import React from "react";
-import { BiUpArrow } from "react-icons/bi";
-import ScrollToTop from "react-scroll-to-top";
-import HotProduct from "../../component/hot_product/HotProduct";
-import NewProduct from "../../component/new_product/NewProduct";
-import WhoChooseProduct from "../../component/who_choose_product/WhoChooseProduct";
-import Banner from "../../share/banner/Banner";
+import React from 'react';
+
+import { BiUpArrow } from 'react-icons/bi';
+import ScrollToTop from 'react-scroll-to-top';
+
+import ProductSection from '../../component/product_section/ProductSection';
+import WhoChooseProduct
+  from '../../component/who_choose_product/WhoChooseProduct';
+import Banner from '../../share/banner/Banner';
+
 const Home = () => {
   return (
     <>
       <div id="home">
         <Banner />
-        <HotProduct />
-        <NewProduct />
+        <ProductSection sectionName="Hot Product"/>
+        <ProductSection sectionName="New Product"/>
         <WhoChooseProduct />
         <ScrollToTop
           style={{

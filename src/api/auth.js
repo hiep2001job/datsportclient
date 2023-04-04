@@ -1,14 +1,29 @@
-import axiosClient from './axiosClient';
+import axiosClient from "./axiosClient";
 
-const BASE_URL = "http://localhost:8081/api";
+const BASE_URL = `${process.env.REACT_APP_API_URL}`;
 const authApi = {
   login: async (payload) => {
-    const url = `${BASE_URL}/authenticate`;
-    const rs = await axiosClient.post(url, payload);
-    return rs;
+    const url = `${BASE_URL}/api/authenticate`;
+    return await axiosClient.post(url, payload);
   },
   register: async (payload) => {
-    const url = "/signup";
+    const url = `${BASE_URL}/api/register`;
+    return await axiosClient.post(url, payload);
+  },
+  getDetails: async (payload) => {
+    const url = `${BASE_URL}/api/findaccountbyusername`;
+    return await axiosClient.post(url, payload);
+  },
+  updateProfile: async (payload) => {
+    const url = `${BASE_URL}/api/updateinforaccount`;
+    return await axiosClient.post(url, payload);
+  },
+  changePassword: async (payload) => {
+    const url = `${BASE_URL}/api/changepassword`;
+    return await axiosClient.post(url, payload);
+  },
+  changeStatus: async (payload) => {
+    const url = `${BASE_URL}/admin/updatestatusaccount`;
     return await axiosClient.post(url, payload);
   },
 };

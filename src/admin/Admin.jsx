@@ -1,10 +1,15 @@
 import React from "react";
 import AdminContent from "./admin_content/AdminContent";
 import SideBar from "./sidebar/SideBar";
+import "./Admin.scss";
 
 const Admin = () => {
   return (
-    <div className="w-full h-screen flex overflow-y-hidden">
+    <div
+      style={{
+        padding: "50px 0px 0px 370px",
+      }}
+    >
       <SideBar />
       <AdminContent />
     </div>

@@ -83,14 +83,15 @@
     }
 }
 
-.search-box{
-    display: flex; 
-    position: relative; 
-    margin-left: auto; 
-    margin-right: 12rem; 
-    align-items: center; 
-    width: 14rem; 
-    height: 2rem; 
+.search-box{   
+    display: flex;
+    position: relative;
+    margin-left: auto;
+    margin-right: 2rem;
+    align-items: center;
+    width: auto;
+    height: auto;
+ 
     .search-box-input{
         padding-left: 0.25rem;
         padding-right: 0.25rem; 
