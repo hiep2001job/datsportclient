@@ -65,8 +65,7 @@ export const loginUser = createAsyncThunk(
     try {
       const rs = await authApi.login(payload);
       const dataUser = {
-        username: rs.data.userName,
-        role: rs.data.role,
+        ...rs.data
       };
       localStorage.setItem("auth_token", rs.data.token);
       localStorage.setItem("data_user", JSON.stringify(dataUser));

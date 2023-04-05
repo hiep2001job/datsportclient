@@ -1,17 +1,17 @@
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/free-mode';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import classnames from 'classnames';
-import { Markup } from 'react-render-markup';
-import {
-  Link,
-  useParams,
-} from 'react-router-dom';
+import classnames from "classnames";
+import { Markup } from "react-render-markup";
+import DefaultImg from "../../assets/images/default.png";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -26,40 +26,78 @@ import {
   TabContent,
   TabPane,
   Tooltip,
-} from 'reactstrap';
-import SwiperCore, {
-  FreeMode,
-  Navigation,
-  Thumbs,
-} from 'swiper';
-import {
-  Swiper,
-  SwiperSlide,
-} from 'swiper/react';
+} from "reactstrap";
+import SwiperCore, { FreeMode, Navigation, Thumbs } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { showToast } from '../../redux/toastSlice';
 
-import product1 from '../../assets/images/products/img-1.png';
-import product6 from '../../assets/images/products/img-6.png';
-import product8 from '../../assets/images/products/img-8.png';
-import BreadCrumb from '../../component/common/BreadCrumb';
-import useProductDetail from '../../hooks/useProductDetail';
-import { formatVnd } from '../../utils/common.js';
+import product1 from "../../assets/images/products/img-1.png";
+import product6 from "../../assets/images/products/img-6.png";
+import product8 from "../../assets/images/products/img-8.png";
+import BreadCrumb from "../../component/common/BreadCrumb";
+import useProductDetail from "../../hooks/useProductDetail";
+import { formatVnd } from "../../utils/common.js";
+import {
+  fetchProducts,
+  addToCart,
+  updateCartItemQuantity,
+  deleteCartItem,
+} from "../../redux/cartSlice";
+import "./ProductDetail.scss";
 
 SwiperCore.use([FreeMode, Navigation, Thumbs]);
-
-
+const sizes = [
+  { name: "XS" },
+  { name: "S" },
+  { name: "M" },
+  { name: "L" },
+  { name: "XL" },
+];
 function ProductDetail(props) {
   const { id } = useParams();
-  const { product, loading } = useProductDetail(id);
+  const { product, brand, category, loading } = useProductDetail(id);
 
   const [thumbsSwiper, setThumbsSwiper] = useState([]);
   const [ttop, setttop] = useState(false);
 
-  const [xssize, setxssize] = useState(false);
-  const [ssize, setssize] = useState(false);
-  const [msize, setmsize] = useState(false);
-  const [lsize, setlsize] = useState(false);
-  const [xlsize, setxlsize] = useState(false);
+  const [size, setSize] = useState(sizes[1]);
+
   const [customActiveTab, setcustomActiveTab] = useState("1");
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.cart.products);
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  const userDetail = useSelector((state) => state.auth.data);
+//Show Toast
+  function handleClick() {
+    console.log("click");
+    dispatch(
+      showToast({
+        message: 'Hello world!',
+        type: 'success',
+      })
+    );
+  }
+// Add to cart
+  const handleAddToCart = () => {
+    if(userDetail){
+      dispatch(
+        addToCart({
+          productId: product.productId,
+          price: product.productPrice,
+          productSize: size.name,
+          accountId: userDetail.id,
+          quantity: 1,
+        })
+      );
+      handleClick();
+    }else{
+      navigate("/login");
+    }
+ 
+  };
+
   const toggleCustom = (tab) => {
     if (customActiveTab !== tab) {
       setcustomActiveTab(tab);
@@ -76,7 +114,7 @@ function ProductDetail(props) {
             <Card>
               <CardBody>
                 <Row className="gx-lg-5">
-                  <Col xl={4} md={8} className="mx-auto">
+                  <Col xl={6} md={8} className="mx-auto">
                     <div className="product-img-slider sticky-side-div">
                       <Swiper
                         navigation={true}
@@ -86,32 +124,47 @@ function ProductDetail(props) {
                         <div className="swiper-wrapper">
                           <SwiperSlide>
                             <img
-                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Spiderman.JPG/375px-Spiderman.JPG"
+                              src={product.productImage1 || DefaultImg}
                               alt=""
                               className="img-fluid d-block"
                             />
                           </SwiperSlide>
-                          <SwiperSlide>
-                            <img
-                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Spiderman.JPG/375px-Spiderman.JPG"
-                              alt=""
-                              className="img-fluid d-block"
-                            />
-                          </SwiperSlide>
-                          <SwiperSlide>
-                            <img
-                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Spiderman.JPG/375px-Spiderman.JPG"
-                              alt=""
-                              className="img-fluid d-block"
-                            />
-                          </SwiperSlide>
-                          <SwiperSlide>
-                            <img
-                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Spiderman.JPG/375px-Spiderman.JPG"
-                              alt=""
-                              className="img-fluid d-block"
-                            />
-                          </SwiperSlide>
+                          {product.productImage2 && (
+                            <SwiperSlide>
+                              <img
+                                src={product.productImage2}
+                                alt=""
+                                className="img-fluid d-block"
+                              />
+                            </SwiperSlide>
+                          )}
+                          {product.productImage3 && (
+                            <SwiperSlide>
+                              <img
+                                src={product.productImage3}
+                                alt=""
+                                className="img-fluid d-block"
+                              />
+                            </SwiperSlide>
+                          )}
+                          {product.productImage4 && (
+                            <SwiperSlide>
+                              <img
+                                src={product.productImage4}
+                                alt=""
+                                className="img-fluid d-block"
+                              />
+                            </SwiperSlide>
+                          )}
+                          {product.productImage5 && (
+                            <SwiperSlide>
+                              <img
+                                src={product.productImage5}
+                                alt=""
+                                className="img-fluid d-block"
+                              />
+                            </SwiperSlide>
+                          )}
                         </div>
                       </Swiper>
 
@@ -128,7 +181,7 @@ function ProductDetail(props) {
                             <SwiperSlide className="rounded">
                               <div className="nav-slide-item">
                                 <img
-                                  src={product8}
+                                  src={product.productImage1 || DefaultImg}
                                   alt=""
                                   className="img-fluid d-block rounded"
                                 />
@@ -137,7 +190,7 @@ function ProductDetail(props) {
                             <SwiperSlide>
                               <div className="nav-slide-item">
                                 <img
-                                  src={product6}
+                                  src={product.productImage2 || DefaultImg}
                                   alt=""
                                   className="img-fluid d-block rounded"
                                 />
@@ -146,7 +199,7 @@ function ProductDetail(props) {
                             <SwiperSlide>
                               <div className="nav-slide-item">
                                 <img
-                                  src={product1}
+                                  src={product.productImage3 || DefaultImg}
                                   alt=""
                                   className="img-fluid d-block rounded"
                                 />
@@ -155,7 +208,16 @@ function ProductDetail(props) {
                             <SwiperSlide>
                               <div className="nav-slide-item">
                                 <img
-                                  src={product8}
+                                  src={product.productImage4 || DefaultImg}
+                                  alt=""
+                                  className="img-fluid d-block rounded"
+                                />
+                              </div>
+                            </SwiperSlide>
+                            <SwiperSlide>
+                              <div className="nav-slide-item">
+                                <img
+                                  src={product.productImage5 || DefaultImg}
                                   alt=""
                                   className="img-fluid d-block rounded"
                                 />
@@ -167,16 +229,19 @@ function ProductDetail(props) {
                     </div>
                   </Col>
 
-                  <Col xl={8}>
+                  <Col xl={6}>
                     <div className="mt-xl-0 mt-5">
                       <div className="d-flex">
                         <div className="flex-grow-1">
                           <h4>{product.productName}</h4>
                           <div className="hstack gap-3 flex-wrap">
-                            {product.productHot&&<div>
-                              <span class="badge badge-label bg-danger"><i class="mdi mdi-circle-medium"></i> Hot</span>
-                            </div>}
-                            
+                            {product.productHot && (
+                              <div>
+                                <span class="badge badge-label bg-danger">
+                                  <i class="mdi mdi-circle-medium"></i> Hot
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="flex-shrink-0">
@@ -212,9 +277,7 @@ function ProductDetail(props) {
                                 </div>
                               </div>
                               <div className="flex-grow-1">
-                                <p className="text-muted mb-1">
-                                  Price :
-                                </p>
+                                <p className="text-muted mb-1">Price :</p>
                                 <h5 className="mb-0">
                                   {formatVnd(product.productPrice)}
                                 </h5>
@@ -231,9 +294,7 @@ function ProductDetail(props) {
                                 </div>
                               </div>
                               <div className="flex-grow-1">
-                                <p className="text-muted mb-1">
-                                  Available stocks :
-                                </p>
+                                <p className="text-muted mb-1">In stocks :</p>
                                 <h5 className="mb-0">
                                   {product.productQuantity}
                                 </h5>
@@ -248,191 +309,104 @@ function ProductDetail(props) {
                           <div className=" mt-4">
                             <h5 className="fs-14">Sizes :</h5>
                             <div className="d-flex flex-wrap gap-2">
-                              <Tooltip
-                                placement="top"
-                                isOpen={xssize}
-                                target="TooltipXSSize"
-                                toggle={() => {
-                                  setssize(!ssize);
-                                }}
-                              ></Tooltip>
-                              <Tooltip
-                                placement="top"
-                                isOpen={ssize}
-                                target="TooltipSSize"
-                                toggle={() => {
-                                  setssize(!ssize);
-                                }}
-                              >
-                                Out of Stock
-                              </Tooltip>
-                              <Tooltip
-                                placement="top"
-                                isOpen={msize}
-                                target="TooltipMSize"
-                                toggle={() => {
-                                  setmsize(!msize);
-                                }}
-                              >
-                                04 Items Available
-                              </Tooltip>
-                              <Tooltip
-                                placement="top"
-                                isOpen={lsize}
-                                target="TooltipLSize"
-                                toggle={() => {
-                                  setlsize(!lsize);
-                                }}
-                              >
-                                06 Items Available
-                              </Tooltip>
-                              <Tooltip
-                                placement="top"
-                                isOpen={xlsize}
-                                target="TooltipXlSize"
-                                toggle={() => {
-                                  setxlsize(!xlsize);
-                                }}
-                              >
-                                Out of Stock
-                              </Tooltip>
-                              <Input
-                                type="radio"
-                                className="btn-check"
-                                name="productsize-radio"
-                              />
-                              <Label
-                                className="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
-                                id="TooltipXSSize"
-                              >
-                                XS
-                              </Label>
-
-                              <Input
-                                type="radio"
-                                className="btn-check"
-                                name="productsize-radio"
-                              />
-                              <Label
-                                className="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
-                                id="TooltipSSize"
-                              >
-                                S
-                              </Label>
-
-                              <Input
-                                type="radio"
-                                className="btn-check"
-                                name="productsize-radio"
-                              />
-                              <Label
-                                className="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
-                                id="TooltipMSize"
-                              >
-                                M
-                              </Label>
-
-                              <Input
-                                type="radio"
-                                className="btn-check"
-                                name="productsize-radio"
-                              />
-                              <Label
-                                className="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
-                                id="TooltipLSize"
-                              >
-                                L
-                              </Label>
-
-                              <Input
-                                type="radio"
-                                className="btn-check"
-                                name="productsize-radio"
-                              />
-                              <Label
-                                className="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
-                                id="TooltipXlSize"
-                              >
-                                XL
-                              </Label>
+                              {sizes.map((item, index) => (
+                                <>
+                                  <Input
+                                    type="radio"
+                                    className="btn-check"
+                                    name="productsize-radio"
+                                  />
+                                  <Label
+                                    className={`${size.name==item.name?'selected':''} btn btn-soft-primary  avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center`}
+                                    id="TooltipXSSize"
+                                    onClick={()=>{setSize(item)}}
+                                  >
+                                    {item.name}
+                                  </Label>
+                                </>
+                              ))}
                             </div>
                           </div>
                         </Col>
-                      </Row>                     
+                      </Row>
+                      <Row >
+                        <Col xl={6}>
+                          <button
+                            onClick={handleAddToCart}
+                            className=" mt-3 btn btn-success text-center stretched-link"
+                          >
+                            Add to cart
+                          </button>
+                        </Col>
+                      </Row>
+                      <Row class="mt-2">
+                        <Col>
+                          <div className="product-content mt-5">
+                            <h5 className="fs-14 mb-3">
+                              Product Description :
+                            </h5>
+                            <Nav tabs className="nav-tabs-custom nav-success">
+                              <NavItem>
+                                <NavLink
+                                  style={{ cursor: "pointer" }}
+                                  className={classnames({
+                                    active: customActiveTab === "1",
+                                  })}
+                                  onClick={() => {
+                                    toggleCustom("1");
+                                  }}
+                                >
+                                  Specification
+                                </NavLink>
+                              </NavItem>
+                              <NavItem>
+                                <NavLink
+                                  style={{ cursor: "pointer" }}
+                                  className={classnames({
+                                    active: customActiveTab === "2",
+                                  })}
+                                  onClick={() => {
+                                    toggleCustom("2");
+                                  }}
+                                >
+                                  Details
+                                </NavLink>
+                              </NavItem>
+                            </Nav>
 
-                      <div className="product-content mt-5">
-                        <h5 className="fs-14 mb-3">Product Description :</h5>
-                        <Nav tabs className="nav-tabs-custom nav-success">
-                          <NavItem>
-                            <NavLink
-                              style={{ cursor: "pointer" }}
-                              className={classnames({
-                                active: customActiveTab === "1",
-                              })}
-                              onClick={() => {
-                                toggleCustom("1");
-                              }}
+                            <TabContent
+                              activeTab={customActiveTab}
+                              className="border border-top-0 p-4"
+                              id="nav-tabContent"
                             >
-                              Specification
-                            </NavLink>
-                          </NavItem>
-                          <NavItem>
-                            <NavLink
-                              style={{ cursor: "pointer" }}
-                              className={classnames({
-                                active: customActiveTab === "2",
-                              })}
-                              onClick={() => {
-                                toggleCustom("2");
-                              }}
-                            >
-                              Details
-                            </NavLink>
-                          </NavItem>
-                        </Nav>
-
-                        <TabContent
-                          activeTab={customActiveTab}
-                          className="border border-top-0 p-4"
-                          id="nav-tabContent"
-                        >
-                          <TabPane id="nav-speci" tabId="1">
-                            <div className="table-responsive">
-                              <table className="table mb-0">
-                                <tbody>
-                                  <tr>
-                                    <th scope="row" style={{ width: "200px" }}>
-                                      Category
-                                    </th>
-                                    <td>T-Shirt</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">Brand</th>
-                                    <td>Tommy Hilfiger</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">Color</th>
-                                    <td>Blue</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">Material</th>
-                                    <td>Cotton</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">Weight</th>
-                                    <td>140 Gram</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </TabPane>
-                          <TabPane id="nav-detail" tabId="2">
-                           <Markup markup={product.productDescription} />
-                          </TabPane>
-                        </TabContent>
-                      </div>
-
-                      
+                              <TabPane id="nav-speci" tabId="1">
+                                <div className="table-responsive">
+                                  <table className="table mb-0">
+                                    <tbody>
+                                      <tr>
+                                        <th
+                                          scope="row"
+                                          style={{ width: "200px" }}
+                                        >
+                                          Category
+                                        </th>
+                                        <td>{category.categoryName}</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">Brand</th>
+                                        <td>{brand.brandName}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </TabPane>
+                              <TabPane id="nav-detail" tabId="2">
+                                <Markup markup={product.productDescription} />
+                              </TabPane>
+                            </TabContent>
+                          </div>
+                        </Col>
+                      </Row>
                     </div>
                   </Col>
                 </Row>

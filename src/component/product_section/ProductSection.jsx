@@ -25,12 +25,12 @@ import {
 import CardProduct from '../../share/card_product/CardProduct';
 import Title from '../../share/Title/Title';
 
-const ProductSection = ({ sectionName, productList,data }) => {
+const ProductSection = ({ sectionName,data }) => {
  
   return (
-    <Container>
+    <Container className="mb-2">
       <Row>
-        <Title isIon title={sectionName} />
+        <h2>{sectionName}</h2>
         <div className="slide-area">
           <div className="wrapper-slide">
             <Swiper
@@ -50,7 +50,7 @@ const ProductSection = ({ sectionName, productList,data }) => {
               }}
             >
               <Row>
-                {data.map((product, idx) => {
+                {data?.length&&data.map((product, idx) => {
                   return (
                     <SwiperSlide key={idx}>
                       <CardProduct {...product} />

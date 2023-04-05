@@ -13,7 +13,7 @@ const productApi = {
   },
   getHotProducts: async () => {
     try {
-      const rs = await axiosClient.get(`${BASE_URL}/gethotproduct`);
+      const rs = await axiosClient.get(`${BASE_URL}/getproducthot`);
       return rs.data;
     } catch (error) {
       console.log("error", error);

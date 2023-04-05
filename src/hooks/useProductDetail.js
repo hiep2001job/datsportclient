@@ -1,15 +1,15 @@
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from "react";
 
-import productApi from '../api/product';
+import productApi from "../api/product";
+import brandApi from "../api/brand";
+import categoryApi from "../api/category";
 
 export default function useProductDetail(productId) {
   const [product, setProduct] = useState({});
   const [category, setCategory] = useState({});
   const [brand, setBrand] = useState({});
   const [loading, setLoading] = useState(false);
+ 
 
   useEffect(() => {
     (async () => {
@@ -17,8 +17,10 @@ export default function useProductDetail(productId) {
         setLoading(true);
         const productResult = await productApi.getProductByProductId(productId);
         setProduct(productResult);
-        // const productCategory = await categoryApi.getbycategoryid;
-        // setProduct(result); 
+        setBrand(productResult.brand);
+        setCategory(productResult.category);
+        
+       
       } catch (error) {
         console.log("Failed to fetch product", error);
       }
@@ -26,5 +28,5 @@ export default function useProductDetail(productId) {
     })();
   }, [productId]);
 
-  return { product,brand ,category, loading };
+  return { product, brand, category, loading };
 }

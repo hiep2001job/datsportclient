@@ -29,8 +29,8 @@ export const updateCartItemQuantity = createAsyncThunk(
 
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
-  async (itemId) => {
-    const response = await deleteCartItemApi(itemId);
+  async (payload) => {
+    const response = await deleteCartItemApi(payload);
     return response;
   }
 );
@@ -49,6 +49,7 @@ const cartSlice = createSlice({
       state.status = "loading";
     },
     [fetchProducts.fulfilled]: (state, action) => {
+      state.cartItems = [...action.payload];
       state.status = "succeeded";
       state.products = action.payload;
     },
@@ -62,11 +63,13 @@ const cartSlice = createSlice({
     [addToCart.fulfilled]: (state, action) => {
       state.status = "succeeded";
       const itemExists = state.cartItems.some(
-        (item) => item.product.productId === action.payload.product.productId && item.billdetailSize === action.payload.billdetailSize
+        (item) =>
+          item.product.productId === action.payload.product.productId &&
+          item.billdetailSize === action.payload.billdetailSize
       );
       if (!itemExists) {
         state.cartItems.push(action.payload);
-      }else{
+      } else {
         console.log("Item existed");
       }
     },
@@ -92,8 +95,7 @@ const cartSlice = createSlice({
     },
     [deleteCartItem.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      const itemId = action.payload;
-      state.cartItems = state.cartItems.filter((item) => item.id !== itemId);
+      state.cartItems = [...action.payload];
     },
     [deleteCartItem.rejected]: (state, action) => {
       state.status = "failed";
