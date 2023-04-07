@@ -70,15 +70,15 @@ function ProductDetail(props) {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const userDetail = useSelector((state) => state.auth.data);
 //Show Toast
-  function handleClick() {
-    console.log("click");
-    dispatch(
-      showToast({
-        message: 'Hello world!',
-        type: 'success',
-      })
-    );
-  }
+  // function handleClick() {
+  //   console.log("click");
+  //   dispatch(
+  //     showToast({
+  //       message: 'Hello world!',
+  //       type: 'success',
+  //     })
+  //   );
+  // }
 // Add to cart
   const handleAddToCart = () => {
     if(userDetail){
@@ -91,7 +91,7 @@ function ProductDetail(props) {
           quantity: 1,
         })
       );
-      handleClick();
+      
     }else{
       navigate("/login");
     }
@@ -244,27 +244,7 @@ function ProductDetail(props) {
                             )}
                           </div>
                         </div>
-                        <div className="flex-shrink-0">
-                          <div>
-                            <Tooltip
-                              placement="top"
-                              isOpen={ttop}
-                              target="TooltipTop"
-                              toggle={() => {
-                                setttop(!ttop);
-                              }}
-                            >
-                              Edit
-                            </Tooltip>
-                            <a
-                              href="apps-ecommerce-add-product"
-                              id="TooltipTop"
-                              className="btn btn-light"
-                            >
-                              <i className="ri-pencil-fill align-bottom"></i>
-                            </a>
-                          </div>
-                        </div>
+                      
                       </div>
 
                       <Row className="mt-4">

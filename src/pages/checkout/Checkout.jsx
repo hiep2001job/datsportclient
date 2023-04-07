@@ -5,7 +5,18 @@ import { formatVnd } from "../../utils/common";
 import BreadCrumb from "../../component/common/BreadCrumb";
 
 import { useEffect } from "react";
+
+//redux
 import { useSelector, useDispatch } from "react-redux";
+
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+// Form
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 import {
   fetchProducts,
   addToCart,
@@ -36,7 +47,6 @@ import {
 import Select from "react-select";
 import classnames from "classnames";
 import { orderSummary } from "../../common/data/ecommerce";
-import { Link } from "react-router-dom";
 
 const Checkout = () => {
   const [selectedCountry, setselectedCountry] = useState(null);
@@ -47,8 +57,15 @@ const Checkout = () => {
   const [deletemodal, setDeleteModal] = useState(false);
 
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.cartItems);
+  const navigate = useNavigate();
+
+  const { cartItems, status, billTotal } = useSelector((state) => state.cart);
+  const userDetail = useSelector((state) => state.auth.data);
+
   useEffect(() => {
+    //Check user logged in
+    if (!userDetail) navigate("/login");
+    //Fetch product from cart
     dispatch(fetchProducts());
   }, [dispatch]);
 
@@ -78,7 +95,7 @@ const Checkout = () => {
     if (activeTab !== tab) {
       var modifiedSteps = [...passedSteps, tab];
 
-      if (tab >= 1 && tab <= 4) {
+      if (tab >= 1 && tab <= 3) {
         setactiveTab(tab);
         setPassedSteps(modifiedSteps);
       }
@@ -120,46 +137,73 @@ const Checkout = () => {
     },
   ];
 
-  document.title = "Checkout | Velzon - React Admin & Dashboard Template";
+  //Form process
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      bill_id: cartItems[0]?.bill.billId,
+      user_id: userDetail?.id,
+      bill_total: billTotal,
+      bill_payment: "COD",
+      bill_address_ship: "",
+      bill_date: new Date().toISOString().split("T")[0], //yyyy-mm-dd
+      bill_status: 1,
+    },
+  });
+  const checkoutOptions = {
+    //   user_id,
+    //   bill_total,
+    //   bill_payment,
+    //   bill_address_ship,
+    //   bill_date,
+    //   bill_status}
+  };
+  const loginOptions = {
+    username: {
+      required: "Username cannot be empty!",
+      minLength: {
+        value: 5,
+        message: "Username must be at least 6 characters",
+      },
+    },
+    password: {
+      required: "Password cannot be empty! ",
+      minLength: {
+        value: 5,
+        message: "Password must be at least 6 characters",
+      },
+    },
+  };
+
+  document.title = "Checkout";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Checkout" pageTitle="Ecommerce" />
+          <BreadCrumb title="Checkout" pageTitle="DatSport" />
 
           <Row>
             <Col xl="8">
               <Card>
                 <CardBody className="checkout-tab">
-                  <Form action="#">
+                  <form>
                     <div className="step-arrow-nav mt-n3 mx-n3 mb-3">
                       <Nav
                         className="nav-pills nav-justified custom-nav"
                         role="tablist"
                       >
+                       
                         <NavItem role="presentation">
                           <NavLink
                             href="#"
                             className={classnames(
                               {
                                 active: activeTab === 1,
-                                done: activeTab <= 4 && activeTab >= 0,
-                              },
-                              "fs-15 p-3"
-                            )}
-                          >
-                            <i className="ri-user-2-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"></i>
-                            Personal Info
-                          </NavLink>
-                        </NavItem>
-                        <NavItem role="presentation">
-                          <NavLink
-                            href="#"
-                            className={classnames(
-                              {
-                                active: activeTab === 2,
-                                done: activeTab <= 4 && activeTab > 1,
+                                done: activeTab <= 3 && activeTab > 1,
                               },
                               "fs-15 p-3"
                             )}
@@ -173,8 +217,8 @@ const Checkout = () => {
                             href="#"
                             className={classnames(
                               {
-                                active: activeTab === 3,
-                                done: activeTab <= 4 && activeTab > 2,
+                                active: activeTab === 2,
+                                done: activeTab <= 3 && activeTab > 2,
                               },
                               "fs-15 p-3"
                             )}
@@ -188,8 +232,8 @@ const Checkout = () => {
                             href="#"
                             className={classnames(
                               {
-                                active: activeTab === 4,
-                                done: activeTab <= 4 && activeTab > 3,
+                                active: activeTab === 3,
+                                done: activeTab <= 3 && activeTab > 3,
                               },
                               "fs-15 p-3"
                             )}
@@ -202,167 +246,9 @@ const Checkout = () => {
                     </div>
 
                     <TabContent activeTab={activeTab}>
-                      <TabPane tabId={1} id="pills-bill-info">
-                        <div>
-                          <h5 className="mb-1">Billing Information</h5>
-                          <p className="text-muted mb-4">
-                            Please fill all information below
-                          </p>
-                        </div>
+                      
 
-                        <div>
-                          <Row>
-                            <Col sm={6}>
-                              <div className="mb-3">
-                                <Label
-                                  htmlFor="billinginfo-firstName"
-                                  className="form-label"
-                                >
-                                  First Name
-                                </Label>
-                                <Input
-                                  type="text"
-                                  className="form-control"
-                                  id="billinginfo-firstName"
-                                  placeholder="Enter first name"
-                                />
-                              </div>
-                            </Col>
-
-                            <Col sm={6}>
-                              <div className="mb-3">
-                                <Label
-                                  htmlFor="billinginfo-lastName"
-                                  className="form-label"
-                                >
-                                  Last Name
-                                </Label>
-                                <Input
-                                  type="text"
-                                  className="form-control"
-                                  id="billinginfo-lastName"
-                                  placeholder="Enter last name"
-                                />
-                              </div>
-                            </Col>
-                          </Row>
-
-                          <Row>
-                            <Col sm={6}>
-                              <div className="mb-3">
-                                <Label
-                                  htmlFor="billinginfo-email"
-                                  className="form-label"
-                                >
-                                  Email
-                                  <span className="text-muted">(Optional)</span>
-                                </Label>
-                                <Input
-                                  type="email"
-                                  className="form-control"
-                                  id="billinginfo-email"
-                                  placeholder="Enter email"
-                                />
-                              </div>
-                            </Col>
-
-                            <Col sm={6}>
-                              <div className="mb-3">
-                                <Label
-                                  htmlFor="billinginfo-phone"
-                                  className="form-label"
-                                >
-                                  Phone
-                                </Label>
-                                <Input
-                                  type="text"
-                                  className="form-control"
-                                  id="billinginfo-phone"
-                                  placeholder="Enter phone no."
-                                />
-                              </div>
-                            </Col>
-                          </Row>
-
-                          <div className="mb-3">
-                            <Label
-                              htmlFor="billinginfo-address"
-                              className="form-label"
-                            >
-                              Address
-                            </Label>
-                            <textarea
-                              className="form-control"
-                              id="billinginfo-address"
-                              placeholder="Enter address"
-                              rows="3"
-                            ></textarea>
-                          </div>
-
-                          <Row>
-                            <Col md={4}>
-                              <div className="mb-3">
-                                <Label htmlFor="country" className="form-label">
-                                  Country
-                                </Label>
-                                <Select
-                                  value={selectedCountry}
-                                  onChange={() => {
-                                    handleSelectCountry();
-                                  }}
-                                  options={productCountry}
-                                  id="country"
-                                ></Select>
-                              </div>
-                            </Col>
-
-                            <Col md={4}>
-                              <div className="mb-3">
-                                <Label htmlFor="state" className="form-label">
-                                  State
-                                </Label>
-                                <Select
-                                  id="state"
-                                  value={selectedState}
-                                  onChange={() => {
-                                    handleSelectState();
-                                  }}
-                                  options={productState}
-                                ></Select>
-                              </div>
-                            </Col>
-
-                            <Col md={4}>
-                              <div className="mb-3">
-                                <Label htmlFor="zip" className="form-label">
-                                  Zip Code
-                                </Label>
-                                <Input
-                                  type="text"
-                                  className="form-control"
-                                  id="zip"
-                                  placeholder="Enter zip code"
-                                />
-                              </div>
-                            </Col>
-                          </Row>
-
-                          <div className="d-flex align-items-start gap-3 mt-3">
-                            <button
-                              type="button"
-                              className="btn btn-secondary btn-label right ms-auto nexttab"
-                              onClick={() => {
-                                toggleTab(activeTab + 1);
-                              }}
-                            >
-                              <i className="ri-truck-line label-icon align-middle fs-16 ms-2"></i>
-                              Proceed to Shipping
-                            </button>
-                          </div>
-                        </div>
-                      </TabPane>
-
-                      <TabPane tabId={2}>
+                      <TabPane tabId={1}>
                         <div>
                           <h5 className="mb-1">Shipping Information</h5>
                           <p className="text-muted mb-4">
@@ -547,16 +433,7 @@ const Checkout = () => {
                         </div>
 
                         <div className="d-flex align-items-start gap-3 mt-4">
-                          <button
-                            type="button"
-                            className="btn btn-light btn-label previestab"
-                            onClick={() => {
-                              toggleTab(activeTab - 1);
-                            }}
-                          >
-                            <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>
-                            Back to Personal Info
-                          </button>
+                        
                           <button
                             type="button"
                             className="btn btn-secondary btn-label right ms-auto nexttab"
@@ -570,7 +447,7 @@ const Checkout = () => {
                         </div>
                       </TabPane>
 
-                      <TabPane tabId={3}>
+                      <TabPane tabId={2}>
                         <div>
                           <h5 className="mb-1">Payment Selection</h5>
                           <p className="text-muted mb-4">
@@ -581,8 +458,9 @@ const Checkout = () => {
                         <Row className="g-4">
                           <Col lg={4} sm={6}>
                             <div>
-                              <div className="form-check card-radio">
+                              <div className="form-check card-radio ">
                                 <Input
+                                disabled
                                   id="paymentMethod01"
                                   name="paymentMethod"
                                   type="radio"
@@ -606,6 +484,7 @@ const Checkout = () => {
                             <div>
                               <div className="form-check card-radio">
                                 <Input
+                                  disabled
                                   id="paymentMethod02"
                                   name="paymentMethod"
                                   type="radio"
@@ -634,6 +513,7 @@ const Checkout = () => {
                                   id="paymentMethod03"
                                   name="paymentMethod"
                                   type="radio"
+                                  checked
                                   className="form-check-input"
                                 />
                                 <Label
@@ -663,6 +543,7 @@ const Checkout = () => {
                                   Name on card
                                 </Label>
                                 <Input
+                                disabled
                                   type="text"
                                   className="form-control"
                                   id="cc-name"
@@ -681,6 +562,7 @@ const Checkout = () => {
                                   Credit card number
                                 </Label>
                                 <Input
+                                disabled
                                   type="text"
                                   className="form-control"
                                   id="cc-number"
@@ -696,6 +578,7 @@ const Checkout = () => {
                                   Expiration
                                 </Label>
                                 <Input
+                                disabled
                                   type="text"
                                   className="form-control"
                                   id="cc-expiration"
@@ -708,6 +591,7 @@ const Checkout = () => {
                                   CVV
                                 </Label>
                                 <Input
+                                disabled
                                   type="text"
                                   className="form-control"
                                   id="cc-cvv"
@@ -749,7 +633,7 @@ const Checkout = () => {
                         </div>
                       </TabPane>
 
-                      <TabPane tabId={4} id="pills-finish">
+                      <TabPane tabId={3} id="pills-finish">
                         <div className="text-center py-5">
                           <div className="mb-4">
                             <lord-icon
@@ -777,7 +661,7 @@ const Checkout = () => {
                         </div>
                       </TabPane>
                     </TabContent>
-                  </Form>
+                  </form>
                 </CardBody>
               </Card>
             </Col>
@@ -802,6 +686,9 @@ const Checkout = () => {
                           <th scope="col">Product Info</th>
                           <th scope="col" className="text-end">
                             Price
+                          </th>
+                          <th scope="col" className="text-end">
+                            &nbsp;
                           </th>
                         </tr>
                       </thead>
@@ -864,18 +751,11 @@ const Checkout = () => {
                             Sub Total :
                           </td>
                           <td className="fw-semibold text-end">
-                            {formatVnd(
-                              cartItems.reduce(
-                                (acc, product) =>
-                                  acc +
-                                  product.billdetailPrice *
-                                    product.billdetailQuantity,
-                                0
-                              )
-                            )}
+                            {formatVnd(billTotal)}
                           </td>
+                          <td>&nbsp;</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                           <td colSpan="2">
                             Discount{" "}
                             <span className="text-muted">(VELZON15)</span>:{" "}
@@ -889,7 +769,7 @@ const Checkout = () => {
                         <tr>
                           <td colSpan="2">Estimated Tax (12%): </td>
                           <td className="text-end">$ 18.20</td>
-                        </tr>
+                        </tr> */}
                         <tr className="table-active">
                           <th colSpan="2">Total (USD) :</th>
                           <td className="text-end">
@@ -905,6 +785,7 @@ const Checkout = () => {
                               )}
                             </span>
                           </td>
+                          <td>&nbsp;</td>
                         </tr>
                       </tbody>
                     </table>

@@ -7,7 +7,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
         <React.Fragment>
             <Row>
                 <Col xs={12}>
-                    <div className="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <div className="page-title-box mt-4 d-sm-flex align-items-center justify-content-between">
                         <h4 className="mb-sm-0">{title}</h4>
 
                         <div className="page-title-right">

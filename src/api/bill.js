@@ -25,6 +25,11 @@ export const updateCartItemQuantityApi = async ({ itemId, quantity }) => {
   return response.data;
 };
 
+export const checkoutApi = async (payload) => {
+  const response = await axiosClient.put(`${BASE_URL}/api/checkout`, payload);
+  return response.data;
+};
+
 export const deleteCartItemApi = async (payload) => {
   const response = await axiosClient.post(`${BASE_URL}/api/deleteproductfrombill`,payload);
   return response.data;

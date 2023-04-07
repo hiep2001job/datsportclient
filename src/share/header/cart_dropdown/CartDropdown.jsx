@@ -78,26 +78,29 @@ const CartDropdown = () => {
               </div>
             </Row>
           </div>
-          {cartItems.length < 1 ? (
-            <SimpleBar style={{ maxHeight: "300px" }}>
-              <div className="p-2">
-                <div
-                  className="text-center empty-cart"
-                  id="empty-cart"
-                 
-                >
+
+          <SimpleBar style={{ maxHeight: "300px" }}>
+            <div className="p-2">
+              {cartItems.length == 0 && (
+                <div className="text-center empty-cart" id="empty-cart">
                   <div className="avatar-md mx-auto my-3">
                     <div className="avatar-title bg-soft-info text-info fs-36 rounded-circle">
                       <i className="bx bx-cart"></i>
                     </div>
                   </div>
                   <h5 className="mb-3">Your Cart is Empty!</h5>
-                  <Link to="/" onClick={toggleCartDropdown} className="btn btn-success w-md mb-3">
+                  <Link
+                    to="/"
+                    onClick={toggleCartDropdown}
+                    className="btn btn-success w-md mb-3"
+                  >
                     Shop Now
                   </Link>
                 </div>
+              )}
 
-                {cartItems.map((item, key) => (
+              {cartItems.length > 0 &&
+                cartItems.map((item, key) => (
                   <div
                     className="d-block dropdown-item text-wrap dropdown-item-cart px-3 py-2"
                     key={key}
@@ -153,40 +156,35 @@ const CartDropdown = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-            </SimpleBar>
-          ) : (
-            <div
-              className="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border"
-              id="checkout-elem"
-            >
-              <div className="d-flex justify-content-between align-items-center pb-3">
-                <h5 className="m-0 text-muted">Total:</h5>
-                <div className="px-2">
-                  <h5 className="m-0">
-                    <span ref={cardItemTotal} id="cart-item-total">
-                      {formatVnd(
-                        cartItems.reduce(
-                          (acc, product) =>
-                            acc +
-                            product.billdetailPrice *
-                              product.billdetailQuantity,
-                          0
-                        )
-                      )}
-                    </span>
-                  </h5>
-                </div>
-              </div>
-
-              <Link
-                to="/checkout"
-                className="btn btn-success text-center w-100"
-              >
-                Checkout
-              </Link>
             </div>
-          )}
+          </SimpleBar>
+
+          <div
+            className="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border"
+            id="checkout-elem"
+          >
+            <div className="d-flex justify-content-between align-items-center pb-3">
+              <h5 className="m-0 text-muted">Total:</h5>
+              <div className="px-2">
+                <h5 className="m-0">
+                  <span ref={cardItemTotal} id="cart-item-total">
+                    {formatVnd(
+                      cartItems.reduce(
+                        (acc, product) =>
+                          acc +
+                          product.billdetailPrice * product.billdetailQuantity,
+                        0
+                      )
+                    )}
+                  </span>
+                </h5>
+              </div>
+            </div>
+
+            <Link to="/checkout" className="btn btn-success text-center w-100">
+              Checkout
+            </Link>
+          </div>
         </DropdownMenu>
       </Dropdown>
     </React.Fragment>
