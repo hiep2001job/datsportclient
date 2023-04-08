@@ -10,6 +10,16 @@ const brandApi = {
       console.log("error", error);
     }
   },
+  getById: async (id) => {
+    try {
+      const rs = await axiosClient.get(
+        `${BASE_URL}/api/getbrandbyid/${id}`,
+      );
+      return rs.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  },
   create: async (payload) => {
     const url = `${BASE_URL}/admin/createbrand`;
     try {
@@ -23,16 +33,6 @@ const brandApi = {
     const url = `${BASE_URL}/admin/updatebrand`;
     try {
       const rs = await axiosClient.post(url, payload);
-      return rs.data;
-    } catch (error) {
-      console.log("error", error);
-    }
-  },
-  getById: async (payload) => {
-    try {
-      const rs = await axiosClient.get(
-        `${BASE_URL}/api/getbrandbyid/${payload}`,
-      );
       return rs.data;
     } catch (error) {
       console.log("error", error);

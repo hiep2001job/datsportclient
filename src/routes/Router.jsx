@@ -13,7 +13,9 @@ import Product from '../admin/product/Product';
 import Category from '../admin/category/Category';
 import Brand from '../admin/brand/Brand';
 import User from '../admin/user/User';
+import Slider from '../admin/slider/Slider';
 import Order from '../admin/order/Order';
+
 import About from '../pages/about/About';
 import ProductDetail from '../pages/detail_product/ProductDetail';
 import Example from '../pages/example/Example';
@@ -60,6 +62,7 @@ const Router = () => {
           <Route path="customer" element={<Customer />} />
           <Route path="category" element={<Category />} />
           <Route path="brand" element={<Brand />} />
+          <Route path="slider" element={<Slider />} />
           <Route path="order" element={<Order />} />
         </Route>
         <Route path="/*" element={<Navigate to="/admin" replace />} />

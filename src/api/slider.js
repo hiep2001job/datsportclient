@@ -1,10 +1,10 @@
 import axiosClient from "./axiosClient";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
-const categoryApi = {
+const sliderApi = {
   getAll: async (status) => {
     try {
-      const url = `${BASE_URL}/api/findallcategorybystatus/${status}`;
+      const url = `${BASE_URL}/api/getallslider/${status}`;
       const rs = await axiosClient.get(url);
       // console.log("rs test: ", rs)
       return rs.data;
@@ -24,7 +24,7 @@ const categoryApi = {
   create: async (payload) => {
     try {
       const rs = await axiosClient.post(
-        `${BASE_URL}/admin/createcategory`,
+        `${BASE_URL}/admin/createslider`,
         payload
       );
       return rs.data;
@@ -35,7 +35,7 @@ const categoryApi = {
   update: async (payload) => {
     try {
       const rs = await axiosClient.post(
-        `${BASE_URL}/admin/updatecategory`,
+        `${BASE_URL}/admin/updateslider`,
         payload
       );
       return rs.data;
@@ -45,4 +45,4 @@ const categoryApi = {
   },
 };
 
-export default categoryApi;
+export default sliderApi;

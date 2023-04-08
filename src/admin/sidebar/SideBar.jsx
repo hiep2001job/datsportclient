@@ -28,6 +28,18 @@ const sidebarNavItems = [
         section: '/admin/category'
     },
     {
+        display: 'Brand',
+        icon: <i className='bx bx-user'></i>,
+        to: '/admin/brand',
+        section: '/admin/brand'
+    },
+    {
+        display: 'Slider',
+        icon: <i className='bx bx-user'></i>,
+        to: '/admin/slider',
+        section: '/admin/slider'
+    },
+    {
         display: 'Orders',
         icon: <i className='bx bx-receipt'></i>,
         to: '/admin/order',

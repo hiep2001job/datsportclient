@@ -12,23 +12,19 @@ import Modals from "./modal";
 
 // redux
 import { useSelector, useDispatch } from "react-redux";
-import { brandActions } from "../../redux/brandActions";
+import { sliderActions } from "../../redux/sliderActions";
 
 import { openModal, closeModal } from "../../redux/modalSlice";
 import { useEffect } from "react";
 
-function Brand(args) {
+function Slide() {
   const dispatch = useDispatch();
-  const allBrand = useSelector((state) => state.brand.dataAllBrand);
+  const allSlider = useSelector((state) => state.slider.dataAllSlider);
 
   useEffect(() => {
     //Get active category
-    dispatch(brandActions.getAll(1));
+    dispatch(sliderActions.getAll(-1));
   }, [dispatch]);
-
-  useEffect(() => {
-    console.log("allBrand: ", allBrand);
-  }, [allBrand]);
 
   //   const toggle = () => setModal(!modal);
   const handleCreateNew = () => {
@@ -46,7 +42,7 @@ function Brand(args) {
     dispatch(openModal(payload));
   };
 
-  const statusBrand = ["Disnable", "Enable"];
+  const statusCategory = ["Disnable", "Enable"];
 
   return (
     <>
@@ -95,32 +91,26 @@ function Brand(args) {
                   >
                     <thead className="table-light">
                       <tr>
-                        <th className="sort" data-sort="categoryName">
-                          Brand Name
-                        </th>
-                        <th className="sort" data-sort="CategoryStatus">
-                          Brand Status
-                        </th>
+                        <th>Slider Name</th>
+                        <th>Image</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody className="list form-check-all">
-                      {allBrand.map((brand, index) => (
+                      {allSlider.map((slider, index) => (
                         <tr key={index}>
-                        <td className="id" style={{ display: "none" }}>
-                            <a
-                              href="javascript:void(0);"
-                              className="fw-medium link-primary"
-                            >
-                              {brand.brand_id}
-                            </a>
+                          <td className="id" style={{ display: "none" }}>
                           </td>
                           <td className="customer_name">
-                            {brand.brand_name}
+                            {slider.slider_name}
+                          </td>
+                          <td className="customer_name">
+                            <img src={slider.slider_image} width="60%" />
                           </td>
                           <td className="status">
                             <span className="badge badge-soft-success text-uppercase">
-                              {statusBrand[brand.brand_status]}
+                              {statusCategory[slider.slider_status]}
                             </span>
                           </td>
                           <td>
@@ -130,9 +120,7 @@ function Brand(args) {
                                   className="btn btn-sm btn-success edit-item-btn"
                                   data-bs-toggle="modal"
                                   data-bs-target="#showModal"
-                                  onClick={() =>
-                                    handleEdit(brand.brand_id)
-                                  }
+                                  onClick={() => handleEdit(slider.slider_id)}
                                 >
                                   Edit
                                 </button>
@@ -220,4 +208,4 @@ function Brand(args) {
   );
 }
 
-export default Brand;
+export default Slide;
