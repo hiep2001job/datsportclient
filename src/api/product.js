@@ -1,7 +1,6 @@
 import axiosClient from './axiosClient';
-
-const BASE_URL = "http://localhost:8081/api";
-const BASE_ADMIN_URL = " http://localhost:8081/admin";
+const BASE_URL = `${process.env.REACT_APP_API_URL}/api`;
+const BASE_ADMIN_URL = `${process.env.REACT_APP_API_URL}/admin`;
 const productApi = {
   getAll: async (id) => {
     try {
@@ -13,7 +12,7 @@ const productApi = {
   },
   getHotProducts: async () => {
     try {
-      const rs = await axiosClient.get(`${BASE_URL}/gethotproduct`);
+      const rs = await axiosClient.get(`${BASE_URL}/getproducthot`);
       return rs.data;
     } catch (error) {
       console.log("error", error);

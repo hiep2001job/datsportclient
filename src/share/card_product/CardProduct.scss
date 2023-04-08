@@ -1,3 +1,14 @@
 .card{
     z-index: 100;
+    .card-text{
+        height: 2rem !important;
+    }
+}
+.card-img-top{
+    
+    width: auto;
+    height: auto;
+}
+.card-img-wrapper{
+    height: 230px;
 }

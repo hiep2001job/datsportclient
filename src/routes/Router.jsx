@@ -18,8 +18,7 @@ import Order from '../admin/order/Order';
 
 import About from '../pages/about/About';
 import ProductDetail from '../pages/detail_product/ProductDetail';
-import Example from '../pages/example/Example';
-import Example1 from '../pages/example1/Example1';
+
 import GlobalNavigation from '../pages/global_navigation/GlobalNavigation';
 import Home from '../pages/home/Home';
 import InfoProfile from '../pages/info_profile/InfoProfile';
@@ -28,6 +27,7 @@ import NotFound from '../pages/not_found/NotFound';
 import ProductListing from '../pages/product_listing/ProductListing';
 import SignUp from '../pages/sign_up/SignUp';
 import UserBill from '../pages/user_bill/UserBill';
+import Checkout from '../pages/checkout/Checkout';
 import UserPassword from '../pages/user_password/UserPassword';
 import UserProfile from '../pages/user_profile/UserProfile';
 
@@ -84,6 +84,7 @@ const Router = () => {
           </Route>
           <Route path="detail-product/:id" element={<ProductDetail />} />
           <Route path="product-listing/:id" element={<ProductListing />} />
+          <Route path="checkout" element={<Checkout />} />
           <Route path="about" element={<About />} />
         </Route>
         <Route path="/signup" element={<SignUp />} />

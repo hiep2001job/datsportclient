@@ -11,6 +11,14 @@ export const productActions = {
       console.log("error", error);
     }
   }),
+  getHot: createAsyncThunk("product/getHot", async (id) => {
+    try {
+      const rs = await productApi.getHotProducts();
+      return rs.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  }),
   getProductByCategoryId: createAsyncThunk(
     "product/searchByCategoryId",
     async (id) => {

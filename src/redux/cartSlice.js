@@ -4,6 +4,7 @@ import {
   addToCartApi,
   updateCartItemQuantityApi,
   deleteCartItemApi,
+  checkoutApi,
 } from "../api/bill";
 
 export const fetchProducts = createAsyncThunk(
@@ -29,11 +30,24 @@ export const updateCartItemQuantity = createAsyncThunk(
 
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
-  async (itemId) => {
-    const response = await deleteCartItemApi(itemId);
+  async (payload) => {
+    const response = await deleteCartItemApi(payload);
     return response;
   }
 );
+
+// Checkout model
+// {bill_id,
+//   user_id,
+//   bill_total,
+//   bill_payment,
+//   bill_address_ship,
+//   bill_date,
+//   bill_status}
+export const checkout = createAsyncThunk("cart/checkout", async (payload) => {
+  const response = await checkoutApi(payload);
+  return response;
+});
 
 const cartSlice = createSlice({
   name: "cart",
@@ -42,6 +56,7 @@ const cartSlice = createSlice({
     cartItems: [],
     status: "idle",
     error: null,
+    billTotal: 0,
   },
   reducers: {},
   extraReducers: {
@@ -49,8 +64,15 @@ const cartSlice = createSlice({
       state.status = "loading";
     },
     [fetchProducts.fulfilled]: (state, action) => {
+      state.cartItems = [...action.payload];
       state.status = "succeeded";
       state.products = action.payload;
+      if (state.cartItems.length)
+        state.billTotal = state.cartItems.reduce(
+          (acc, product) =>
+            acc + product.billdetailPrice * product.billdetailQuantity,
+          0
+        );
     },
     [fetchProducts.rejected]: (state, action) => {
       state.status = "failed";
@@ -61,14 +83,22 @@ const cartSlice = createSlice({
     },
     [addToCart.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      const itemExists = state.cartItems.some(
-        (item) => item.product.productId === action.payload.product.productId && item.billdetailSize === action.payload.billdetailSize
-      );
-      if (!itemExists) {
+      if (
+        !state.cartItems.some(
+          (item) =>
+            item.billdetailSize == action.payload.billdetailSize &&
+            item.billdetailId == action.payload.billdetailId
+        )
+      ){
         state.cartItems.push(action.payload);
-      }else{
-        console.log("Item existed");
-      }
+      }       
+
+      if (state.cartItems.length)
+        state.billTotal = state.cartItems.reduce(
+          (acc, product) =>
+            acc + product.billdetailPrice * product.billdetailQuantity,
+          0
+        );
     },
     [addToCart.rejected]: (state, action) => {
       state.status = "failed";
@@ -80,8 +110,12 @@ const cartSlice = createSlice({
     [updateCartItemQuantity.fulfilled]: (state, action) => {
       state.status = "succeeded";
       const { itemId, quantity } = action.payload;
-      const itemIndex = state.cartItems.findIndex((item) => item.id === itemId);
-      state.cartItems[itemIndex].quantity = quantity;
+      if (state.cartItems.length)
+        state.billTotal = state.cartItems.reduce(
+          (acc, product) =>
+            acc + product.billdetailPrice * product.billdetailQuantity,
+          0
+        );
     },
     [updateCartItemQuantity.rejected]: (state, action) => {
       state.status = "failed";
@@ -92,10 +126,25 @@ const cartSlice = createSlice({
     },
     [deleteCartItem.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      const itemId = action.payload;
-      state.cartItems = state.cartItems.filter((item) => item.id !== itemId);
+      state.cartItems = [...action.payload];
+      state.billTotal = state.cartItems.reduce(
+        (acc, product) =>
+          acc + product.billdetailPrice * product.billdetailQuantity,
+        0
+      );
     },
     [deleteCartItem.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    },
+    [checkout.pending]: (state) => {
+      state.status = "loading";
+    },
+    [checkout.fulfilled]: (state, action) => {
+      state.status = "succeeded";
+      console.log(action.payload);
+    },
+    [checkout.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     },

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
 import cartReducer from "./cartSlice";
+import toastReducer from "./toastSlice";
 import productReducer from "./productSlice";
 import modalReducer from "./modalSlice";
 import categoryReducer from "./categorySlice";
@@ -18,6 +19,7 @@ const store = configureStore({
     category: categoryReducer,
     brand: brandReducer,
     slider: sliderReducer,
+    toast: toastReducer,
   },
 });
 

@@ -8,33 +8,49 @@ import {
   updateCartItemQuantity,
   deleteCartItem,
 } from "../../redux/cartSlice";
+import DefaultImg from "../../assets/images/default.png";
+import { useNavigate } from "react-router-dom";
 
 const CardProduct = ({
   productId,
-  productImage,
+  productImage1,
   productPrice,
   productName,
   productDescription,
 }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const products = useSelector((state) => state.cart.products);
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const userDetail = useSelector((state) => state.auth.data);
 
-  const handleAddToCart = () => {
-    dispatch(
-      addToCart({
-        "productId":productId,
-        "price":productPrice,
-        "accountId":4,
-        "quantity":1
-      })      
-    );
-    console.log(cartItems);
+  // const handleAddToCart = () => {
+  //   if (!userDetail) navigate("/login");
+  //   dispatch(
+  //     addToCart({
+  //       productId: productId,
+  //       price: productPrice,
+  //       productSize:"M",
+  //       accountId: userDetail.id,
+  //       quantity: 1,
+  //     })
+  //   );
+   
+  // };
+  const handleViewDetail = (id) => {
+    navigate(`/detail-product/${id}`);
   };
 
   return (
     <div className="card">
-      <img src={productImage} className="card-img-top" alt="..." />
+      <div class="card-img-wrapper">
+        <img
+          src={productImage1 ?? DefaultImg}
+          className="card-img-top"
+          alt="..."
+        />
+      </div>
+
       <div className="card-body">
         <h5 className="card-title">{productName}</h5>
         <p className="card-text">
@@ -44,10 +60,10 @@ const CardProduct = ({
             : productDescription.substr(0, 109)}
         </p>
         <button
-          onClick={handleAddToCart}
+          onClick={()=>handleViewDetail(productId)}
           className="btn btn-success text-center stretched-link"
         >
-          Add to cart
+          View more
         </button>
       </div>
     </div>
