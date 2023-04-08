@@ -8,6 +8,7 @@ export default function useUserDetail() {
   const [userDetail, setUserDetail] = useState({});
   const { username } = JSON.parse(localStorage.getItem("data_user"))??{};
 
+  
   useEffect(() => {
     (async () => {
       try {

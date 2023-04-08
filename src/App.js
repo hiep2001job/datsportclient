@@ -1,7 +1,9 @@
 //import Scss
 import "./assets/scss/themes.scss";
 import "swiper/swiper-bundle.css";
+
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import React from "react";
 
@@ -11,10 +13,8 @@ import Router from "./routes/Router";
 import { useSelector } from "react-redux";
 
 const App = () => {
-  const { message, type } = useSelector((state) => state.toast);
+ 
   <ToastContainer />;
-  SwiperCore.use([Autoplay]);
-  
   return <Router />;
 };
 

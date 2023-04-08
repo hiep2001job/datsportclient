@@ -11,7 +11,7 @@ import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 
 const ProfileDropdown = () => {
 
-    const user = useUserDetail();
+    const user = useSelector((state) => state.auth.data);
     const dispatch = useDispatch();
     const navigate = useNavigate(); 
   
@@ -28,7 +28,7 @@ const ProfileDropdown = () => {
             <Dropdown isOpen={isProfileDropdown} toggle={toggleProfileDropdown} className="ms-sm-3 header-item topbar-user">
                 <DropdownToggle tag="button" type="button" className="btn shadow-none">
                     <span className="d-flex align-items-center">
-                        <img className="rounded-circle header-profile-user" src={user.image}
+                        <img className="rounded-circle header-profile-user" src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
                             alt="Header Avatar" />
                         <span className="text-start ms-xl-2">
                             <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{user.userfullname}</span>
