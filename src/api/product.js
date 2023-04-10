@@ -2,6 +2,14 @@ import axiosClient from './axiosClient';
 const BASE_URL = `${process.env.REACT_APP_API_URL}/api`;
 const BASE_ADMIN_URL = `${process.env.REACT_APP_API_URL}/admin`;
 const productApi = {
+  searchProduct: async (keyword) => {
+    try {
+      const rs = await axiosClient.get(`${BASE_URL}/productpaging?pageNumber=0&pageSize=10&keyword=${keyword}`);
+      return rs.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  },
   getAll: async (id) => {
     try {
       const rs = await axiosClient.get(`${BASE_URL}/getallproduct/${id}`);

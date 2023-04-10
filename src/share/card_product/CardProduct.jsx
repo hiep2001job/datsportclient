@@ -43,7 +43,7 @@ const CardProduct = ({
     dispatch(displayToast({ message: 'Action succeeded!',type:'error' }));
   };
   return (
-    <div class="col-lg-3 col-md-12 mb-4">
+    <div className="col-lg-3 col-md-12 mb-4">
       <div className="card" style={{ borderRadius: "15px" }}>
         <div
           className="bg-image hover-overlay ripple ripple-surface ripple-surface-light img-wrapper"
@@ -53,7 +53,7 @@ const CardProduct = ({
         </div>
         <div className="card-body pb-0">
           <div className="d-flex justify-content-between">
-            <div class="card-name">
+            <div className="card-name">
               <p>
                 <a
                   href="#!"
@@ -79,7 +79,7 @@ const CardProduct = ({
         </div>
         <hr className="my-0" />
         <div className="card-body">
-          <div className="d-flex justify-content-between align-items-center pb-2 mb-1">
+          <div className="d-flex justify-content-between align-items-center ">
             <button
               type="button"
               onClick={() => handleViewDetail(productId)}

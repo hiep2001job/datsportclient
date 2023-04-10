@@ -2,14 +2,14 @@
     position: relative;
     padding-top: 7rem;
     width: auto;
-    height:40rem;
+    height:45rem;
     overflow: hidden;
     margin-bottom: 2rem;
+    margin-top: 0rem;
 }
-.banner-wrapper{
-    
+.banner-wrapper{    
     position: relative; 
-    width: 100%; 
+    width: auto; 
     height: 100%; 
     
 }
@@ -19,6 +19,14 @@
     justify-content: flex-start; 
     align-items: center; 
     width: 100%; 
-    height: 100%; 
-}
 
+}
+.slider-img-wrapper{
+    width:auto;
+    height:30rem;
+    overflow-y: hidden;
+}
+.slider-img{
+    width: auto;
+   height: 100%;
+}

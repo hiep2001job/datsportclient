@@ -22,8 +22,8 @@ export const addToCart = createAsyncThunk("cart/addToCart", async (payload) => {
 
 export const updateCartItemQuantity = createAsyncThunk(
   "cart/updateCartItemQuantity",
-  async ({ itemId, quantity }) => {
-    const response = await updateCartItemQuantityApi({ itemId, quantity });
+  async (payload) => {
+    const response = await updateCartItemQuantityApi(payload);
     return response;
   }
 );
@@ -57,6 +57,8 @@ const cartSlice = createSlice({
     status: "idle",
     error: null,
     billTotal: 0,
+    checkoutStatus:"",
+    successBill:{},
   },
   reducers: {},
   extraReducers: {
@@ -89,9 +91,9 @@ const cartSlice = createSlice({
             item.billdetailSize == action.payload.billdetailSize &&
             item.billdetailId == action.payload.billdetailId
         )
-      ){
+      ) {
         state.cartItems.push(action.payload);
-      }       
+      }
 
       if (state.cartItems.length)
         state.billTotal = state.cartItems.reduce(
@@ -109,7 +111,10 @@ const cartSlice = createSlice({
     },
     [updateCartItemQuantity.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      const { itemId, quantity } = action.payload;
+      const i = state.cartItems.findIndex(
+        (x) => x.billdetailId === action.payload.billdetailId
+      );
+      state.cartItems[i] = action.payload;
       if (state.cartItems.length)
         state.billTotal = state.cartItems.reduce(
           (acc, product) =>
@@ -119,6 +124,7 @@ const cartSlice = createSlice({
     },
     [updateCartItemQuantity.rejected]: (state, action) => {
       state.status = "failed";
+
       state.error = action.error.message;
     },
     [deleteCartItem.pending]: (state) => {
@@ -141,8 +147,9 @@ const cartSlice = createSlice({
       state.status = "loading";
     },
     [checkout.fulfilled]: (state, action) => {
-      state.status = "succeeded";
-      console.log(action.payload);
+      state.status = "succeded";
+      state.successBill=action.payload;
+
     },
     [checkout.rejected]: (state, action) => {
       state.status = "failed";

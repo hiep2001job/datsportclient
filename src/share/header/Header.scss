@@ -2,7 +2,7 @@
     display: flex; 
     position: fixed; 
     z-index: 50; 
-    padding-bottom: 0.5rem; 
+    top: 0;
     justify-content: space-between; 
     align-items: baseline; 
     width: 100%; 
@@ -71,15 +71,17 @@
     width: 11rem; 
     height: auto; 
     opacity: 0; 
+    
     .navbar-dropdown-item{
         padding-top: 0.25rem;
         padding-bottom: 0.25rem; 
-        padding-left: 0.5rem;
+       
         padding-right: 0.5rem; 
         padding-right: 0.75rem; 
         border-bottom-width: 1px; 
+        list-style: none;
         &:hover{
-
+            background-color: #eee;
         }
     }
 }

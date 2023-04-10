@@ -1,35 +1,32 @@
-import { useSelector } from 'react-redux';
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
-import Admin from '../admin/Admin';
-import Customer from '../admin/customer/Customer';
-import Dashboard from '../admin/dashboard/Dashboard';
-import Product from '../admin/product/Product';
-import Category from '../admin/category/Category';
-import Brand from '../admin/brand/Brand';
-import User from '../admin/user/User';
-import Slider from '../admin/slider/Slider';
-import Order from '../admin/order/Order';
+import Admin from "../admin/Admin";
+import Customer from "../admin/customer/Customer";
+import Dashboard from "../admin/dashboard/Dashboard";
+import Product from "../admin/product/Product";
+import Category from "../admin/category/Category";
+import Brand from "../admin/brand/Brand";
+import User from "../admin/user/User";
+import Slider from "../admin/slider/Slider";
+import Order from "../admin/order/Order";
 
-import About from '../pages/about/About';
-import ProductDetail from '../pages/detail_product/ProductDetail';
+import About from "../pages/about/About";
+import ProductDetail from "../pages/detail_product/ProductDetail";
 
-import GlobalNavigation from '../pages/global_navigation/GlobalNavigation';
-import Home from '../pages/home/Home';
-import InfoProfile from '../pages/info_profile/InfoProfile';
-import Login from '../pages/login/Login';
-import NotFound from '../pages/not_found/NotFound';
-import ProductListing from '../pages/product_listing/ProductListing';
-import SignUp from '../pages/sign_up/SignUp';
-import UserBill from '../pages/user_bill/UserBill';
-import Checkout from '../pages/checkout/Checkout';
-import UserPassword from '../pages/user_password/UserPassword';
-import UserProfile from '../pages/user_profile/UserProfile';
+import GlobalNavigation from "../pages/global_navigation/GlobalNavigation";
+import Home from "../pages/home/Home";
+import InfoProfile from "../pages/info_profile/InfoProfile";
+import Login from "../pages/login/Login";
+import NotFound from "../pages/not_found/NotFound";
+import ProductListing from "../pages/product_listing/ProductListing";
+import SignUp from "../pages/sign_up/SignUp";
+import UserBill from "../pages/user_bill/UserBill";
+import Checkout from "../pages/checkout/Checkout";
+import BillDetail from "../pages/bill_detail/BillDetail";
+import UserPassword from "../pages/user_password/UserPassword";
+import UserProfile from "../pages/user_profile/UserProfile";
+import Cart from "../pages/cart/Cart";
 
 const Router = () => {
   const authToken = useSelector((state) => state.auth.authToken);
@@ -41,10 +38,10 @@ const Router = () => {
       return null;
     }
   };
-  const isAuthenticated=()=>{
-    if(!authToken) return false;
+  const isAuthenticated = () => {
+    if (!authToken) return false;
     console.log(parseJwt(authToken));
-  }
+  };
   const isAdmin = () => {
     if (authToken && userRole === 0) {
       return true;
@@ -73,14 +70,18 @@ const Router = () => {
     return (
       <Routes>
         <Route exact path="/login" element={<Login />} />
-        <Route exact path="/404" element={<NotFound />} />  
-        <Route path="/" element={<GlobalNavigation />}>       
+        <Route exact path="/404" element={<NotFound />} />
+        <Route path="/" element={<GlobalNavigation />}>
           <Route index element={<Home />} />
+          <Route path="cart" element={<Cart />} />
           <Route path="home" element={<Home />} />
+         
           <Route path="user/profile" element={<UserProfile />}>
             <Route index element={<InfoProfile />} />
             <Route path="info" element={<InfoProfile />} />
             <Route path="bill" element={<UserBill />} />
+            <Route path="bill-detail/:id" element={<BillDetail />} />
+
           </Route>
           <Route path="detail-product/:id" element={<ProductDetail />} />
           <Route path="product-listing/:id" element={<ProductListing />} />

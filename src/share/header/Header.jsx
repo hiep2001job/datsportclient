@@ -77,7 +77,7 @@ const Header = () => {
         <li className="navbar-item">
           <p className="navbar-item-text">Category</p>
           <div className="navbar-dropdown">
-            <ul className="">
+            <ul className="navbar-dropdown-list">
               {dataCategory?.map((category, idx) => {
                 return (
                   <Link
@@ -126,7 +126,8 @@ const Header = () => {
       {/* search area  */}
       <div className="search-box">
         <div className="cart-icon">
-          <SearchOption />
+        <div><SearchOption /></div>
+          
           <div>
             <CartDropdown />
           </div>
