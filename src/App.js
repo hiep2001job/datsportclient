@@ -13,8 +13,8 @@ import Router from "./routes/Router";
 import { useSelector } from "react-redux";
 
 const App = () => {
- 
-  <ToastContainer />;
+ {}
+  <ToastContainer  />;
   return <Router />;
 };
 
