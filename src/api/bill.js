@@ -40,7 +40,7 @@ export const fetchOrdersApi = async ({accountId,status}) => {
   return response.data;
 };
 
-export const fetchOrderByIdApi = async (payload) => {
-  const response = await axiosClient.get(`${BASE_URL}/api/checkout`, payload);
+export const fetchOrderByIdApi = async ({billId}) => {
+  const response = await axiosClient.get(`${BASE_URL}/api/getdetailbillbybillid/${billId}`);
   return response.data;
 };

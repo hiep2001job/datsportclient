@@ -48,7 +48,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const UserBill = () => {
-  
   const [orderStatus, setorderStatus] = useState(null);
   const [orderPayement, setorderPayement] = useState(null);
 
@@ -68,13 +67,11 @@ const UserBill = () => {
     {
       options: [
         { label: "Status", value: "Status" },
-        { label: "All", value: "All" },
-        { label: "Pending", value: "Pending" },
-        { label: "Inprogress", value: "Inprogress" },
-        { label: "Cancelled", value: "Cancelled" },
-        { label: "Pickups", value: "Pickups" },
-        { label: "Returns", value: "Returns" },
-        { label: "Delivered", value: "Delivered" },
+        { label: "All", value: -1 },
+        { label: "Processing", value: 1 },
+        { label: "Confirmed", value: 2 },
+        { label: "Cancelled", value: 3 },
+        
       ],
     },
   ];
@@ -155,13 +152,19 @@ const UserBill = () => {
   // useEffect(() => {
   //   if (!isEmpty(orders)) setOrderList(orders);
   // }, [orders]);
+  const orderType={
+    "all":-1,
+    "processing":1,
+    "confirmed":2,
+    "cancelled":3
+  }
 
   const toggleTab = (tab, type) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
       let filteredOrders = orders;
       if (type !== "all") {
-        filteredOrders = orders.filter((order) => order.status === type);
+        filteredOrders = orders.filter((order) => order.billStatus === orderType[type]);
       }
       setOrderList(filteredOrders);
     }
@@ -306,7 +309,7 @@ const UserBill = () => {
               to="/apps-ecommerce-order-details"
               className="fw-medium link-primary"
             >
-              {cell.value}
+              #{cell.value}
             </Link>
           );
         },
@@ -325,7 +328,7 @@ const UserBill = () => {
           );
         },
       },
-      
+
       {
         Header: "Order Date",
         accessor: "orderDate",
@@ -356,23 +359,23 @@ const UserBill = () => {
           switch (cell.value) {
             case 1:
               return (
-                <span className="badge text-uppercase badge-soft-warning">
+                <span className="badge text-uppercase badge-soft-primary">
                   {" "}
                   Processing...{" "}
                 </span>
               );
             case 2:
               return (
-                <span className="badge text-uppercase badge-soft-danger">
+                <span className="badge text-uppercase badge-soft-success">
                   {" "}
                   Confirmed{" "}
                 </span>
               );
-            case "2":
+            case 3:
               return (
-                <span className="badge text-uppercase badge-soft-secondary">
+                <span className="badge text-uppercase badge-soft-danger">
                   {" "}
-                  {cell.value}{" "}
+                  Cancelled{" "}
                 </span>
               );
             case "Pickups":
@@ -414,36 +417,13 @@ const UserBill = () => {
             <ul className="list-inline hstack gap-2 mb-0">
               <li className="list-inline-item">
                 <Link
-                  to="apps-ecommerce-order-details"
+                  to={`/user/profile/bill-detail/${cellProps.row.original.billId}`}
                   className="text-primary d-inline-block"
                 >
                   <i className="ri-eye-fill fs-16"></i>
                 </Link>
               </li>
-              <li className="list-inline-item edit">
-                <Link
-                  to="#"
-                  className="text-primary d-inline-block edit-item-btn"
-                  onClick={() => {
-                    const orderData = cellProps.row.original;
-                    handleOrderClick(orderData);
-                  }}
-                >
-                  <i className="ri-pencil-fill fs-16"></i>
-                </Link>
-              </li>
-              <li className="list-inline-item">
-                <Link
-                  to="#"
-                  className="text-danger d-inline-block remove-item-btn"
-                  onClick={() => {
-                    const orderData = cellProps.row.original;
-                    // onClickDelete(orderData);
-                  }}
-                >
-                  <i className="ri-delete-bin-5-fill fs-16"></i>
-                </Link>
-              </li>
+            
             </ul>
           );
         },
@@ -523,136 +503,108 @@ const UserBill = () => {
     return updateTime;
   };
 
-  const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Orders | Velzon - React Admin & Dashboard Template";
+
+  document.title = "My Bills";
   return (
-    <div className="page-content">
-      <Container fluid>
-        <BreadCrumb title="Orders" pageTitle="Ecommerce" />
-        <Row>
-          <Col lg={12}>
-            <Card id="orderList">
-              <CardHeader className="card-header border-0">
-                <Row className="align-items-center gy-3">
-                  <div className="col-sm">
-                    <h5 className="card-title mb-0">Order History</h5>
-                  </div>
-                  <div className="col-sm-auto">
-                    <div className="d-flex gap-1 flex-wrap">
-                      <button
-                        type="button"
-                        className="btn btn-success add-btn"
-                        id="create-btn"
-                        onClick={() => {
-                          setIsEdit(false);
-                          toggle();
-                        }}
-                      >
-                        <i className="ri-add-line align-bottom me-1"></i> Create
-                        Order
-                      </button>{" "}
-                    </div>
-                  </div>
-                </Row>
-              </CardHeader>
-
-              <CardBody className="pt-0">
-                <div>
-                  <Nav
-                    className="nav-tabs nav-tabs-custom nav-success"
-                    role="tablist"
-                  >
-                    <NavItem>
-                      <NavLink
-                        className={classnames({ active: activeTab === "1" })}
-                        onClick={() => {
-                          toggleTab("1", "all");
-                        }}
-                        href="#"
-                      >
-                        <i className="ri-store-2-fill me-1 align-bottom"></i>{" "}
-                        All Orders
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={classnames({ active: activeTab === "2" })}
-                        onClick={() => {
-                          toggleTab("2", "Delivered");
-                        }}
-                        href="#"
-                      >
-                        <i className="ri-checkbox-circle-line me-1 align-bottom"></i>{" "}
-                        Delivered
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={classnames({ active: activeTab === "3" })}
-                        onClick={() => {
-                          toggleTab("3", "Pickups");
-                        }}
-                        href="#"
-                      >
-                        <i className="ri-truck-line me-1 align-bottom"></i>{" "}
-                        Pickups{" "}
-                        <span className="badge bg-danger align-middle ms-1">
-                          2
-                        </span>
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={classnames({ active: activeTab === "4" })}
-                        onClick={() => {
-                          toggleTab("4", "Returns");
-                        }}
-                        href="#"
-                      >
-                        <i className="ri-arrow-left-right-fill me-1 align-bottom"></i>{" "}
-                        Returns
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={classnames({ active: activeTab === "5" })}
-                        onClick={() => {
-                          toggleTab("5", "Cancelled");
-                        }}
-                        href="#"
-                      >
-                        <i className="ri-close-circle-line me-1 align-bottom"></i>{" "}
-                        Cancelled
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
-                  {orderList.length ? (
-                    <TableContainer
-                      columns={columns}
-                      data={orderList || []}
-                      isGlobalFilter={true}
-                      isAddUserList={false}
-                      customPageSize={8}
-                      divClass="table-responsive table-card mb-1"
-                      tableClass="align-middle table-nowrap"
-                      theadClass="table-light text-muted text-uppercase"
-                      handleOrderClick={handleOrderClicks}
-                      isOrderFilter={true}
-                      SearchPlaceholder="Search for order ID, customer, order status or something..."
-                    />
-                  ) : (
-                    <Loader />
-                  )}
+    <Container fluid>
+      <BreadCrumb title="Orders" pageTitle="Ecommerce" />
+      <Row>
+        <Col lg={12}>
+          <Card id="orderList">
+            <CardHeader className="card-header border-0">
+              <Row className="align-items-center gy-3">
+                <div className="col-sm">
+                  <h5 className="card-title mb-0">Order History</h5>
                 </div>
+             
+              </Row>
+            </CardHeader>
 
-                <ToastContainer closeButton={false} limit={1} />
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </div>
+            <CardBody className="pt-0">
+              <div>
+                <Nav
+                  className="nav-tabs nav-tabs-custom nav-success"
+                  role="tablist"
+                >
+                  <NavItem>
+                    <NavLink
+                      className={classnames({ active: activeTab === "1" })}
+                      onClick={() => {
+                        toggleTab("1", "all");
+                      }}
+                      href="#"
+                    >
+                      <i className="ri-store-2-fill me-1 align-bottom"></i> All
+                      Orders
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      className={classnames({ active: activeTab === "2" })}
+                      onClick={() => {
+                        toggleTab("2", "processing");
+                      }}
+                      href="#"
+                    >
+                      <i className="ri-checkbox-circle-line me-1 align-bottom"></i>{" "}
+                      Processing
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      className={classnames({ active: activeTab === "3" })}
+                      onClick={() => {
+                        toggleTab("3", "confirmed");
+                      }}
+                      href="#"
+                    >
+                      <i className="ri-truck-line me-1 align-bottom"></i>{" "}
+                      Confirmed{" "}
+                      {/* <span className="badge bg-danger align-middle ms-1">
+                        2
+                      </span> */}
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      className={classnames({ active: activeTab === "4" })}
+                      onClick={() => {
+                        toggleTab("4", "cancelled");
+                      }}
+                      href="#"
+                    >
+                      <i className="ri-arrow-left-right-fill me-1 align-bottom"></i>{" "}
+                      Cancelled
+                    </NavLink>
+                  </NavItem>
+                  
+                </Nav>
+                {orderList.length ? (
+                  <TableContainer
+                    columns={columns}
+                    data={orderList || []}
+                    isGlobalFilter={true}
+                    isAddUserList={false}
+                    customPageSize={8}
+                    divClass="table-responsive table-card mb-1"
+                    tableClass="align-middle table-nowrap"
+                    theadClass="table-light text-muted text-uppercase"
+                    handleOrderClick={handleOrderClicks}
+                    isOrderFilter={true}
+                    SearchPlaceholder="Search for order ID, customer, order status or something..."
+                  />
+                ) : (
+                  <Loader />
+                )}
+              </div>
+
+              <ToastContainer closeButton={false} limit={1} />
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

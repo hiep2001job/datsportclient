@@ -15,7 +15,8 @@ const ordersSlice = createSlice({
   name: 'orders',
   initialState: {
     orders: [],
-    selectedOrder: null,
+    billDetails:[],
+    selectedOrder: {},
   },
   reducers: {
     selectOrder: (state, action) => {
@@ -38,7 +39,9 @@ const ordersSlice = createSlice({
         state.selectedOrder = null;
       })
       .addCase(fetchOrderById.fulfilled, (state, action) => {
-        state.selectedOrder = action.payload;
+        state.billDetails = action.payload;
+        state.selectedOrder=action.payload[0].bill;
+        console.log(action.payload[0].bill);
       })
       .addCase(fetchOrderById.rejected, (state, action) => {
         console.error(action.error);
