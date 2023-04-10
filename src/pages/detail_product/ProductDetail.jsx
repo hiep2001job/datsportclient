@@ -106,7 +106,7 @@ function ProductDetail(props) {
 
   return (
     <div className="page-content">
-      <Container fluid>
+      <Container >
         <BreadCrumb title="Product Details" pageTitle="Ecommerce" />
 
         <Row>

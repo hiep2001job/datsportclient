@@ -1,14 +1,13 @@
-.card{
-    z-index: 100;
-    .card-text{
-        height: 2rem !important;
+.img-wrapper{
+   width: auto;
+   max-height: 18rem;
+   overflow-y: hidden;
+    .img{
+        width: 100%;
+        height: auto;      
     }
-}
-.card-img-top{
     
-    width: auto;
-    height: auto;
 }
-.card-img-wrapper{
-    height: 230px;
+.card-name{
+    height:2.3em;
 }

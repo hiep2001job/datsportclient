@@ -1,7 +1,9 @@
 //import Scss
 import "./assets/scss/themes.scss";
 import "swiper/swiper-bundle.css";
+
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import React from "react";
 

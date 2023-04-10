@@ -18,19 +18,29 @@ export const addToCartApi = async (payload) => {
   return response.data;
 };
 
-export const updateCartItemQuantityApi = async ({ itemId, quantity }) => {
-  const response = await axiosClient.put(`${BASE_URL}/cart/${itemId}`, {
-    quantity,
+export const updateCartItemQuantityApi = async (payload) => {
+  const response = await axiosClient.post(`${BASE_URL}/api/createbill`, {
+    ...payload,
   });
   return response.data;
 };
 
 export const checkoutApi = async (payload) => {
-  const response = await axiosClient.put(`${BASE_URL}/api/checkout`, payload);
+  const response = await axiosClient.post(`${BASE_URL}/api/checkout`, payload);
   return response.data;
 };
 
 export const deleteCartItemApi = async (payload) => {
   const response = await axiosClient.post(`${BASE_URL}/api/deleteproductfrombill`,payload);
+  return response.data;
+};
+
+export const fetchOrdersApi = async ({accountId,status}) => {
+  const response = await axiosClient.get(`${BASE_URL}/api/getallorderbyacount/${accountId}/${status}`);
+  return response.data;
+};
+
+export const fetchOrderByIdApi = async (payload) => {
+  const response = await axiosClient.get(`${BASE_URL}/api/checkout`, payload);
   return response.data;
 };

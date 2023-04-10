@@ -23,10 +23,12 @@ import image6 from "../../../assets/images/products/img-6.png";
 import image5 from "../../../assets/images/products/img-5.png";
 
 const CartDropdown = () => {
+
   const cardItemTotal = useRef(null);
 
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.cartItems);
+  const {cartItems,billTotal} = useSelector((state) => state.cart);
+
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
@@ -167,22 +169,15 @@ const CartDropdown = () => {
               <h5 className="m-0 text-muted">Total:</h5>
               <div className="px-2">
                 <h5 className="m-0">
-                  <span ref={cardItemTotal} id="cart-item-total">
-                    {formatVnd(
-                      cartItems.reduce(
-                        (acc, product) =>
-                          acc +
-                          product.billdetailPrice * product.billdetailQuantity,
-                        0
-                      )
-                    )}
+                  <span  id="cart-item-total">
+                    {formatVnd(billTotal)}
                   </span>
-                </h5>
+                </h5> 
               </div>
             </div>
 
-            <Link to="/checkout" className="btn btn-success text-center w-100">
-              Checkout
+            <Link to="/cart" className="btn btn-success text-center w-100">
+              Go to cart
             </Link>
           </div>
         </DropdownMenu>

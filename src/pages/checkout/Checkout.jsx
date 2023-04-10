@@ -22,6 +22,7 @@ import {
   addToCart,
   updateCartItemQuantity,
   deleteCartItem,
+  checkout,
 } from "../../redux/cartSlice";
 import {
   Container,
@@ -59,7 +60,8 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { cartItems, status, billTotal } = useSelector((state) => state.cart);
+  const { cartItems, status, checkoutStatus, billTotal, successBill } =
+    useSelector((state) => state.cart);
   const userDetail = useSelector((state) => state.auth.data);
 
   useEffect(() => {
@@ -138,6 +140,11 @@ const Checkout = () => {
   ];
 
   //Form process
+
+  const handleClickBtnSubmit = async (data) => {
+    dispatch(checkout(data));
+  };
+  const handleErrors = (errors) => {};
   const {
     register,
     handleSubmit,
@@ -153,6 +160,7 @@ const Checkout = () => {
       bill_status: 1,
     },
   });
+
   const checkoutOptions = {
     //   user_id,
     //   bill_total,
@@ -160,21 +168,8 @@ const Checkout = () => {
     //   bill_address_ship,
     //   bill_date,
     //   bill_status}
-  };
-  const loginOptions = {
-    username: {
-      required: "Username cannot be empty!",
-      minLength: {
-        value: 5,
-        message: "Username must be at least 6 characters",
-      },
-    },
-    password: {
-      required: "Password cannot be empty! ",
-      minLength: {
-        value: 5,
-        message: "Password must be at least 6 characters",
-      },
+    bill_address_ship: {
+      required: "PLease enter bill shipping address!",
     },
   };
 
@@ -185,577 +180,416 @@ const Checkout = () => {
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Checkout" pageTitle="DatSport" />
+          {(billTotal !== 0 && (
+            <Row>
+              <Col xl="8">
+                <Card>
+                  <CardBody className="checkout-tab">
+                    <form
+                      onSubmit={handleSubmit(
+                        handleClickBtnSubmit,
+                        handleErrors
+                      )}
+                    >
+                      <div className="step-arrow-nav mt-n3 mx-n3 mb-3">
+                        <Nav
+                          className="nav-pills nav-justified custom-nav"
+                          role="tablist"
+                        >
+                          <NavItem role="presentation">
+                            <NavLink
+                              href="#"
+                              className={classnames(
+                                {
+                                  active: activeTab === 1,
+                                  done: activeTab <= 2 && activeTab > 1,
+                                },
+                                "fs-15 p-3"
+                              )}
+                            >
+                              <i className="ri-bank-card-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"></i>
+                              Payment Info
+                            </NavLink>
+                          </NavItem>
+                          <NavItem role="presentation">
+                            <NavLink
+                              href="#"
+                              className={classnames(
+                                {
+                                  active: activeTab === 2,
+                                  done: activeTab <= 2 && activeTab > 2,
+                                },
+                                "fs-15 p-3"
+                              )}
+                            >
+                              <i className="ri-checkbox-circle-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"></i>
+                              Finish
+                            </NavLink>
+                          </NavItem>
+                        </Nav>
+                      </div>
 
-          <Row>
-            <Col xl="8">
-              <Card>
-                <CardBody className="checkout-tab">
-                  <form>
-                    <div className="step-arrow-nav mt-n3 mx-n3 mb-3">
-                      <Nav
-                        className="nav-pills nav-justified custom-nav"
-                        role="tablist"
-                      >
-                       
-                        <NavItem role="presentation">
-                          <NavLink
-                            href="#"
-                            className={classnames(
-                              {
-                                active: activeTab === 1,
-                                done: activeTab <= 3 && activeTab > 1,
-                              },
-                              "fs-15 p-3"
-                            )}
-                          >
-                            <i className="ri-truck-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"></i>
-                            Shipping Info
-                          </NavLink>
-                        </NavItem>
-                        <NavItem role="presentation">
-                          <NavLink
-                            href="#"
-                            className={classnames(
-                              {
-                                active: activeTab === 2,
-                                done: activeTab <= 3 && activeTab > 2,
-                              },
-                              "fs-15 p-3"
-                            )}
-                          >
-                            <i className="ri-bank-card-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"></i>
-                            Payment Info
-                          </NavLink>
-                        </NavItem>
-                        <NavItem role="presentation">
-                          <NavLink
-                            href="#"
-                            className={classnames(
-                              {
-                                active: activeTab === 3,
-                                done: activeTab <= 3 && activeTab > 3,
-                              },
-                              "fs-15 p-3"
-                            )}
-                          >
-                            <i className="ri-checkbox-circle-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"></i>
-                            Finish
-                          </NavLink>
-                        </NavItem>
-                      </Nav>
-                    </div>
-
-                    <TabContent activeTab={activeTab}>
-                      
-
-                      <TabPane tabId={1}>
-                        <div>
-                          <h5 className="mb-1">Shipping Information</h5>
-                          <p className="text-muted mb-4">
-                            Please fill all information below
-                          </p>
-                        </div>
-
-                        <div className="mt-4">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="flex-grow-1">
-                              <h5 className="fs-14 mb-0">Saved Address</h5>
-                            </div>
-                            <div className="flex-shrink-0">
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-success mb-3"
-                                onClick={togglemodal}
-                              >
-                                Add Address
-                              </button>
-                            </div>
+                      <TabContent activeTab={activeTab}>
+                        <TabPane tabId={1}>
+                          <div>
+                            <h5 className="mb-1">Shipping Information</h5>
+                            <p className="text-muted mb-4">
+                              Please fill all information below
+                            </p>
                           </div>
-                          <Row className="gy-3">
-                            <Col lg={4} sm={6}>
-                              <div className="form-check card-radio">
-                                <Input
-                                  id="shippingAddress01"
-                                  name="shippingAddress"
-                                  type="radio"
-                                  className="form-check-input"
-                                  defaultChecked
-                                />
+                          <Row>
+                            <Col sm={6}>
+                              <div className="mb-3">
                                 <Label
-                                  className="form-check-label"
-                                  htmlFor="shippingAddress01"
+                                  htmlFor="billinginfo-firstName"
+                                  className="form-label"
                                 >
-                                  <span className="mb-4 fw-semibold d-block text-muted text-uppercase">
-                                    Home Address
-                                  </span>
-
-                                  <span className="fs-14 mb-2 d-block">
-                                    Marcus Alfaro
-                                  </span>
-                                  <span className="text-muted fw-normal text-wrap mb-1 d-block">
-                                    4739 Bubby Drive Austin, TX 78729
-                                  </span>
-                                  <span className="text-muted fw-normal d-block">
-                                    Mo. 012-345-6789
-                                  </span>
+                                  Shipping address
                                 </Label>
-                              </div>
-                              <div className="d-flex flex-wrap p-2 py-1 bg-light rounded-bottom border mt-n1">
-                                <div>
-                                  <Link
-                                    to="#"
-                                    className="d-block text-body p-1 px-2"
-                                    onClick={togglemodal}
-                                  >
-                                    <i className="ri-pencil-fill text-muted align-bottom me-1"></i>
-                                    Edit
-                                  </Link>
-                                </div>
-                                <div>
-                                  <Link
-                                    to="#"
-                                    className="d-block text-body p-1 px-2"
-                                    onClick={toggledeletemodal}
-                                  >
-                                    <i className="ri-delete-bin-fill text-muted align-bottom me-1"></i>
-                                    Remove
-                                  </Link>
-                                </div>
-                              </div>
-                            </Col>
-                            <Col lg={4} sm={6}>
-                              <div className="form-check card-radio">
-                                <Input
-                                  id="shippingAddress02"
-                                  name="shippingAddress"
-                                  type="radio"
-                                  className="form-check-input"
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  id="billinginfo-firstName"
+                                  name="bill_address_ship"
+                                  placeholder="Enter shipping address"
+                                  {...register("bill_address_ship", {
+                                    required: true,
+                                  })}
                                 />
-                                <Label
-                                  className="form-check-label"
-                                  htmlFor="shippingAddress02"
-                                >
-                                  <span className="mb-4 fw-semibold d-block text-muted text-uppercase">
-                                    Office Address
-                                  </span>
-
-                                  <span className="fs-14 mb-2 d-block">
-                                    James Honda
-                                  </span>
-                                  <span className="text-muted fw-normal text-wrap mb-1 d-block">
-                                    1246 Virgil Street Pensacola, FL 32501
-                                  </span>
-                                  <span className="text-muted fw-normal d-block">
-                                    Mo. 012-345-6789
-                                  </span>
-                                </Label>
-                              </div>
-                              <div className="d-flex flex-wrap p-2 py-1 bg-light rounded-bottom border mt-n1">
-                                <div>
-                                  <Link
-                                    to="#"
-                                    className="d-block text-body p-1 px-2"
-                                    onClick={togglemodal}
-                                  >
-                                    <i className="ri-pencil-fill text-muted align-bottom me-1"></i>
-                                    Edit
-                                  </Link>
-                                </div>
-                                <div>
-                                  <Link
-                                    to="#"
-                                    className="d-block text-body p-1 px-2"
-                                    onClick={toggledeletemodal}
-                                  >
-                                    <i className="ri-delete-bin-fill text-muted align-bottom me-1"></i>
-                                    Remove
-                                  </Link>
-                                </div>
+                                {errors.bill_address_ship &&
+                                  errors.bill_address_ship.type ===
+                                    "required" && (
+                                    <span className="text-danger">
+                                      Please enter shipping address
+                                    </span>
+                                  )}
                               </div>
                             </Col>
                           </Row>
+                          <div>
+                            <h5 className="mb-1 mt-3">Payment Selection</h5>
+                            <p className="text-muted mb-4">
+                              Please select and enter your billing information
+                            </p>
+                          </div>
 
-                          <div className="mt-4">
-                            <h5 className="fs-14 mb-3">Shipping Method</h5>
-
-                            <Row className="g-4">
-                              <Col lg={6}>
-                                <div className="form-check card-radio">
-                                  <Input
-                                    id="shippingMethod01"
-                                    name="shippingMethod"
+                          <Row className="g-4">
+                            <Col lg={4} sm={6}>
+                              <div>
+                                <div className="form-check card-radio ">
+                                  <input
+                                    disabled
+                                    id="paymentMethod01"
+                                    name="paymentMethod"
                                     type="radio"
                                     className="form-check-input"
                                   />
                                   <Label
                                     className="form-check-label"
-                                    htmlFor="shippingMethod01"
+                                    htmlFor="paymentMethod01"
                                   >
-                                    <span className="fs-20 float-end mt-2 text-wrap d-block fw-semibold">
-                                      Free
+                                    <span className="fs-16 text-muted me-2">
+                                      <i className="ri-paypal-fill align-bottom"></i>
                                     </span>
-                                    <span className="fs-14 mb-1 text-wrap d-block">
-                                      Free Delivery
-                                    </span>
-                                    <span className="text-muted fw-normal text-wrap d-block">
-                                      Expected Delivery 3 to 5 Days
+                                    <span className="fs-14 text-wrap">
+                                      Paypal
                                     </span>
                                   </Label>
                                 </div>
-                              </Col>
-                              <Col lg={6}>
+                              </div>
+                            </Col>
+                            <Col lg={4} sm={6}>
+                              <div>
                                 <div className="form-check card-radio">
-                                  <Input
-                                    id="shippingMethod02"
-                                    name="shippingMethod"
+                                  <input
+                                    disabled
+                                    id="paymentMethod02"
+                                    name="paymentMethod"
                                     type="radio"
                                     className="form-check-input"
                                     defaultChecked
                                   />
                                   <Label
                                     className="form-check-label"
-                                    htmlFor="shippingMethod02"
+                                    htmlFor="paymentMethod02"
                                   >
-                                    <span className="fs-20 float-end mt-2 text-wrap d-block fw-semibold">
-                                      $24.99
+                                    <span className="fs-16 text-muted me-2">
+                                      <i className="ri-bank-card-fill align-bottom"></i>
                                     </span>
-                                    <span className="fs-14 mb-1 text-wrap d-block">
-                                      Express Delivery
-                                    </span>
-                                    <span className="text-muted fw-normal text-wrap d-block">
-                                      Delivery within 24hrs.
+                                    <span className="fs-14 text-wrap">
+                                      Credit / Debit Card
                                     </span>
                                   </Label>
                                 </div>
-                              </Col>
-                            </Row>
-                          </div>
-                        </div>
-
-                        <div className="d-flex align-items-start gap-3 mt-4">
-                        
-                          <button
-                            type="button"
-                            className="btn btn-secondary btn-label right ms-auto nexttab"
-                            onClick={() => {
-                              toggleTab(activeTab + 1);
-                            }}
-                          >
-                            <i className="ri-bank-card-line label-icon align-middle fs-16 ms-2"></i>
-                            Continue to Payment
-                          </button>
-                        </div>
-                      </TabPane>
-
-                      <TabPane tabId={2}>
-                        <div>
-                          <h5 className="mb-1">Payment Selection</h5>
-                          <p className="text-muted mb-4">
-                            Please select and enter your billing information
-                          </p>
-                        </div>
-
-                        <Row className="g-4">
-                          <Col lg={4} sm={6}>
-                            <div>
-                              <div className="form-check card-radio ">
-                                <Input
-                                disabled
-                                  id="paymentMethod01"
-                                  name="paymentMethod"
-                                  type="radio"
-                                  className="form-check-input"
-                                />
-                                <Label
-                                  className="form-check-label"
-                                  htmlFor="paymentMethod01"
-                                >
-                                  <span className="fs-16 text-muted me-2">
-                                    <i className="ri-paypal-fill align-bottom"></i>
-                                  </span>
-                                  <span className="fs-14 text-wrap">
-                                    Paypal
-                                  </span>
-                                </Label>
                               </div>
-                            </div>
-                          </Col>
-                          <Col lg={4} sm={6}>
-                            <div>
-                              <div className="form-check card-radio">
-                                <Input
-                                  disabled
-                                  id="paymentMethod02"
-                                  name="paymentMethod"
-                                  type="radio"
-                                  className="form-check-input"
-                                  defaultChecked
-                                />
-                                <Label
-                                  className="form-check-label"
-                                  htmlFor="paymentMethod02"
-                                >
-                                  <span className="fs-16 text-muted me-2">
-                                    <i className="ri-bank-card-fill align-bottom"></i>
-                                  </span>
-                                  <span className="fs-14 text-wrap">
-                                    Credit / Debit Card
-                                  </span>
-                                </Label>
-                              </div>
-                            </div>
-                          </Col>
+                            </Col>
 
-                          <Col lg={4} sm={6}>
-                            <div>
-                              <div className="form-check card-radio">
-                                <Input
-                                  id="paymentMethod03"
-                                  name="paymentMethod"
-                                  type="radio"
-                                  checked
-                                  className="form-check-input"
-                                />
-                                <Label
-                                  className="form-check-label"
-                                  htmlFor="paymentMethod03"
-                                >
-                                  <span className="fs-16 text-muted me-2">
-                                    <i className="ri-money-dollar-box-fill align-bottom"></i>
-                                  </span>
-                                  <span className="fs-14 text-wrap">
-                                    Cash on Delivery
-                                  </span>
-                                </Label>
-                              </div>
-                            </div>
-                          </Col>
-                        </Row>
-
-                        <div
-                          className="collapse show"
-                          id="paymentmethodCollapse"
-                        >
-                          <Card className="p-4 border shadow-none mb-0 mt-4">
-                            <Row className="gy-3">
-                              <Col md={12}>
-                                <Label htmlFor="cc-name" className="form-label">
-                                  Name on card
-                                </Label>
-                                <Input
-                                disabled
-                                  type="text"
-                                  className="form-control"
-                                  id="cc-name"
-                                  placeholder="Enter name"
-                                />
-                                <small className="text-muted">
-                                  Full name as displayed on card
-                                </small>
-                              </Col>
-
-                              <Col md={6}>
-                                <Label
-                                  htmlFor="cc-number"
-                                  className="form-label"
-                                >
-                                  Credit card number
-                                </Label>
-                                <Input
-                                disabled
-                                  type="text"
-                                  className="form-control"
-                                  id="cc-number"
-                                  placeholder="xxxx xxxx xxxx xxxx"
-                                />
-                              </Col>
-
-                              <Col md={3}>
-                                <Label
-                                  htmlFor="cc-expiration"
-                                  className="form-label"
-                                >
-                                  Expiration
-                                </Label>
-                                <Input
-                                disabled
-                                  type="text"
-                                  className="form-control"
-                                  id="cc-expiration"
-                                  placeholder="MM/YY"
-                                />
-                              </Col>
-
-                              <Col md={3}>
-                                <Label htmlFor="cc-cvv" className="form-label">
-                                  CVV
-                                </Label>
-                                <Input
-                                disabled
-                                  type="text"
-                                  className="form-control"
-                                  id="cc-cvv"
-                                  placeholder="xxx"
-                                />
-                              </Col>
-                            </Row>
-                          </Card>
-                          <div className="text-muted mt-2 fst-italic">
-                            <i
-                              data-feather="lock"
-                              className="text-muted icon-xs"
-                            ></i>{" "}
-                            Your transaction is secured with SSL encryption
-                          </div>
-                        </div>
-
-                        <div className="d-flex align-items-start gap-3 mt-4">
-                          <button
-                            type="button"
-                            className="btn btn-light btn-label previestab"
-                            onClick={() => {
-                              toggleTab(activeTab - 1);
-                            }}
-                          >
-                            <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>
-                            Back to Shipping
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-secondary btn-label right ms-auto nexttab"
-                            onClick={() => {
-                              toggleTab(activeTab + 1);
-                            }}
-                          >
-                            <i className="ri-shopping-basket-line label-icon align-middle fs-16 ms-2"></i>
-                            Complete Order
-                          </button>
-                        </div>
-                      </TabPane>
-
-                      <TabPane tabId={3} id="pills-finish">
-                        <div className="text-center py-5">
-                          <div className="mb-4">
-                            <lord-icon
-                              src="https://cdn.lordicon.com/lupuorrc.json"
-                              trigger="loop"
-                              colors="primary:#0ab39c,secondary:#405189"
-                              style={{ width: "120px", height: "120px" }}
-                            ></lord-icon>
-                          </div>
-                          <h5>Thank you ! Your Order is Completed !</h5>
-                          <p className="text-muted">
-                            You will receive an order confirmation email with
-                            details of your order.
-                          </p>
-
-                          <h3 className="fw-semibold">
-                            Order ID:{" "}
-                            <a
-                              href="apps-ecommerce-order-details"
-                              className="text-decoration-underline"
-                            >
-                              VZ2451
-                            </a>
-                          </h3>
-                        </div>
-                      </TabPane>
-                    </TabContent>
-                  </form>
-                </CardBody>
-              </Card>
-            </Col>
-
-            <Col xl={4}>
-              <Card>
-                <CardHeader>
-                  <div className="d-flex">
-                    <div className="flex-grow-1">
-                      <h5 className="card-title mb-0">Order Summary</h5>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="table-responsive table-card">
-                    <table className="table table-borderless align-middle mb-0">
-                      <thead className="table-light text-muted">
-                        <tr>
-                          <th style={{ width: "90px" }} scope="col">
-                            Product
-                          </th>
-                          <th scope="col">Product Info</th>
-                          <th scope="col" className="text-end">
-                            Price
-                          </th>
-                          <th scope="col" className="text-end">
-                            &nbsp;
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {cartItems.map((item, key) => (
-                          <React.Fragment key={key}>
-                            <tr>
-                              <td>
-                                <div className="avatar-md bg-light rounded p-1">
-                                  <img
-                                    src={item.product.productImage1}
-                                    alt=""
-                                    className="img-fluid d-block"
+                            <Col lg={4} sm={6}>
+                              <div>
+                                <div className="form-check card-radio">
+                                  <input
+                                    id="paymentMethod03"
+                                    name="paymentMethod"
+                                    type="radio"
+                                    checked
+                                    className="form-check-input"
                                   />
-                                </div>
-                              </td>
-                              <td>
-                                <h5 className="fs-14">
-                                  <Link
-                                    to={`/detail-product/${item.product.productId}`}
-                                    className="text-dark"
+                                  <Label
+                                    className="form-check-label"
+                                    htmlFor="paymentMethod03"
                                   >
-                                    {item.billdetailSize +
-                                      " - " +
-                                      item.product.productName}
-                                  </Link>
-                                </h5>
-                                <p className="text-muted mb-0">
-                                  {formatVnd(item.billdetailPrice)} x{" "}
-                                  {item.billdetailQuantity}
-                                </p>
-                              </td>
-                              <td className="text-end">
-                                {formatVnd(
-                                  item.billdetailPrice * item.billdetailQuantity
-                                )}
-                              </td>
-                              <td>
-                                {" "}
-                                <div className="ps-2">
-                                  <button
-                                    type="button"
-                                    className="btn btn-icon btn-sm btn-ghost-secondary remove-item-btn"
-                                    onClick={(e) => {
-                                      removeItem({
-                                        billdetailId: item.billdetailId,
-                                      });
-                                    }}
-                                  >
-                                    <i className="ri-close-fill fs-16"></i>
-                                  </button>
+                                    <span className="fs-16 text-muted me-2">
+                                      <i className="ri-money-dollar-box-fill align-bottom"></i>
+                                    </span>
+                                    <span className="fs-14 text-wrap">
+                                      Cash on Delivery
+                                    </span>
+                                  </Label>
                                 </div>
-                              </td>
-                            </tr>
-                          </React.Fragment>
-                        ))}
+                              </div>
+                            </Col>
+                          </Row>
 
-                        <tr>
-                          <td className="fw-semibold" colSpan="2">
-                            Sub Total :
-                          </td>
-                          <td className="fw-semibold text-end">
-                            {formatVnd(billTotal)}
-                          </td>
-                          <td>&nbsp;</td>
-                        </tr>
-                        {/* <tr>
+                          <div
+                            className="collapse show"
+                            id="paymentmethodCollapse"
+                          >
+                            <Card className="p-4 border shadow-none mb-0 mt-4">
+                              <Row className="gy-3">
+                                <Col md={12}>
+                                  <Label
+                                    htmlFor="cc-name"
+                                    className="form-label"
+                                  >
+                                    Name on card
+                                  </Label>
+                                  <input
+                                    disabled
+                                    type="text"
+                                    className="form-control"
+                                    id="cc-name"
+                                    placeholder="Enter name"
+                                  />
+                                  <small className="text-muted">
+                                    Full name as displayed on card
+                                  </small>
+                                </Col>
+
+                                <Col md={6}>
+                                  <Label
+                                    htmlFor="cc-number"
+                                    className="form-label"
+                                  >
+                                    Credit card number
+                                  </Label>
+                                  <input
+                                    disabled
+                                    type="text"
+                                    className="form-control"
+                                    id="cc-number"
+                                    placeholder="xxxx xxxx xxxx xxxx"
+                                  />
+                                </Col>
+
+                                <Col md={3}>
+                                  <Label
+                                    htmlFor="cc-expiration"
+                                    className="form-label"
+                                  >
+                                    Expiration
+                                  </Label>
+                                  <input
+                                    disabled
+                                    type="text"
+                                    className="form-control"
+                                    id="cc-expiration"
+                                    placeholder="MM/YY"
+                                  />
+                                </Col>
+
+                                <Col md={3}>
+                                  <Label
+                                    htmlFor="cc-cvv"
+                                    className="form-label"
+                                  >
+                                    CVV
+                                  </Label>
+                                  <input
+                                    disabled
+                                    type="text"
+                                    className="form-control"
+                                    id="cc-cvv"
+                                    placeholder="xxx"
+                                  />
+                                </Col>
+                              </Row>
+                            </Card>
+                            <div className="text-muted mt-2 fst-italic">
+                              <i
+                                data-feather="lock"
+                                className="text-muted icon-xs"
+                              ></i>{" "}
+                              Your transaction is secured with SSL encryption
+                            </div>
+                          </div>
+
+                          <div className="d-flex align-items-start gap-3 mt-4">
+                            <button
+                              type="button"
+                              className="btn btn-light btn-label previestab"
+                              onClick={() => {
+                                toggleTab(activeTab - 1);
+                              }}
+                            >
+                              <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>
+                              Back to Shipping
+                            </button>
+                            <button
+                              type="submit"
+                              onClick={() => {
+                                toggleTab(activeTab + 1);
+                              }}
+                              className="btn btn-secondary btn-label right ms-auto nexttab"
+                            >
+                              <i className="ri-shopping-basket-line label-icon align-middle fs-16 ms-2"></i>
+                              Complete Order
+                            </button>
+                          </div>
+                        </TabPane>
+
+                        <TabPane tabId={2} id="pills-finish">
+                          <div className="text-center py-5">
+                            <div className="mb-4">
+                              <lord-icon
+                                src="https://cdn.lordicon.com/lupuorrc.json"
+                                trigger="loop"
+                                colors="primary:#0ab39c,secondary:#405189"
+                                style={{ width: "120px", height: "120px" }}
+                              ></lord-icon>
+                            </div>
+                            <h5>Thank you ! Your Order is Completed !</h5>
+
+                            <h3 className="fw-semibold">
+                              Order ID:{" "}
+                              <a
+                                href="apps-ecommerce-order-details"
+                                className="text-decoration-underline"
+                              >
+                                #
+                                {status === "loading" ? (
+                                  "Processing..."
+                                ) : (
+                                  <div>
+                                    {successBill.bill_id}
+                                    <Link
+                                      to={`/user/profile/bill-detail/${successBill.bill_id}`}
+                                      className="btn btn-success w-md mb-3"
+                                    >
+                                      View order detail
+                                    </Link>
+                                  </div>
+                                )}
+                              </a>
+                            </h3>
+                          </div>
+                        </TabPane>
+                      </TabContent>
+                    </form>
+                  </CardBody>
+                </Card>
+              </Col>
+
+              <Col xl={4}>
+                <Card>
+                  <CardHeader>
+                    <div className="d-flex">
+                      <div className="flex-grow-1">
+                        <h5 className="card-title mb-0">Order Summary</h5>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="table-responsive table-card">
+                      <table className="table table-borderless align-middle mb-0">
+                        <thead className="table-light text-muted">
+                          <tr>
+                            <th style={{ width: "90px" }} scope="col">
+                              Product
+                            </th>
+                            <th scope="col">Product Info</th>
+                            <th scope="col" className="text-end">
+                              Price
+                            </th>
+                            <th scope="col" className="text-end">
+                              &nbsp;
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {cartItems.map((item, key) => (
+                            <React.Fragment key={key}>
+                              <tr>
+                                <td>
+                                  <div className="avatar-md bg-light rounded p-1">
+                                    <img
+                                      src={item.product.productImage1}
+                                      alt=""
+                                      className="img-fluid d-block"
+                                    />
+                                  </div>
+                                </td>
+                                <td>
+                                  <h5 className="fs-14">
+                                    <Link
+                                      to={`/detail-product/${item.product.productId}`}
+                                      className="text-dark"
+                                    >
+                                      {item.billdetailSize +
+                                        " - " +
+                                        item.product.productName}
+                                    </Link>
+                                  </h5>
+                                  <p className="text-muted mb-0">
+                                    {formatVnd(item.billdetailPrice)} x{" "}
+                                    {item.billdetailQuantity}
+                                  </p>
+                                </td>
+                                <td className="text-end">
+                                  {formatVnd(
+                                    item.billdetailPrice *
+                                      item.billdetailQuantity
+                                  )}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <div className="ps-2">
+                                    <button
+                                      type="button"
+                                      className="btn btn-icon btn-sm btn-ghost-secondary remove-item-btn"
+                                      onClick={(e) => {
+                                        removeItem({
+                                          billdetailId: item.billdetailId,
+                                        });
+                                      }}
+                                    >
+                                      <i className="ri-close-fill fs-16"></i>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </React.Fragment>
+                          ))}
+
+                          <tr>
+                            <td className="fw-semibold" colSpan="2">
+                              Sub Total :
+                            </td>
+                            <td className="fw-semibold text-end">
+                              {formatVnd(billTotal)}
+                            </td>
+                            <td>&nbsp;</td>
+                          </tr>
+                          {/* <tr>
                           <td colSpan="2">
                             Discount{" "}
                             <span className="text-muted">(VELZON15)</span>:{" "}
@@ -770,30 +604,45 @@ const Checkout = () => {
                           <td colSpan="2">Estimated Tax (12%): </td>
                           <td className="text-end">$ 18.20</td>
                         </tr> */}
-                        <tr className="table-active">
-                          <th colSpan="2">Total (USD) :</th>
-                          <td className="text-end">
-                            <span className="fw-semibold">
-                              {formatVnd(
-                                cartItems.reduce(
-                                  (acc, product) =>
-                                    acc +
-                                    product.billdetailPrice *
-                                      product.billdetailQuantity,
-                                  0
-                                )
-                              )}
-                            </span>
-                          </td>
-                          <td>&nbsp;</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                          <tr className="table-active">
+                            <th colSpan="2">Total (USD) :</th>
+                            <td className="text-end">
+                              <span className="fw-semibold">
+                                {formatVnd(
+                                  cartItems.reduce(
+                                    (acc, product) =>
+                                      acc +
+                                      product.billdetailPrice *
+                                        product.billdetailQuantity,
+                                    0
+                                  )
+                                )}
+                              </span>
+                            </td>
+                            <td>&nbsp;</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          )) || (
+            <Row>
+              <div className="text-center empty-cart mt-5" id="empty-cart">
+                <div className="avatar-md mx-auto my-3">
+                  <div className="avatar-title bg-soft-info text-info fs-36 rounded-circle">
+                    <i className="bx bx-cart"></i>
                   </div>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
+                </div>
+                <h5 className="mb-3">Your Cart is Empty!</h5>
+                <Link to="/" className="btn btn-success w-md mb-3">
+                  Shop Now
+                </Link>
+              </div>
+            </Row>
+          )}
         </Container>
       </div>
       {/* modal Delete Address */}
@@ -872,7 +721,7 @@ const Checkout = () => {
               <Label for="addaddress-Name" className="form-label">
                 Name
               </Label>
-              <Input
+              <input
                 type="text"
                 className="form-control"
                 id="addaddress-Name"
@@ -896,7 +745,7 @@ const Checkout = () => {
               <Label for="addaddress-Name" className="form-label">
                 Phone
               </Label>
-              <Input
+              <input
                 type="text"
                 className="form-control"
                 id="addaddress-Name"

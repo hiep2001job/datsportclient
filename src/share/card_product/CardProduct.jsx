@@ -1,7 +1,9 @@
 import React from "react";
+import './CardProduct.scss';
+import { formatVnd } from "../../utils/common.js";
 
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+
 import {
   fetchProducts,
   addToCart,
@@ -10,6 +12,9 @@ import {
 } from "../../redux/cartSlice";
 import DefaultImg from "../../assets/images/default.png";
 import { useNavigate } from "react-router-dom";
+//State rtk
+import { useSelector, useDispatch } from "react-redux";
+import { displayToast } from '../../redux/toastSlice';
 
 const CardProduct = ({
   productId,
@@ -24,47 +29,66 @@ const CardProduct = ({
   const cartItems = useSelector((state) => state.cart.cartItems);
   const userDetail = useSelector((state) => state.auth.data);
 
-  // const handleAddToCart = () => {
-  //   if (!userDetail) navigate("/login");
-  //   dispatch(
-  //     addToCart({
-  //       productId: productId,
-  //       price: productPrice,
-  //       productSize:"M",
-  //       accountId: userDetail.id,
-  //       quantity: 1,
-  //     })
-  //   );
-   
-  // };
   const handleViewDetail = (id) => {
     navigate(`/detail-product/${id}`);
   };
 
-  return (
-    <div className="card">
-      <div class="card-img-wrapper">
-        <img
-          src={productImage1 ?? DefaultImg}
-          className="card-img-top"
-          alt="..."
-        />
-      </div>
 
-      <div className="card-body">
-        <h5 className="card-title">{productName}</h5>
-        <p className="card-text">
-          {" "}
-          {productDescription.toString().length < 110
-            ? productDescription
-            : productDescription.substr(0, 109)}
-        </p>
-        <button
-          onClick={()=>handleViewDetail(productId)}
-          className="btn btn-success text-center stretched-link"
+  const handleSuccess = () => {
+    dispatch(displayToast({ message: 'Action succeeded!',type:'success' }));
+    console.log("click")
+  };
+
+  const handleError = () => {
+    dispatch(displayToast({ message: 'Action succeeded!',type:'error' }));
+  };
+  return (
+    <div className="col-lg-3 col-md-12 mb-4">
+      <div className="card" style={{ borderRadius: "15px" }}>
+        <div
+          className="bg-image hover-overlay ripple ripple-surface ripple-surface-light img-wrapper"
+          data-mdb-ripple-color="light"
         >
-          View more
-        </button>
+          <img src={productImage1} className="img-fluid img" alt="Laptop" />
+        </div>
+        <div className="card-body pb-0">
+          <div className="d-flex justify-content-between">
+            <div className="card-name">
+              <p>
+                <a
+                  href="#!"
+                  onClick={() => handleViewDetail(productId)}
+                  className="text-dark"
+                >
+                  {productName}
+                </a>
+              </p>
+            </div>
+            <div></div>
+          </div>
+        </div>
+        
+        <div className="card-body pb-0">
+          <div className="d-flex justify-content-between">
+            <p>
+              <a href="#" className="text-dark">
+                {formatVnd(productPrice)}
+              </a>
+            </p>
+          </div>
+        </div>
+        <hr className="my-0" />
+        <div className="card-body">
+          <div className="d-flex justify-content-between align-items-center ">
+            <button
+              type="button"
+              onClick={() => handleViewDetail(productId)}
+              className="btn btn-primary"
+            >
+              View detail
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
