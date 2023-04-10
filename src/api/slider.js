@@ -14,7 +14,7 @@ const sliderApi = {
   },
   getById: async (id) => {
     try {
-      const url = `${BASE_URL}/api/getcategorybyid/${id}`;
+      const url = `${BASE_URL}/api/slider/${id}`;
       const rs = await axiosClient.get(url, id);
       return rs.data;
     } catch (error) {

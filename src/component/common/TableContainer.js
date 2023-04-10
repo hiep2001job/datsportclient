@@ -55,7 +55,7 @@ function GlobalFilter({
       <CardBody className="border border-dashed border-end-0 border-start-0">
         <form>
           <Row className="g-3">
-            <Col>
+            {/* <Col>
               <div className={(isProductsFilter || isContactsFilter || isCompaniesFilter || isNFTRankingFilter) ? "search-box me-2 mb-2 d-inline-block" : "search-box me-2 mb-2 d-inline-block col-12"}>
                 <input
                   onChange={(e) => {
@@ -73,7 +73,7 @@ function GlobalFilter({
             </Col>
             {isProductsFilter && (
               <ProductsGlobalFilter />
-            )}
+            )} */}
             {isCustomerFilter && (
               <CustomersGlobalFilter />
             )}

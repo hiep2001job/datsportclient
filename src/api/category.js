@@ -38,7 +38,17 @@ const categoryApi = {
         `${BASE_URL}/admin/updatecategory`,
         payload
       );
-      return rs.data;
+      if (rs) {
+        try {
+          const url = `${BASE_URL}/api/getcategorybyid/${rs.data.categoryId}`;
+          const rs2 = await axiosClient.get(url);
+          return rs2.data;
+        } catch (error) {
+          console.log("error", error);
+        }
+      }
+
+      // return rs.data;
     } catch (error) {
       console.log("error", error);
     }

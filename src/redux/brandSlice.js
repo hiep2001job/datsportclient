@@ -20,7 +20,6 @@ const brandSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.success = true;
-        console.log("dataAllBrand: ", payload)
         state.dataAllBrand = payload;
       })
       .addCase(brandActions.getAll.rejected, (state, { payload }) => {

@@ -12,10 +12,14 @@ import { useSelector } from "react-redux";
 
 const App = () => {
   const { message, type } = useSelector((state) => state.toast);
-  <ToastContainer />;
   SwiperCore.use([Autoplay]);
   
-  return <Router />;
+  return (
+    <>
+     <Router />
+     <ToastContainer />;
+    </>
+  );
 };
 
 export default App;

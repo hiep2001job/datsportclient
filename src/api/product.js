@@ -1,10 +1,12 @@
-import axiosClient from './axiosClient';
+import axiosClient from "./axiosClient";
 const BASE_URL = `${process.env.REACT_APP_API_URL}/api`;
 const BASE_ADMIN_URL = `${process.env.REACT_APP_API_URL}/admin`;
 const productApi = {
-  getAll: async (id) => {
+  getAll: async (queryProduct) => {
     try {
-      const rs = await axiosClient.get(`${BASE_URL}/getallproduct/${id}`);
+      const rs = await axiosClient.get(
+        `${BASE_URL}/productpaging?pageNumber=${queryProduct.pageNumber}&pageSize=${queryProduct.pageSize}&keyword=${queryProduct.keyword}`
+      );
       return rs.data;
     } catch (error) {
       console.log("error", error);
@@ -65,7 +67,16 @@ const productApi = {
         `${BASE_ADMIN_URL}/updateproduct`,
         payload
       );
-      return rs.data;
+      if (rs) {
+        try {
+          const rs2 = await axiosClient.get(`${BASE_URL}/getproductbyid/${rs.data.productId}`);
+
+          return rs2.data;
+        } catch (error) {
+          console.log("error", error);
+        }
+      }
+      // return rs.data;
     } catch (error) {
       console.log("error", error);
     }

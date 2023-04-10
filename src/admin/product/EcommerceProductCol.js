@@ -44,10 +44,10 @@ const Published = (cell) => {
   );
 };
 
-const Price = (cell) => {
+const Price = ({value}) => {
   return (
     <React.Fragment>
-      {"$ " + cell.value + ".00"}
+      {"$ " + value + ".00"}
     </React.Fragment>
   );
 };

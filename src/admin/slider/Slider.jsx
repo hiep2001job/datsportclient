@@ -70,18 +70,7 @@ function Slide() {
                       </button>
                     </div>
                   </div>
-                  <div className="col-sm">
-                    <div className="d-flex justify-content-sm-end">
-                      <div className="search-box ms-2">
-                        <input
-                          type="text"
-                          className="form-control search"
-                          placeholder="Search..."
-                        />
-                        <i className="ri-search-line search-icon"></i>
-                      </div>
-                    </div>
-                  </div>
+      
                 </div>
 
                 <div className="table-responsive table-card mt-3 mb-1">
@@ -100,8 +89,7 @@ function Slide() {
                     <tbody className="list form-check-all">
                       {allSlider.map((slider, index) => (
                         <tr key={index}>
-                          <td className="id" style={{ display: "none" }}>
-                          </td>
+                          <td className="id" style={{ display: "none" }}></td>
                           <td className="customer_name">
                             {slider.slider_name}
                           </td>
@@ -109,7 +97,13 @@ function Slide() {
                             <img src={slider.slider_image} width="60%" />
                           </td>
                           <td className="status">
-                            <span className="badge badge-soft-success text-uppercase">
+                            <span
+                              className={`badge badge-soft-${
+                                slider.slider_status === 1
+                                  ? "success"
+                                  : "danger"
+                              } text-uppercase`}
+                            >
                               {statusCategory[slider.slider_status]}
                             </span>
                           </td>

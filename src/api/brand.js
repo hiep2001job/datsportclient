@@ -33,7 +33,17 @@ const brandApi = {
     const url = `${BASE_URL}/admin/updatebrand`;
     try {
       const rs = await axiosClient.post(url, payload);
-      return rs.data;
+      if(rs) {
+        try {
+          const rs2 = await axiosClient.get(
+            `${BASE_URL}/api/getbrandbyid/${rs.data.brand_id}`,
+          );
+          return rs2.data;
+        } catch (error) {
+          console.log("error", error);
+        }
+      }
+      // return rs.data;
     } catch (error) {
       console.log("error", error);
     }

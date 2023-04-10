@@ -1,12 +1,12 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import productApi from '../api/product';
+import productApi from "../api/product";
 
 export const productActions = {
-  getAll: createAsyncThunk("product/getAll", async (id) => {
+  getAll: createAsyncThunk("product/getAll", async (queryProduct) => {
     try {
-      const rs = await productApi.getAll(id);
-      return rs.data;
+      const rs = await productApi.getAll(queryProduct);
+      return rs;
     } catch (error) {
       console.log("error", error);
     }
@@ -14,7 +14,7 @@ export const productActions = {
   getHot: createAsyncThunk("product/getHot", async (id) => {
     try {
       const rs = await productApi.getHotProducts();
-      return rs.data;
+      return rs;
     } catch (error) {
       console.log("error", error);
     }
@@ -24,17 +24,26 @@ export const productActions = {
     async (id) => {
       try {
         const rs = await productApi.getProductByCategoryId(id);
-        return rs.data;
+        return rs;
       } catch (error) {
         console.log("error", error);
       }
     }
   ),
+
+  getSingle: createAsyncThunk("product/getSingle", async (id) => {
+    try {
+      const rs = await productApi.getProductByProductId(id);
+      return rs;
+    } catch (error) {
+      console.log("error", error);
+    }
+  }),
   create: createAsyncThunk("product/create", async (data) => {
     try {
       const rs = await productApi.createProduct(data);
-      console.log("rsData", rs);
-      return rs.data;
+      // console.log("rsData", rs);
+      return rs;
     } catch (error) {
       console.log("error", error);
     }
@@ -50,7 +59,7 @@ export const productActions = {
   update: createAsyncThunk("product/update", async (data) => {
     try {
       const rs = await productApi.updateProduct(data);
-      return rs.data;
+      return rs;
     } catch (error) {
       console.log("error", error);
     }

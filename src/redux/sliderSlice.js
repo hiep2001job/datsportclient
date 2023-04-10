@@ -35,8 +35,7 @@ const sliderSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.success = true;
-        const prevDataAllSlider = state.dataAllSlider;
-        state.dataAllSlider = [...prevDataAllSlider, payload];
+        state.dataAllSlider.push(payload);
       })
       .addCase(sliderActions.create.rejected, (state, { payload }) => {
         state.loading = true;
@@ -69,11 +68,11 @@ const sliderSlice = createSlice({
         state.success = true;
 
         const prevDataAllSlider = state.dataAllSlider;
-        const updatedUserList = prevDataAllSlider.map((category) => {
-          if (category.categoryId === payload.categoryId) {
+        const updatedUserList = prevDataAllSlider.map((slider) => {
+          if (slider.slider_id === payload.slider_id) {
             return payload;
           } else {
-            return category;
+            return slider;
           }
         });
 

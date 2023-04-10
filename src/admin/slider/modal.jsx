@@ -32,6 +32,8 @@ import {
   updateForm,
 } from "../../redux/modalSlice";
 import ContentModalDel from "../components/contentModalDel";
+import imageApi from "../../api/img";
+import uploadIcon from "../../assets/images/Upload-PNG-Image-File.png";
 
 const schema = yup.object().shape({
   slider_name: yup.string().required("Slider name cannot be empty!"),
@@ -68,6 +70,8 @@ function Modals(args) {
     mode: "onBlur",
   });
 
+  const [imageReview, setImageReview] = useState(uploadIcon);
+
   // const onSubmit = (data) => {
   //   const newData = { ...data, id: userDetail.id };
   //   dispatch(updateProfile(newData));
@@ -92,22 +96,34 @@ function Modals(args) {
         dispatch(sliderActions.create(data));
         break;
       case "edit":
-        console.log("update...");
-        dispatch(sliderActions.update(data));
+        // console.log("update...", data);
+        const payloadUpdate  = {...data, slider_id: slider_id};
+        dispatch(sliderActions.update(payloadUpdate));
         dispatch(updateForm());
         break;
       default:
     }
   };
 
+  // handle change event of input file
+  const onChangeFile = () => async (event) => {
+    const imageUrl = event.target.files[0];
+    await imageApi
+      .uploadImage(imageUrl)
+      .then((res) => {
+        setImageReview(res.data.data.display_url); // set the updated array as the new state
+        setValue("slider_image", res.data.data.display_url);
+        // console.log("res img: ", res.data.data.display_url);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   // get category detail
   useEffect(() => {
     if (actionName === "edit") dispatch(sliderActions.getSingle(slider_id));
   }, [actionName]);
-
-  useEffect(() => {
-    console.log("dataSlider: ", dataSlider);
-  }, [dataSlider]);
 
   useEffect(() => {
     if (success && actionName !== "edit") {
@@ -118,6 +134,8 @@ function Modals(args) {
       setValue("slider_name", dataSlider.slider_name);
       setValue("slider_image", dataSlider.slider_image);
       setValue("slider_status", dataSlider.slider_status);
+
+      setImageReview(dataSlider.slider_image || uploadIcon);
     }
   }, [loading, success, error]);
 
@@ -153,8 +171,17 @@ function Modals(args) {
       </div>
       <FormGroup className="mt-2">
         <img src="" width="60%" />
-        <input type="text" name="slider_name" {...register("slider_image")} />
-        <input type="file" />
+        <input type="text" hidden name="slider_name" {...register("slider_image")} />
+        <br />
+        <img src={imageReview} width={"100px"} />
+        <br />
+        <br />
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={onChangeFile()}
+        />
         <p className="text-danger">{errors?.slider_image?.message}</p>
       </FormGroup>
       <FormGroup className="mt-2">

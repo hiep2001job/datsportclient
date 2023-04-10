@@ -74,18 +74,6 @@ function Brand(args) {
                       </button>
                     </div>
                   </div>
-                  <div className="col-sm">
-                    <div className="d-flex justify-content-sm-end">
-                      <div className="search-box ms-2">
-                        <input
-                          type="text"
-                          className="form-control search"
-                          placeholder="Search..."
-                        />
-                        <i className="ri-search-line search-icon"></i>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="table-responsive table-card mt-3 mb-1">
@@ -107,7 +95,7 @@ function Brand(args) {
                     <tbody className="list form-check-all">
                       {allBrand.map((brand, index) => (
                         <tr key={index}>
-                        <td className="id" style={{ display: "none" }}>
+                          <td className="id" style={{ display: "none" }}>
                             <a
                               href="javascript:void(0);"
                               className="fw-medium link-primary"
@@ -115,11 +103,15 @@ function Brand(args) {
                               {brand.brand_id}
                             </a>
                           </td>
-                          <td className="customer_name">
-                            {brand.brand_name}
-                          </td>
+                          <td className="customer_name">{brand.brand_name}</td>
                           <td className="status">
-                            <span className="badge badge-soft-success text-uppercase">
+                            <span
+                              className={`badge badge-soft-${
+                                brand.brand_status === 1
+                                  ? "success"
+                                  : "danger"
+                              } text-uppercase`}
+                            >
                               {statusBrand[brand.brand_status]}
                             </span>
                           </td>
@@ -130,9 +122,7 @@ function Brand(args) {
                                   className="btn btn-sm btn-success edit-item-btn"
                                   data-bs-toggle="modal"
                                   data-bs-target="#showModal"
-                                  onClick={() =>
-                                    handleEdit(brand.brand_id)
-                                  }
+                                  onClick={() => handleEdit(brand.brand_id)}
                                 >
                                   Edit
                                 </button>

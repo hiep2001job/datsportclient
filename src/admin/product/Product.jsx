@@ -1,306 +1,283 @@
-import React, { useEffect, useState, useMemo } from "react";
-
 import {
-  Container,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownItem,
-  DropdownMenu,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledCollapse,
-  Row,
-  Card,
-  CardHeader,
-  Col,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  FormGroup,
+  Label,
+  Input,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
 } from "reactstrap";
-import classnames from "classnames";
+import Modals from "./modal";
 
-import { toast, ToastContainer } from "react-toastify";
-
-// RangeSlider
-import Nouislider from "nouislider-react";
-import "nouislider/distribute/nouislider.css";
-import DeleteModal from "../../component/common/DeleteModal";
-
-import BreadCrumb from "../../component/common/BreadCrumb";
-import TableContainer from "../../component/common/TableContainer";
-import { Rating, Published, Price } from "./EcommerceProductCol";
-//Import data
-import { productsData } from "../../common/data";
-
-//Import actions
-// import { getProducts as onGetProducts, deleteProducts } from "../../store/ecommerce/action";
-import { isEmpty } from "lodash";
-import Select from "react-select";
-
-//redux
+// redux
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { productActions } from "../../redux/productActions";
 
-const Product = (props) => {
+import { openModal, closeModal } from "../../redux/modalSlice";
+import { selectTotalPages, selectLastPage } from "../../redux/productSlice";
+
+import { useEffect, useState } from "react";
+
+function Slide() {
   const dispatch = useDispatch();
+  const allProducts = useSelector((state) => state.product.dataAllProducts);
+  const totalPages = useSelector(selectTotalPages);
+  const lastPage = useSelector(selectLastPage);
 
-  const { products } = [];
-  // const { products } = useSelector((state) => ({
-  //   products: state.Ecommerce.products,
-  // }));
-
-  const [productList, setProductList] = useState([]);
-  const [activeTab, setActiveTab] = useState("1");
-  const [selectedMulti, setselectedMulti] = useState(null);
-  const [product, setProduct] = useState(null);
-
-  function handleMulti(selectedMulti) {
-    setselectedMulti(selectedMulti);
-  }
-
-  // useEffect(() => {
-  //   if (products && !products.length) {
-  //     dispatch(onGetProducts());
-  //   }
-  // }, [dispatch, products]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    setProductList(products);
-  }, [products]);
+    console.log("totalPages: ", totalPages);
+    console.log("pageNumber: ", pageNumber);
+  }, [pageNumber, search]);
 
   useEffect(() => {
-    if (!isEmpty(products)) setProductList(products);
-  }, [products]);
+    //Get active category
 
-  useEffect(() => {
-    onUpdate([0, 2000]);
-  }, []);
+    const queryProduct = {
+      pageNumber: pageNumber,
+      pageSize: 2,
+      keyword: search,
+    };
 
-  const onUpdate = (value) => {
-    setProductList(
-      productsData.filter(
-        (product) => product.price >= value[0] && product.price <= value[1]
-      )
-    );
+    dispatch(productActions.getAll(queryProduct));
+  }, [dispatch, search, pageNumber]);
+
+  //   const toggle = () => setModal(!modal);
+  const handleCreateNew = () => {
+    const payload = { id: "", actionName: "create" };
+    dispatch(openModal(payload));
   };
 
-  //delete order
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [deleteModalMulti, setDeleteModalMulti] = useState(false);
-
-  const onClickDelete = (product) => {
-    setProduct(product);
-    setDeleteModal(true);
+  const handleEdit = (id) => {
+    const payload = { id: id, actionName: "edit" };
+    dispatch(openModal(payload));
   };
 
-  const handleDeleteProduct = () => {
-    if (product) {
-      // dispatch(deleteProducts(product._id));
-      setDeleteModal(false);
-    }
+  const handleRemove = () => {
+    const payload = { id: 27, actionName: "delete" };
+    dispatch(openModal(payload));
   };
 
-  // Display Delete Button
-  const displayDelete = () => {
-    const del = document.getElementById("selection-element");
-  };
-
-  // Delete Multiple
-  const deleteMultiple = () => {
-    const del = document.getElementById("selection-element");
-  };
-
-  const columns = useMemo(
-    () => [
-      {
-        Header: "#",
-        Cell: (cell) => {
-          return (
-            <input
-              type="checkbox"
-              className="productCheckBox form-check-input"
-              value={cell.row.original._id}
-              onClick={() => displayDelete()}
-            />
-          );
-        },
-      },
-      {
-        Header: "Product",
-        Cell: (product) => (
-          <>
-            <div className="d-flex align-items-center">
-              <div className="flex-shrink-0 me-3">
-                <div className="avatar-sm bg-light rounded p-1">
-                  <img
-                    src={
-                      process.env.REACT_APP_API_URL +
-                      "/images/products/" +
-                      product.row.original.image
-                    }
-                    alt=""
-                    className="img-fluid d-block"
-                  />
-                </div>
-              </div>
-              <div className="flex-grow-1">
-                <h5 className="fs-14 mb-1">
-                  <Link
-                    to="/apps-ecommerce-product-details"
-                    className="text-dark"
-                  >
-                    {" "}
-                    {product.row.original.name}
-                  </Link>
-                </h5>
-                <p className="text-muted mb-0">
-                  Category :{" "}
-                  <span className="fw-medium">
-                    {" "}
-                    {product.row.original.category}
-                  </span>
-                </p>
-              </div>
-            </div>
-          </>
-        ),
-      },
-      {
-        Header: "Stock",
-        accessor: "stock",
-        filterable: false,
-      },
-      {
-        Header: "Price",
-        accessor: "price",
-        filterable: false,
-        Cell: (cellProps) => {
-          return <Price {...cellProps} />;
-        },
-      },
-
-      {
-        Header: "Published",
-        accessor: "publishedDate",
-        filterable: false,
-        Cell: (cellProps) => {
-          return <Published {...cellProps} />;
-        },
-      },
-      {
-        Header: "Action",
-        Cell: (cellProps) => {
-          return (
-            <UncontrolledDropdown>
-              <DropdownToggle
-                href="#"
-                className="btn-soft-secondary btn-sm"
-                tag="button"
-              >
-                <i className="ri-more-fill" />
-              </DropdownToggle>
-              <DropdownMenu className="dropdown-menu-end">
-                <DropdownItem href="apps-ecommerce-product-details">
-                  <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
-                  View
-                </DropdownItem>
-
-                <DropdownItem href="apps-ecommerce-add-product">
-                  <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
-                  Edit
-                </DropdownItem>
-
-                <DropdownItem divider />
-                <DropdownItem
-                  href="#"
-                  onClick={() => {
-                    const productData = cellProps.row.original;
-                    onClickDelete(productData);
-                  }}
-                >
-                  <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
-                  Delete
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          );
-        },
-      },
-    ],
-    []
-  );
-  document.title = "Products | Velzon - React Admin & Dashboard Template";
+  const statusProduct = ["Disnable", "Enabled"];
 
   return (
-    <div className="page-content">
-      <ToastContainer closeButton={false} limit={1} />
-      <DeleteModal
-        show={deleteModal}
-        onDeleteClick={handleDeleteProduct}
-        onCloseClick={() => setDeleteModal(false)}
-      />
-      <DeleteModal
-        show={deleteModalMulti}
-        onDeleteClick={() => {
-          deleteMultiple();
-          setDeleteModalMulti(false);
-        }}
-        onCloseClick={() => setDeleteModalMulti(false)}
-      />
-      <Container fluid>
-        <BreadCrumb title="Products" pageTitle="Ecommerce" />
-        <Row>
-          <div className="col-xl-9 col-lg-8">
-            <div>
-              <div className="card">
-                <div className="card-body pt-0">
-                  {productList && productList.length > 0 ? (
-                    <TableContainer
-                      columns={columns}
-                      data={productList || []}
-                      isGlobalFilter={true}
-                      isAddUserList={false}
-                      customPageSize={10}
-                      divClass="table-responsive mb-1"
-                      tableClass="mb-0 align-middle table-borderless"
-                      theadClass="table-light text-muted"
-                      isProductsFilter={true}
-                      SearchPlaceholder="Search Products..."
-                    />
-                  ) : (
-                    <div className="py-4 text-center">
-                      <div>
-                        <lord-icon
-                          src="https://cdn.lordicon.com/msoeawqm.json"
-                          trigger="loop"
-                          colors="primary:#405189,secondary:#0ab39c"
-                          style={{ width: "72px", height: "72px" }}
-                        ></lord-icon>
-                      </div>
+    <>
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="card">
+            <div className="card-header">
+              <h4 className="card-title mb-0">Add, Edit & Remove</h4>
+            </div>
 
-                      <div className="mt-4">
-                        <h5>Sorry! No Result Found</h5>
+            <div className="card-body">
+              <div id="customerList">
+                <div className="row g-4 mb-3">
+                  <div className="col-sm-auto">
+                    <div>
+                      <button
+                        type="button"
+                        className="btn btn-success add-btn"
+                        data-bs-toggle="modal"
+                        id="create-btn"
+                        data-bs-target="#showModal"
+                        onClick={handleCreateNew}
+                      >
+                        <i className="ri-add-line align-bottom me-1"></i> Add
+                      </button>
+                    </div>
+                  </div>
+                  <div className="col-sm">
+                    <div className="d-flex justify-content-sm-end">
+                      <div className="search-box ms-2">
+                        <input
+                          type="text"
+                          className="form-control search"
+                          placeholder="Search..."
+                          onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <i className="ri-search-line search-icon"></i>
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
 
-                {/* <div className="card-body">
-                  <TabContent className="text-muted">
-                    <TabPane>
-                      <div
-                        id="table-product-list-all"
-                        className="table-card gridjs-border-none pb-2"
-                      >
-                      </div>
-                    </TabPane>
-                  </TabContent>
-                </div> */}
+                <div className="table-responsive table-card mt-3 mb-1">
+                  <table
+                    className="table align-middle table-nowrap"
+                    id="customerTable"
+                  >
+                    <thead className="table-light">
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Image</th>
+                        <th>Category</th>
+                        <th>Brand</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>product Hot</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="list form-check-all">
+                      {allProducts.map((product, index) => (
+                        <tr key={index}>
+                          <td className="id" style={{ display: "none" }}></td>
+                          <td className="customer_name">
+                            {product.productName}
+                          </td>
+                          <td className="customer_name">
+                            <img src={product.productImage1} width="100px" />
+                          </td>
+                          <td className="category">
+                            <span className="">
+                              {product.category.categoryName}
+                            </span>
+                          </td>
+                          <td className="brand">
+                            <span className="">{product.brand.brandName}</span>
+                          </td>
+                          <td className="price">
+                            <span className="">
+                              {product.productPrice.toLocaleString("en-US", {
+                                style: "currency",
+                                currency: "USD",
+                              })}
+                            </span>
+                          </td>
+                          <td className="productQuantity">
+                            <span className="">{product.productQuantity}</span>
+                          </td>
+                          <td className="productHot">
+                            <span className="">
+                              {product.productHot === true ? "Hot" : "Normal"}
+                            </span>
+                          </td>
+                          <td className="status">
+                            <span
+                              className={`badge badge-soft-${
+                                product.productStatus === 1
+                                  ? "success"
+                                  : "danger"
+                              } text-uppercase`}
+                            >
+                              {statusProduct[product.productStatus]}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              <div className="edit">
+                                <button
+                                  className="btn btn-sm btn-success edit-item-btn"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#showModal"
+                                  onClick={() => handleEdit(product.productId)}
+                                >
+                                  Edit
+                                </button>
+                              </div>
+                              <div className="remove">
+                                <button
+                                  className="btn btn-sm btn-danger remove-item-btn"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#deleteRecordModal"
+                                  onClick={handleRemove}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="noresult" style={{ display: "none" }}>
+                    <div className="text-center">
+                      {/* <lord-icon
+                        src="https://cdn.lordicon.com/msoeawqm.json"
+                        trigger="loop"
+                        colors="primary:#121331,secondary:#08a88a"
+                        style="width:75px;height:75px"
+                      ></lord-icon> */}
+                      <h5 className="mt-2">Sorry! No Result Found</h5>
+                      <p className="text-muted mb-0">
+                        We've searched more than 150+ Orders We did not find any
+                        orders for you search.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <Pagination>
+                  <PaginationItem>
+                    <PaginationLink
+                      previous
+                      onClick={() => setPageNumber(pageNumber - 1)}
+                    />
+                  </PaginationItem>
+                  {Array(totalPages)
+                    .fill()
+                    .map((_, index) => (
+                      <PaginationItem key={index}>
+                        <PaginationLink onClick={() => setPageNumber(index)}>
+                          {index + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+
+                  {lastPage || (
+                    <PaginationItem>
+                      <PaginationLink
+                        next
+                        onClick={() => setPageNumber(pageNumber + 1)}
+                      />
+                    </PaginationItem>
+                  )}
+                </Pagination>
               </div>
             </div>
           </div>
-        </Row>
-      </Container>
-    </div>
-  );
-};
+        </div>
+      </div>
 
-export default Product;
+      {/* <Modal isOpen={modal} toggle={toggle} {...args}>
+        <ModalHeader toggle={toggle}>Add New Category</ModalHeader>
+        <ModalBody>
+          <div>
+            <Label for="labelInput" className="form-label">
+              Category Name
+            </Label>
+            <input className="form-control" id="labelInput" />
+          </div>
+
+          <FormGroup className="mt-2">
+            <Label for="exampleSelect">Category Status</Label>
+            <Input id="exampleSelect" name="select" type="select">
+              <option value={0}>Off</option>
+              <option value={1}>On</option>
+            </Input>
+          </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="success" onClick={toggle}>
+            Add
+          </Button>{" "}
+          <Button color="secondary" onClick={toggle}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal> */}
+
+      <Modals />
+    </>
+  );
+}
+
+export default Slide;
