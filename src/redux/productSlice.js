@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { productActions } from "./productActions";
+import { toast } from "react-toastify";
 
 const productSlice = createSlice({
   name: "product",
@@ -35,16 +36,25 @@ const productSlice = createSlice({
       .addCase(productActions.create.pending, (state, { payload }) => {
         state.loading = true;
         state.error = null;
+        toast.success("Add new product Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(productActions.create.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.error = null;
         state.success = true;
         state.dataAllProducts.push(payload);
+        toast.success("Add new product Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(productActions.create.rejected, (state, { payload }) => {
         state.loading = true;
         state.error = payload;
+        toast.error("Add new product falied!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
 
       .addCase(productActions.getSingle.pending, (state, { payload }) => {
@@ -82,10 +92,17 @@ const productSlice = createSlice({
         });
 
         state.dataAllProducts = updatedProductList;
+        toast.success("Update product Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(productActions.update.rejected, (state, { payload }) => {
         state.loading = true;
         state.error = payload;
+
+        toast.error("Update product falied!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   },
 });

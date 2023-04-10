@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { brandActions } from "./brandActions";
+import { toast } from "react-toastify";
 
 const brandSlice = createSlice({
   name: "brand",
@@ -37,10 +38,16 @@ const brandSlice = createSlice({
         state.success = true;
         const prevDataAllBrand = state.dataAllBrand;
         state.dataAllBrand = [...prevDataAllBrand, payload];
+        toast.success("Add new brand Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(brandActions.create.rejected, (state, { payload }) => {
         state.loading = true;
         state.error = payload;
+        toast.error("Add new brand falied!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
 
       .addCase(brandActions.getSingle.pending, (state, { payload }) => {
@@ -78,10 +85,18 @@ const brandSlice = createSlice({
         });
 
         state.dataAllBrand = updatedUserList;
+
+        toast.success("Update brand Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(brandActions.update.rejected, (state, { payload }) => {
         state.loading = true;
         state.error = payload;
+
+        toast.error("Update brand falied!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   },
 });

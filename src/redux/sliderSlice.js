@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { sliderActions } from "./sliderActions";
+import { toast } from "react-toastify";
+
 
 const sliderSlice = createSlice({
   name: "slider",
@@ -36,10 +38,18 @@ const sliderSlice = createSlice({
         state.error = null;
         state.success = true;
         state.dataAllSlider.push(payload);
+
+        toast.success("Add new slider Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(sliderActions.create.rejected, (state, { payload }) => {
         state.loading = true;
         state.error = payload;
+
+        toast.error("Add neư slider falied!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
 
       .addCase(sliderActions.getSingle.pending, (state, { payload }) => {
@@ -78,10 +88,18 @@ const sliderSlice = createSlice({
 
         // console.log("updatedUserList", updatedUserList);
         state.dataAllSlider = updatedUserList;
+
+        toast.success("Update slider Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(sliderActions.update.rejected, (state, { payload }) => {
         state.loading = true;
         state.error = payload;
+
+        toast.error("Update slider falied!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   },
 });

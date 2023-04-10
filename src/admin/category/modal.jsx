@@ -38,11 +38,7 @@ const schema = yup.object().shape({
   categoryName: yup.string().required("Category name cannot be empty!"),
   categoryStatus: yup
     .mixed()
-    .test(
-      "is-status-valid",
-      "Category status must be either 'On' or 'Off'!",
-      (value) => value === "0" || value === "1"
-    )
+    .notOneOf(["0"], "Invalid category selected!")
     .required("Category status cannot be empty!"),
 });
 

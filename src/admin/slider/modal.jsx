@@ -39,11 +39,7 @@ const schema = yup.object().shape({
   slider_name: yup.string().required("Slider name cannot be empty!"),
   slider_status: yup
     .mixed()
-    .test(
-      "is-status-valid",
-      "Slider status must be either 'On' or 'Off'!",
-      (value) => value === "0" || value === "1"
-    )
+    .notOneOf(["0"], "Invalid status selected!")
     .required("Category status cannot be empty!"),
 
   slider_image: yup.string().required("Please upload a file image"),

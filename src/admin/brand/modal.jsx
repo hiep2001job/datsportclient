@@ -38,11 +38,7 @@ const schema = yup.object().shape({
   brand_name: yup.string().required("Brand name cannot be empty!"),
   brand_status: yup
     .mixed()
-    .test(
-      "is-status-valid",
-      "Brand status must be either 'On' or 'Off'!",
-      (value) => value === "0" || value === "1"
-    )
+    .notOneOf(["0"], "Invalid brand selected!")
     .required("Brand status cannot be empty!"),
 });
 

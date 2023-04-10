@@ -31,17 +31,17 @@ function Slide() {
   const [pageNumber, setPageNumber] = useState(0);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    console.log("totalPages: ", totalPages);
-    console.log("pageNumber: ", pageNumber);
-  }, [pageNumber, search]);
+  // useEffect(() => {
+  //   console.log("totalPages: ", totalPages);
+  //   console.log("pageNumber: ", pageNumber);
+  // }, [pageNumber, search]);
 
   useEffect(() => {
     //Get active category
 
     const queryProduct = {
       pageNumber: pageNumber,
-      pageSize: 2,
+      pageSize: 4,
       keyword: search,
     };
 

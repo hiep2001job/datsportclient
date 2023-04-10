@@ -51,18 +51,13 @@ const schema = yup.object().shape({
     .mixed()
     .notOneOf(["0"], "Invalid brand selected!")
     .required("Brand status cannot be empty!"),
-
   productPrice: yup.string().required("Price cannot be empty!"),
   productQuantity: yup.string().required("Quantity cannot be empty!"),
   productImage1: yup.string().required("Please upload a file image 1"),
   productStatus: yup
     .mixed()
-    .test(
-      "is-status-valid",
-      "Product status must be either 'On' or 'Off'!",
-      (value) => value === "0" || value === "1"
-    )
-    .required("Product status cannot be empty!"),
+    .notOneOf(["0"], "Invalid category selected!")
+    .required("Product status must be either 'On' or 'Off'!")
 });
 
 function Modals(args) {
@@ -204,6 +199,9 @@ function Modals(args) {
       setValue("productPrice", dataProduct.productPrice);
       setValue("productQuantity", dataProduct.productQuantity);
 
+      setValue("categoryId", dataProduct.category.categoryId);
+      setValue("brandId", dataProduct.brand.brandId);
+
       setValue("productImage1", dataProduct.productImage1);
       setValue("productImage2", dataProduct.productImage2);
       setValue("productImage3", dataProduct.productImage3);
@@ -336,9 +334,9 @@ function Modals(args) {
       </FormGroup>
       <FormGroup className="mt-2">
         <Label for="brandSelect">Description</Label>
-        <br/>
+        <br />
         <textarea
-        style={{width: "100%", height: "30%"}}
+          style={{ width: "100%", height: "30%" }}
           name="productDescription"
           {...register("productDescription")}
         />

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { categoryActions } from "./categoryActions";
+import { toast } from "react-toastify";
 
 const categorySlice = createSlice({
   name: "category",
@@ -37,10 +38,17 @@ const categorySlice = createSlice({
         state.success = true;
         const prevDataAllCategory = state.dataAllCategory;
         state.dataAllCategory = [...prevDataAllCategory, payload];
+        toast.success("Add new category Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(categoryActions.create.rejected, (state, { payload }) => {
         state.loading = true;
         state.error = payload;
+
+        toast.error("Add new category falied!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
 
       .addCase(categoryActions.getSingle.pending, (state, { payload }) => {
@@ -79,10 +87,18 @@ const categorySlice = createSlice({
 
         // console.log("updatedUserList", updatedUserList);
         state.dataAllCategory = updatedUserList;
+
+        toast.success("Update category Success!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(categoryActions.update.rejected, (state, { payload }) => {
         state.loading = true;
         state.error = payload;
+
+        toast.error("Add category falied!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
   },
 });
