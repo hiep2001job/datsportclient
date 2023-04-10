@@ -19,7 +19,7 @@ const App = () => {
   return (
     <>
      <Router />
-     <ToastContainer />;
+    <ToastContainer />;
     </>
   );
 };
