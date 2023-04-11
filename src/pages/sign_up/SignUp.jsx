@@ -10,9 +10,18 @@ const Login = () => {
   const [typePassword, setTypePassword] = useState("password");
   const dispatch = useDispatch();
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    mode: "onBlur",
+  });
+
   const handleClickBtnSubmit = (data) => {
     dispatch(registerUser(data));
-    navigate("/login");
+    reset();
   };
 
   const handleClickRedirectLogin = () => {
@@ -24,13 +33,7 @@ const Login = () => {
       ? setTypePassword("text")
       : setTypePassword("password");
   const handleErrors = (errors) => {};
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    mode: "onBlur",
-  });
+
   const loginOptions = {
     email: {
       required: "Email cannot be empty!",
@@ -40,6 +43,13 @@ const Login = () => {
       },
     },
     username: {
+      required: "Username cannot be empty!",
+      minLength: {
+        value: 5,
+        message: "Username must be at least 5 characters",
+      },
+    },
+    userfullname: {
       required: "Username cannot be empty!",
       minLength: {
         value: 5,
@@ -190,6 +200,31 @@ const Login = () => {
                                 errors.retypepassword.message}
                             </small>
                           </div>
+
+                          <div className="form-outline mb-4">
+                            <input
+                              id="form2Example17"
+                              className="form-control form-control-lg"
+                              type="text"
+                              placeholder="Fullname"
+                              name="userfullname"
+                              {...register(
+                                "userfullname",
+                                loginOptions.userfullname
+                              )}
+                            />
+                            <label
+                              className="form-label"
+                              htmlFor="form2Example17"
+                            >
+                              Full name
+                            </label>
+                            <small className="text-red-500 ml-5">
+                              {errors?.userfullname &&
+                                errors.userfullname.message}
+                            </small>
+                          </div>
+
                           <div className="form-outline mb-4">
                             <input
                               id="form2Example17"
@@ -335,7 +370,6 @@ const Login = () => {
           </div>
         </section>
       </div>
-
     </React.Fragment>
   );
 };

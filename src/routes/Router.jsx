@@ -67,6 +67,7 @@ const Router = () => {
           <Route path="slider" element={<Slider />} />
           <Route path="posts" element={<Posts />} />
           <Route path="order" element={<Order />} />
+          <Route path="profile" element={<InfoProfile />} />
           <Route path="process-order/:billId" element={<ProcessOrder />} />
         </Route>
         <Route path="/*" element={<Navigate to="/admin" replace />} />

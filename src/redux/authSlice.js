@@ -54,12 +54,17 @@ const authSlice = createSlice({
         state.success=false;
       })
       .addCase(registerUser.fulfilled, (state, { payload }) => {
-        state.loading = false;
-        state.success=true;
+        state.loading = false;        
+        toast.success("Register success !", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(registerUser.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+        toast.error("Register false! "+payload, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .addCase(getProfile.pending, (state, { payload }) => {
         state.loading = true;
