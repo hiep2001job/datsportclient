@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Link } from 'react-router-dom';
 import { Dropdown, DropdownMenu, DropdownToggle, Form } from 'reactstrap';
-import ProfileDropdown from "../../share/header/profile_dropdown/ProfileDropdown";
+import AdminProfileDropdown from "./AdminProfileDropdown";
 import Logo from "../../assets/images/logo.png";
 
 const Header = () => {
@@ -43,7 +43,7 @@ const Header = () => {
 
                 <div className="d-flex align-items-center"> 
                     {/* ProfileDropdown */}
-                    <ProfileDropdown />
+                    <AdminProfileDropdown />
                 </div>
             </div>
         </div>

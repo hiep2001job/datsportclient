@@ -74,8 +74,8 @@ const Sidebar = () => {
         let curPath = window.location.pathname;
 
         if(curPath.includes('/process-order')) curPath='/admin/order';
-        if(curPath==='/admin')curPath='/admin/product';
-        
+        if(curPath==='/admin'||curPath==='/admin/profile')curPath='/admin/product';
+
         const activeItem = sidebarNavItems.findIndex(item => item.section === curPath);
         setActiveIndex(curPath.length === 0 ? 0 : activeItem);
         
