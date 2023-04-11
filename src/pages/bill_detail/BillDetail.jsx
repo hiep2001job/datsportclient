@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -6,7 +6,7 @@ import {
   Container,
   Row,
   CardHeader,
-  Collapse
+  Collapse,
 } from "reactstrap";
 
 import classnames from "classnames";
@@ -19,25 +19,35 @@ import ProductDetails from "./ProductDetails";
 import avatar3 from "../../assets/images/users/avatar-3.jpg";
 
 import { useDispatch, useSelector } from "react-redux";
-import {fetchOrderById} from '../../redux/orderSlice'
+import { fetchOrderById, updateOrder } from "../../redux/orderSlice";
 
 const BillDetail = (props) => {
   const { billId } = useParams();
   const dispatch = useDispatch();
 
-  const {selectedOrder,billDetails}=useSelector((state=>state.order));
-  
-  useEffect(() => {
-    if(selectedOrder==null||selectedOrder.billId!==billId){
-      dispatch(fetchOrderById({billId}));
-      
-    }
-   
-  }, [dispatch,billId]);
+  const { selectedOrder, billDetails } = useSelector((state) => state.order);
 
-  const handleCancelOrder=()=>{
-    
-  }
+  const CANCEL_STATUS = 3;
+  const handleCancelOrder =async () => {
+    await dispatch(
+      updateOrder({
+        bill_id: selectedOrder.billId,
+        user_id: selectedOrder.account.userId,
+        bill_total: selectedOrder.billTotal,
+        bill_payment: selectedOrder.billPayment,
+        bill_address_ship: selectedOrder.billAddressShip,
+        bill_date: selectedOrder.billDate,
+        bill_status: CANCEL_STATUS,
+      })
+    );
+    dispatch(fetchOrderById({ billId }));
+  };
+
+  useEffect(() => {
+    if (selectedOrder == null || selectedOrder.billId !== billId) {
+      dispatch(fetchOrderById({ billId }));
+    }
+  }, [dispatch, billId]);
 
   const [col1, setcol1] = useState(true);
   const [col2, setcol2] = useState(true);
@@ -55,10 +65,10 @@ const BillDetail = (props) => {
     setcol3(!col3);
   }
 
-document.title ="Order Details | Velzon - React Admin & Dashboard Template";
+  document.title = "Order Details | Velzon - React Admin & Dashboard Template";
   return (
     <div className="page-content">
-      <Container fluid>        
+      <Container fluid>
         <BreadCrumb title="Order Details" pageTitle="Ecommerce" />
 
         <Row>
@@ -66,17 +76,39 @@ document.title ="Order Details | Velzon - React Admin & Dashboard Template";
             <Card>
               <CardHeader>
                 <div className="d-flex align-items-center">
-                  <h5 className="card-title flex-grow-1 mb-0">Bill #{selectedOrder?.billId}</h5>
+                  <div className="flex-grow-1">
+                    <h5 className="card-title  mb-0">
+                      Bill #{selectedOrder?.billId}
+                    </h5>
+                    {(selectedOrder?.billStatus == 1 && (
+                      <span className="badge text-uppercase badge-soft-primary">
+                        {" "}
+                        Processing...{" "}
+                      </span>
+                    )) ||
+                      (selectedOrder?.billStatus == 2 && (
+                        <span className="badge text-uppercase badge-soft-success">
+                          {" "}
+                          Confirmed{" "}
+                        </span>
+                      )) ||
+                      (selectedOrder?.billStatus == 3 && (
+                        <span className="badge text-uppercase badge-soft-danger">
+                          {" "}
+                          Cancelled{" "}
+                        </span>
+                      ))}
+                  </div>
+
                   <div className="flex-shrink-0 mt-2 mt-sm-0">
-                    
+                  {(selectedOrder?.billStatus == 1||selectedOrder?.billStatus == 2)&&
                     <button
-                      to="#"
-                      onclick={handleCancelOrder}
-                      className="btn btn-soft-danger btn-sm mt-2 mt-sm-0"
+                      onClick={handleCancelOrder}
+                      className="btn btn-soft-danger btn-sm mt-2 mt-sm-0" 
                     >
                       <i className="mdi mdi-archive-remove-outline align-middle me-1"></i>{" "}
                       Cancel Order
-                    </button>
+                    </button>}
                   </div>
                 </div>
               </CardHeader>
@@ -88,7 +120,7 @@ document.title ="Order Details | Velzon - React Admin & Dashboard Template";
                         <th scope="col">Product Details</th>
                         <th scope="col">Item Price</th>
                         <th scope="col">Quantity</th>
-                       
+
                         <th scope="col" className="text-end">
                           Total Amount
                         </th>
@@ -105,12 +137,16 @@ document.title ="Order Details | Velzon - React Admin & Dashboard Template";
                             <tbody>
                               <tr>
                                 <td>Sub Total :</td>
-                                <td className="text-end">{formatVnd(billDetails[0]?.bill?.billTotal)}</td>
+                                <td className="text-end">
+                                  {formatVnd(billDetails[0]?.bill?.billTotal)}
+                                </td>
                               </tr>
-                          
+
                               <tr className="border-top border-top-dashed">
                                 <th scope="row">Total (VND) :</th>
-                                <th className="text-end">{formatVnd(billDetails[0]?.bill?.billTotal)}</th>
+                                <th className="text-end">
+                                  {formatVnd(billDetails[0]?.bill?.billTotal)}
+                                </th>
                               </tr>
                             </tbody>
                           </table>
@@ -121,13 +157,9 @@ document.title ="Order Details | Velzon - React Admin & Dashboard Template";
                 </div>
               </CardBody>
             </Card>
-
-          
           </Col>
 
           <Col xl={3}>
-           
-
             <Card>
               <CardHeader>
                 <div className="d-flex">
@@ -153,8 +185,12 @@ document.title ="Order Details | Velzon - React Admin & Dashboard Template";
                         />
                       </div>
                       <div className="flex-grow-1 ms-3">
-                        <h6 className="fs-14 mb-1">{selectedOrder?.account?.userFullname}</h6>
-                        <p className="text-muted mb-0">{selectedOrder?.account?.userEmail}</p>
+                        <h6 className="fs-14 mb-1">
+                          {selectedOrder?.account?.userFullname}
+                        </h6>
+                        <p className="text-muted mb-0">
+                          {selectedOrder?.account?.userEmail}
+                        </p>
                       </div>
                     </div>
                   </li>
@@ -179,10 +215,11 @@ document.title ="Order Details | Velzon - React Admin & Dashboard Template";
               </CardHeader>
               <CardBody>
                 <ul className="list-unstyled vstack gap-2 fs-13 mb-0">
-                  <li className="fw-medium fs-14">{selectedOrder?.account?.userFullname}</li>
+                  <li className="fw-medium fs-14">
+                    {selectedOrder?.account?.userFullname}
+                  </li>
                   <li>{selectedOrder?.account?.userPhone}</li>
                   <li>{selectedOrder?.userAddress}</li>
-                 
                 </ul>
               </CardBody>
             </Card>
@@ -196,10 +233,11 @@ document.title ="Order Details | Velzon - React Admin & Dashboard Template";
               </CardHeader>
               <CardBody>
                 <ul className="list-unstyled vstack gap-2 fs-13 mb-0">
-                  <li className="fw-medium fs-14">{selectedOrder?.account?.userFullname}</li>
+                  <li className="fw-medium fs-14">
+                    {selectedOrder?.account?.userFullname}
+                  </li>
                   <li>{selectedOrder?.account?.userEmail}</li>
                   <li>{selectedOrder?.billAddressShip}</li>
-                  
                 </ul>
               </CardBody>
             </Card>
@@ -249,7 +287,9 @@ document.title ="Order Details | Velzon - React Admin & Dashboard Template";
                     <p className="text-muted mb-0">Total Amount:</p>
                   </div>
                   <div className="flex-grow-1 ms-2">
-                    <h6 className="mb-0">{formatVnd(selectedOrder?.billTotal)}</h6>
+                    <h6 className="mb-0">
+                      {formatVnd(selectedOrder?.billTotal)}
+                    </h6>
                   </div>
                 </div>
               </CardBody>

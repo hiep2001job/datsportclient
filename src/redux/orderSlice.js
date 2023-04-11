@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchOrdersApi, fetchOrderByIdApi } from '../api/bill';
+import { fetchOrdersApi, fetchOrderByIdApi,updateOrderApi } from '../api/bill';
 
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', async (payload) => {
   const orders = await fetchOrdersApi(payload);
@@ -8,6 +8,12 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async (payload
 
 export const fetchOrderById = createAsyncThunk('orders/fetchOrderById', async (orderId) => {
   const order = await fetchOrderByIdApi(orderId);
+  return order;
+});
+
+
+export const updateOrder = createAsyncThunk('orders/updateOrder', async (payload) => {
+  const order = await updateOrderApi(payload);
   return order;
 });
 
@@ -44,6 +50,16 @@ const ordersSlice = createSlice({
         console.log(action.payload[0].bill);
       })
       .addCase(fetchOrderById.rejected, (state, action) => {
+        console.error(action.error);
+      })
+      .addCase(updateOrder.pending, (state) => {
+        
+      })
+      .addCase(updateOrder.fulfilled, (state, action) => {
+        state.selectedOrder = action.payload;
+        console.log(action.payload);
+      })
+      .addCase(updateOrder.rejected, (state, action) => {
         console.error(action.error);
       });
   },

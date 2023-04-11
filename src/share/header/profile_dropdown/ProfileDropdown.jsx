@@ -20,8 +20,8 @@ const ProfileDropdown = () => {
   const navigate = useNavigate();
 
   const handleClickLogout = async () => {
+    navigate("/");
     await dispatch(logout());
-    navigate("/login");
   };
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
   const toggleProfileDropdown = () => {

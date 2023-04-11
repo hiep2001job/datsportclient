@@ -44,3 +44,8 @@ export const fetchOrderByIdApi = async ({billId}) => {
   const response = await axiosClient.get(`${BASE_URL}/api/getdetailbillbybillid/${billId}`);
   return response.data;
 };
+
+export const updateOrderApi = async (payload) => {
+  const response = await axiosClient.post(`${BASE_URL}/api/checkout`, payload);
+  return response.data;
+};

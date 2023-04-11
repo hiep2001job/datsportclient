@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from "./authActions";
+import { loginUser, registerUser,getProfile } from "./authActions";
 
 const authToken = localStorage.getItem("auth_token");
 const data = JSON.parse(localStorage.getItem("data_user"));
@@ -11,7 +11,8 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     success: false,
-    userDetail: 'ok'
+    userDetail: null,
+    userProfile:{}
   },
   reducers: {
     updateUser: (state, action) => {
@@ -49,11 +50,28 @@ const authSlice = createSlice({
       .addCase(registerUser.pending, (state, { payload }) => {
         state.loading = true;
         state.error = null;
+        state.success=false;
       })
       .addCase(registerUser.fulfilled, (state, { payload }) => {
         state.loading = false;
+        state.success=true;
       })
       .addCase(registerUser.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      .addCase(getProfile.pending, (state, { payload }) => {
+        state.loading = true;
+        state.error = null;
+        state.success=false;
+      })
+      .addCase(getProfile.fulfilled, (state, { payload }) => {
+        state.userProfile=payload;
+        
+        state.loading = false;
+        state.success=true;
+      })
+      .addCase(getProfile.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
       });

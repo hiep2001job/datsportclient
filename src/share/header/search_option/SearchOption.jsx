@@ -16,7 +16,7 @@ const SearchOption = () => {
 
   const onChangeData = async (value) => {
     setValue(value);
-    const searchResult=await productApi.searchProduct(value);
+    const searchResult=await productApi.getAll({pageNumber:0,pageSize:5,keyword:value});
     setProducts(searchResult.content);
     console.log(searchResult);
   };
@@ -64,7 +64,7 @@ const SearchOption = () => {
 
   return (
     <React.Fragment>
-      <form className="app-search d-none d-md-block">
+      <form className="app-search d-none d-md-block p-2">
         <div className="position-relative">
           <Input
             type="text"
@@ -109,11 +109,11 @@ const SearchOption = () => {
             </div>
           </SimpleBar>
 
-          <div className="text-center pt-3 pb-1">
+          {/* <div className="text-center pt-3 pb-1">
             <Link to="/pages-search-results" className="btn btn-primary btn-sm">
               View All Results <i className="ri-arrow-right-line ms-1"></i>
             </Link>
-          </div>
+          </div> */}
         </div>
       </form>
     </React.Fragment>

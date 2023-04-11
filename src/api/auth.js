@@ -8,11 +8,14 @@ const authApi = {
   },
   register: async (payload) => {
     const url = `${BASE_URL}/api/register`;
-    return await axiosClient.post(url, payload);
+    const rs= await axiosClient.post(url, payload);
+    console.log("regis:",rs);
+    return rs;
   },
   getDetails: async (payload) => {
     const url = `${BASE_URL}/api/findaccountbyusername`;
-    return await axiosClient.post(url, payload);
+   const rs=await axiosClient.post(url, payload);
+   return rs;
   },
   updateProfile: async (payload) => {
     const url = `${BASE_URL}/api/updateinforaccount`;

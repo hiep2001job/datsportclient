@@ -9,6 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [typePassword, setTypePassword] = useState("password");
   const dispatch = useDispatch();
+
   const handleClickBtnSubmit = (data) => {
     dispatch(registerUser(data));
     navigate("/login");
@@ -78,189 +79,263 @@ const Login = () => {
 
   return (
     <React.Fragment>
-      <div className="w-full h-screen flex justify-center items-center bg-white">
-        <div className="flex justify-center items-center h-90% w-2/3 rounded-sm shadow-md lg:w-full md:w-full lg:shadow-none  sm:w-full sm:shadow-none">
-          <div className="h-full w-2/3 lg:w-2/3 md:w-2/3 sm:hidden">
-            <img
-              className="h-full w-full pl-8"
-              src={loginLogo}
-              alt="background left"
-            />
-          </div>
-          <div className="h-full w-1/3 px-6 pt-4 rounded-sm sm:w-full items-center justify-center flex-col mt-auto mb-auto">
-            <h2
-              className="text-black
-           font-bold text-40 uppercase text-center mb-4"
-            >
-              Sign up
-            </h2>
-            <form
-              onSubmit={handleSubmit(handleClickBtnSubmit, handleErrors)}
-              className="w-full"
-            >
-              {/* email  */}
-              <div className="w-full">
-                <input
-                  className="input-primary-signup w-full text-15"
-                  type="email"
-                  placeholder="Email"
-                  name="email"
-                  {...register("email", loginOptions.email)}
-                />
-              </div>
-              <small className="text-red-500">
-                {errors?.email && errors.email.message}
-              </small>
-              {/* username */}
-              <div className="w-full">
-                <input
-                  className="input-primary-signup w-full text-15 mt-4 mb-1"
-                  type="text"
-                  placeholder="Username"
-                  name="username"
-                  {...register("username", loginOptions.username)}
-                />
-              </div>
-              <small className="text-red-500">
-                {errors?.username && errors.username.message}
-              </small>
-              {/* password */}
-              <div className="w-full relative">
-                <input
-                  type={typePassword}
-                  className="input-primary-signup mt-4 mb-1 text-15 w-full"
-                  placeholder="Password"
-                  name="password"
-                  {...register("password", loginOptions.password)}
-                />
+      <div className="login-wrapper">
+        <section className="vh-100" style={{ backgroundColor: "##eeeeee" }}>
+          <div className="container py-5 h-100">
+            <div className="row d-flex justify-content-center align-items-center h-100">
+              <div className="col col-xl-10">
+                <div className="card" style={{ borderRadius: "1rem" }}>
+                  <div className="row g-0">
+                    <div className="col-md-6 col-lg-5 d-none d-md-block">
+                      <img
+                        src={loginLogo}
+                        alt="login form"
+                        className="img-fluid"
+                        style={{ borderRadius: "1rem 0 0 1rem" }}
+                      />
+                    </div>
+                    <div className="col-md-6 col-lg-7 d-flex align-items-center">
+                      <div className="card-body p-4 p-lg-5 text-black">
+                        <form
+                          onSubmit={handleSubmit(
+                            handleClickBtnSubmit,
+                            handleErrors
+                          )}
+                        >
+                          <div className="d-flex align-items-center mb-3 pb-1">
+                            <i
+                              className="fas fa-cubes fa-2x me-3"
+                              style={{ color: "#ff6219" }}
+                            ></i>
+                            <span className="h1 fw-bold mb-0">Datsport</span>
+                          </div>
 
-                <span
-                  onClick={handleClickToggleShowPassword}
-                  className=" cursor-pointer absolute right-2 top-1/2"
-                >
-                  <BiShow size={15} />
-                </span>
-              </div>
-              <small className="text-red-500">
-                {errors?.password && errors.password.message}
-              </small>
-              {/* retypepassword */}
-              <div className="w-full relative">
-                <input
-                  type={typePassword}
-                  className="input-primary-signup mt-4 mb-1 text-15 w-full"
-                  placeholder="Retype Password"
-                  name="retypepassword"
-                  {...register("password", loginOptions.retypepassword)}
-                />
-                <span
-                  onClick={handleClickToggleShowPassword}
-                  className=" cursor-pointer absolute right-2 top-1/2"
-                >
-                  <BiShow size={15} />
-                </span>
-              </div>
-              <small className="text-red-500">
-                {errors?.retypepassword && errors.retypepassword.message}
-              </small>
-              {/* gender */}
-              <div className="w-full relative">
-                <h4 className="text-15 mt-3">Gender:</h4>
-                <div className="flex items-center">
-                  <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
-                    <input
-                      id="men"
-                      name="gender"
-                      {...register("gender", loginOptions.gender)}
-                      type="radio"
-                      value="0"
-                      className="mr-1"
-                    />
-                    <label class htmlFor="men">
-                      Men
-                    </label>
-                  </div>
-                  <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
-                    <input
-                      type="radio"
-                      id="women"
-                      value="1"
-                      className="mr-1"
-                      name="gender"
-                      {...register("gender", loginOptions.gender)}
-                    />
-                    <label htmlFor="women">Women</label>
-                  </div>
-                  <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
-                    <input
-                      type="radio"
-                      id="other"
-                      value="2"
-                      className="mr-1"
-                      name="gender"
-                      {...register("gender", loginOptions.gender)}
-                    />
-                    <label htmlFor="other">Other</label>
+                          <h5
+                            className="fw-normal mb-3 pb-3"
+                            style={{ letterSpacing: "1px" }}
+                          >
+                            Sign up your account
+                          </h5>
+
+                          <div className="form-outline mb-4">
+                            <input
+                              id="form2Example17"
+                              className="form-control form-control-lg"
+                              type="text"
+                              placeholder="Username"
+                              name="username"
+                              {...register("username", loginOptions.username)}
+                            />
+                            <label
+                              className="form-label"
+                              htmlFor="form2Example17"
+                            >
+                              Username
+                            </label>
+                            <small className="text-red-500 ml-5">
+                              {errors?.username && errors.username.message}
+                            </small>
+                          </div>
+
+                          <div className="form-outline mb-4">
+                            <input
+                              type={typePassword}
+                              placeholder="Password"
+                              className="form-control form-control-lg"
+                              {...register("password", loginOptions.password)}
+                            />
+                            <span
+                              onClick={handleClickToggleShowPassword}
+                              className="show-password"
+                            >
+                              <BiShow size={15} />
+                            </span>
+                            <label
+                              className="form-label"
+                              htmlFor="form2Example27"
+                            >
+                              Password
+                            </label>
+                            <small className="text-red-500">
+                              {errors?.password && errors.password.message}
+                            </small>
+                          </div>
+
+                          <div className="form-outline mb-4">
+                            <input
+                              type={typePassword}
+                              id="form2Example27"
+                              className="form-control form-control-lg"
+                              placeholder="Retype Password"
+                              name="retypepassword"
+                              {...register(
+                                "retypepassword",
+                                loginOptions.retypepassword
+                              )}
+                            />
+                            <span
+                              onClick={handleClickToggleShowPassword}
+                              className="show-password"
+                            >
+                              <BiShow size={15} />
+                            </span>
+                            <label
+                              className="form-label"
+                              htmlFor="form2Example27"
+                            >
+                              Retype password
+                            </label>
+                            <small className="text-red-500 ml-5">
+                              {errors?.retypepassword &&
+                                errors.retypepassword.message}
+                            </small>
+                          </div>
+                          <div className="form-outline mb-4">
+                            <input
+                              id="form2Example17"
+                              className="form-control form-control-lg"
+                              type="email"
+                              placeholder="Email"
+                              name="email"
+                              {...register("email", loginOptions.email)}
+                            />
+                            <label
+                              className="form-label"
+                              htmlFor="form2Example17"
+                            >
+                              Email
+                            </label>
+                            <small className="text-red-500 ml-5">
+                              {errors?.email && errors.email.message}
+                            </small>
+                          </div>
+
+                          <div className="form-outline mb-4">
+                            <div className="flex items-center">
+                              <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
+                                <input
+                                  id="men"
+                                  name="gender"
+                                  {...register("gender", loginOptions.gender)}
+                                  type="radio"
+                                  value="0"
+                                  className="mr-1"
+                                />
+                                <label class htmlFor="men">
+                                  Men
+                                </label>
+                              </div>
+                              <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
+                                <input
+                                  type="radio"
+                                  id="women"
+                                  value="1"
+                                  className="mr-1"
+                                  name="gender"
+                                  {...register("gender", loginOptions.gender)}
+                                />
+                                <label htmlFor="women">Women</label>
+                              </div>
+                              <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
+                                <input
+                                  type="radio"
+                                  id="other"
+                                  value="2"
+                                  className="mr-1"
+                                  name="gender"
+                                  {...register("gender", loginOptions.gender)}
+                                />
+                                <label htmlFor="other">Other</label>
+                              </div>
+                            </div>
+                            <label
+                              className="form-label"
+                              htmlFor="form2Example17"
+                            >
+                              Gender
+                            </label>
+                          </div>
+                          <div className="form-outline mb-4">
+                            <small className="text-red-500">
+                              {errors?.gender && errors.gender.message}
+                            </small>
+                          </div>
+
+                          <div className="form-outline mb-4">
+                            <input
+                              type="number"
+                              id="form2Example27"
+                              className="form-control form-control-lg"
+                              placeholder="Phone"
+                              name="phone"
+                              {...register("phone", loginOptions.phone)}
+                            />
+
+                            <label
+                              className="form-label"
+                              htmlFor="form2Example27"
+                            >
+                              Phone
+                            </label>
+                            <small className="text-red-500">
+                              {errors?.phone && errors.phone.message}
+                            </small>
+                          </div>
+
+                          <div className="form-outline mb-4">
+                            <input
+                              className="form-control form-control-lg"
+                              type="text"
+                              placeholder="Address"
+                              name="address"
+                              {...register("address", loginOptions.address)}
+                            />
+                            <label
+                              className="form-label"
+                              htmlFor="form2Example17"
+                            >
+                              Address
+                            </label>
+                            <small className="text-red-500">
+                              {errors?.address && errors.address.message}
+                            </small>
+                          </div>
+
+                          <div className="pt-1 mb-4">
+                            <button
+                              className="btn btn-dark btn-lg btn-block"
+                              type="submit"
+                            >
+                              Sign up
+                            </button>
+                          </div>
+
+                          <a className="small text-muted" href="#!">
+                            Forgot password?
+                          </a>
+                          <p
+                            className="mb-5 pb-lg-2"
+                            style={{ color: "#393f81" }}
+                          >
+                            Don't have an account?{" "}
+                            <a
+                              onClick={handleClickRedirectLogin}
+                              style={{ color: "#393f81" }}
+                            >
+                              Sign in here
+                            </a>
+                          </p>
+                        </form>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <small className="text-red-500">
-                {errors?.gender && errors.gender.message}
-              </small>
-              {/* phone  */}
-              <div className="w-full relative">
-                <input
-                  type="number"
-                  className="input-primary-signup mt-4 mb-1 text-15 w-full"
-                  placeholder="Phone"
-                  name="phone"
-                  {...register("phone", loginOptions.phone)}
-                />
-              </div>
-              <small className="text-red-500">
-                {errors?.phone && errors.phone.message}
-              </small>
-              {/* address  */}
-              <div className="w-full relative">
-                <input
-                  type="text"
-                  className="input-primary-signup mt-4 mb-1 text-15 w-full"
-                  placeholder="Address"
-                  name="address"
-                  {...register("address", loginOptions.address)}
-                />
-              </div>
-              <small className="text-red-500">
-                {errors?.address && errors.address.message}
-              </small>
-              <div
-                className="flex justify-end mb-4 w-full"
-                onClick={handleClickRedirectLogin}
-              >
-                <p className="text-15 text-text cursor-pointer underline hover:text-color_date">
-                  You have account?
-                </p>
-              </div>
-              <div className="w-full">
-                <div className="flex">
-                  <button
-                    type="submit"
-                    className="btn-primary w-full text-15 uppercase font-bold"
-                  >
-                    Sign up
-                  </button>
-                </div>
-                {/* <div className="w-full mt-4">
-                  <div className="w-full flex items-center justify-center border border-text_desc p-1 rounded-sm hover:border-text cursor-pointer">
-                    <img className="mr-2" src={googleLogo} alt="logo google" />
-                    <p className="text-text text-sm">Login with Google?</p>
-                  </div>
-                </div> */}
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
+
     </React.Fragment>
   );
 };

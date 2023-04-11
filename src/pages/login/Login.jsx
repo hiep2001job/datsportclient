@@ -177,12 +177,8 @@ const Login = () => {
                                 Register here
                               </a>
                             </p>
-                            <a href="#!" className="small text-muted">
-                              Terms of use.
-                            </a>
-                            <a href="#!" className="small text-muted">
-                              Privacy policy
-                            </a>
+                           
+                           
                           </form>
                         </div>
                       </div>
