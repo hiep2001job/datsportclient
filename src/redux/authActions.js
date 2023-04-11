@@ -1,33 +1,28 @@
 // authActions.js
 import axios from "axios";
 import authApi from "../api/auth";
-
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+const BASE_URL=process.env.REACT_APP_API_URL;
+
 export const getProfile = createAsyncThunk(
-  "auth/profile",
+  "auth/getProfile",
   async (
-    { username, email, password, phone, gender, address },
+    payload,
     { rejectWithValue }
   ) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      await axios.post(
-        `http://localhost:8080/api/register`,
-        { username, email, password, phone, address, gender },
-        config
-      );
+      const rs = await authApi.getDetails(payload);
+      
+      return rs.data;
     } catch (error) {
+      console.log(error)
       // return custom error message from backend if present
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
-      } else {
-        return rejectWithValue(error.message);
-      }
+      // if (error.response && error.response.data.message) {
+      //   return rejectWithValue(error.response.data.message);
+      // } else {
+      //   return rejectWithValue(rs.message);
+      // }
     }
   }
 );
@@ -93,7 +88,7 @@ export const registerUser = createAsyncThunk(
         },
       };
       await axios.post(
-        `http://localhost:8080/api/register`,
+        `${BASE_URL}/api/register`,
         { username, email, password, phone, address, gender },
         config
       );

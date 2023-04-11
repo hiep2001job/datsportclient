@@ -30,72 +30,103 @@ import imageApi from "../../api/img";
 import progileBg from "../../assets/images/profile-bg.jpg";
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
 import { useDispatch, useSelector } from "react-redux";
-
 import { selectUserDetail } from "../../redux/authSlice";
 import useUserDetail from "../../hooks/useUserDetail";
-import { updateProfile } from "../../redux/authActions";
-import { useEffect } from "react";
+import { updateProfile, getProfile } from "../../redux/authActions";
+import { useEffect, useLayoutEffect } from "react";
 
-const schema = yup.object().shape({
-  email: yup
-    .string()
-    .required("Email cannot be empty!")
-    .matches(
-      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      "Invalid email address"
-    ),
-  userfullname: yup.string().required("Fullname cannot be empty!"),
-  gender: yup
-    .string()
-    .required("Let's choose gender!")
-    .notOneOf(["Select your gender"], "Let's choose gender!"),
-  phone: yup
-    .string()
-    .required("Phone cannot be empty!")
-    .min(10, "Phone number be at least 10 characters")
-    .max(11, "Phone number maximum of 11 characters"),
-  address: yup.string().required("Address cannot be empty!"),
-});
+// const schema = yup.object().shape({
+//   email: yup
+//     .string()
+//     .required("Email cannot be empty!")
+//     .matches(
+//       /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+//       "Invalid email address"
+//     ),
+//   userfullname: yup.string().required("Fullname cannot be empty!"),
+//   gender: yup
+//     .string()
+//     .required("Let's choose gender!")
+//     .notOneOf(["Select your gender"], "Let's choose gender!"),
+//   phone: yup
+//     .string()
+//     .required("Phone cannot be empty!")
+//     .min(10, "Phone number be at least 10 characters")
+//     .max(11, "Phone number maximum of 11 characters"),
+//   address: yup.string().required("Address cannot be empty!"),
+// });
 
 const InfoProfile = () => {
   const dispatch = useDispatch();
   const userDetail = useUserDetail();
-  const userDetailInfor = useSelector(selectUserDetail);
-
+  const userProfile = useSelector((state) => state.auth.userProfile);
   const {
     register,
     handleSubmit,
-    setValue,
+    reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
     mode: "onBlur",
-    defaultValues: { ...userDetail },
   });
 
-  const onSubmit = (data) => {
-    const newData = { ...data, id: userDetail.id };
-    dispatch(updateProfile(newData));
-  };
+  useLayoutEffect(() => {   
 
-  useEffect(() => {
-    // Set  defaulValue
-    setValue("email", userDetail.email);
-    setValue("userfullname", userDetail.userfullname);
-    setValue("gender", userDetail.gender);
-    setValue("address", userDetail.address);
-    setValue("phone", userDetail.phone);
-  }, [userDetail]);
+    console.log("user",userDetail);
+    if(userDetail){
+      reset({
+        email: userDetail.email,
+        address: userDetail.address,
+        phone: userDetail.phone,
+        image: userDetail.image,
+        gender: userDetail.gender,
+    });
+    }
+  }, [dispatch,userDetail]);
+
+  const profileOptions = {
+    email: {
+      required: "Email cannot be empty!",
+      pattern: {
+        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+        message: "Invalid email address",
+      },
+    },
+
+    gender: {
+      required: "Let's choose gender!",
+    },
+    userfullname: {
+      required: "User fullname cannot be empty!",
+    },
+
+    phone: {
+      required: "Phone cannot be empty!",
+
+      minLength: {
+        value: 10,
+        message: "Phone number be at least 10 characters",
+      },
+      maxLength: {
+        value: 11,
+        message: "Phone number maximum of 11 characters",
+      },
+    },
+    address: {
+      required: "Address cannot be empty!",
+    },
+  };
+  const handleErrors=()=>{};
+  const onSubmit = (data) => {
+    const newData = { ...data, id: userProfile.id };
+    console.log(newData);
+    // dispatch(updateProfile(newData));
+  };
 
   const [activeTab, setActiveTab] = useState("1");
 
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
-
-  useEffect(() => {
-    console.log("userDetailInfor: ", userDetailInfor);
-  }, [userDetailInfor]);
 
   // handle change event of input file
   const onChangeFile = async (event) => {
@@ -126,7 +157,7 @@ const InfoProfile = () => {
                   <div className="text-center">
                     <div className="profile-user position-relative d-inline-block mx-auto  mb-4">
                       <img
-                        src={userDetail.image}
+                        src={userProfile?.image}
                         className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                         alt="user-profile"
                       />
@@ -135,7 +166,8 @@ const InfoProfile = () => {
                           id="profile-img-file-input"
                           type="file"
                           className="profile-img-file-input"
-                          accept="image/*" onChange={onChangeFile} 
+                          accept="image/*"
+                          onChange={onChangeFile}
                           name="image"
                         />
                         <Label
@@ -148,8 +180,8 @@ const InfoProfile = () => {
                         </Label>
                       </div>
                     </div>
-                    <h5 className="fs-16 mb-1">{userDetail.userfullname}</h5>
-                    <p className="text-muted mb-0">{userDetail.email}</p>
+                    <h5 className="fs-16 mb-1">{userProfile?.userfullname}</h5>
+                    <p className="text-muted mb-0">{userProfile?.email}</p>
                   </div>
                 </CardBody>
               </Card>
@@ -191,7 +223,10 @@ const InfoProfile = () => {
                 <CardBody className="p-4">
                   <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
-                      <form onSubmit={handleSubmit(onSubmit)}>
+                      <form onSubmit={handleSubmit(
+                              onSubmit,
+                              handleErrors
+                            )}>
                         <Row>
                           <Col lg={6}>
                             <div className="mb-3">
@@ -207,9 +242,11 @@ const InfoProfile = () => {
                                 id="emailInput"
                                 placeholder="Enter your email"
                                 name="email"
-                                {...register("email")}
+                                {...register("email", profileOptions.email)}
                               />
-                              <p>{errors?.email?.message}</p>
+                              <p class="text-red-500">
+                                {errors?.email?.message}
+                              </p>
                             </div>
                           </Col>
 
@@ -227,7 +264,10 @@ const InfoProfile = () => {
                                 id="fullnameInput"
                                 placeholder="Enter your full name"
                                 name="userfullname"
-                                {...register("userfullname")}
+                                {...register(
+                                  "userfullname",
+                                  profileOptions.userfullname
+                                )}
                               />
                               <p>{errors?.userfullname?.message}</p>
                             </div>

@@ -142,7 +142,8 @@ const Checkout = () => {
   //Form process
 
   const handleClickBtnSubmit = async (data) => {
-    dispatch(checkout(data));
+    await dispatch(checkout(data));
+    toggleTab(activeTab+1);
   };
   const handleErrors = (errors) => {};
   const {
@@ -151,7 +152,7 @@ const Checkout = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      bill_id: cartItems[0]?.bill.billId,
+      bill_id: cartItems[0]?.bill?.billId,
       user_id: userDetail?.id,
       bill_total: billTotal,
       bill_payment: "COD",
@@ -162,15 +163,10 @@ const Checkout = () => {
   });
 
   const checkoutOptions = {
-    //   user_id,
-    //   bill_total,
-    //   bill_payment,
-    //   bill_address_ship,
-    //   bill_date,
-    //   bill_status}
     bill_address_ship: {
       required: "PLease enter bill shipping address!",
     },
+    
   };
 
   document.title = "Checkout";
@@ -252,9 +248,7 @@ const Checkout = () => {
                                   id="billinginfo-firstName"
                                   name="bill_address_ship"
                                   placeholder="Enter shipping address"
-                                  {...register("bill_address_ship", {
-                                    required: true,
-                                  })}
+                                  {...register("bill_address_ship", checkoutOptions.bill_address_ship)}
                                 />
                                 {errors.bill_address_ship &&
                                   errors.bill_address_ship.type ===
@@ -446,9 +440,7 @@ const Checkout = () => {
                             </button>
                             <button
                               type="submit"
-                              onClick={() => {
-                                toggleTab(activeTab + 1);
-                              }}
+                              
                               className="btn btn-secondary btn-label right ms-auto nexttab"
                             >
                               <i className="ri-shopping-basket-line label-icon align-middle fs-16 ms-2"></i>
@@ -468,17 +460,16 @@ const Checkout = () => {
                               ></lord-icon>
                             </div>
                             <h5>Thank you ! Your Order is Completed !</h5>
-
-                            <h3 className="fw-semibold">
-                              Order ID:{" "}
-                              <a
-                                href="apps-ecommerce-order-details"
-                                className="text-decoration-underline"
-                              >
-                                #
-                                {status === "loading" ? (
-                                  "Processing..."
-                                ) : (
+                            {status === "loading" ? (
+                              "Processing..."
+                            ) : (
+                              <h3 className="fw-semibold">
+                                Order ID:{" "}
+                                <a
+                                  href="apps-ecommerce-order-details"
+                                  className="text-decoration-underline"
+                                >
+                                  #
                                   <div>
                                     {successBill.bill_id}
                                     <Link
@@ -488,9 +479,9 @@ const Checkout = () => {
                                       View order detail
                                     </Link>
                                   </div>
-                                )}
-                              </a>
-                            </h3>
+                                </a>
+                              </h3>
+                            )}
                           </div>
                         </TabPane>
                       </TabContent>

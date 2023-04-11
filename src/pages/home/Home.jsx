@@ -14,8 +14,9 @@ const Home = () => {
   //Get active products
   const getNewsProduct = async () => {
     try {
-      const rsData = await productApi.getAll(1);
-      if (rsData) setNewProducts(rsData);
+      const rsData = await productApi.getAll({pageNumber:0,pageSize:10,keyword:""});
+      console.log(rsData);
+      if (rsData) setNewProducts(rsData.content);
     } catch (error) {
       return error;
     }
