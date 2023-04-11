@@ -34,29 +34,10 @@ import { selectUserDetail } from "../../redux/authSlice";
 import useUserDetail from "../../hooks/useUserDetail";
 import { updateProfile, getProfile } from "../../redux/authActions";
 import { useEffect, useLayoutEffect } from "react";
-
-// const schema = yup.object().shape({
-//   email: yup
-//     .string()
-//     .required("Email cannot be empty!")
-//     .matches(
-//       /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-//       "Invalid email address"
-//     ),
-//   userfullname: yup.string().required("Fullname cannot be empty!"),
-//   gender: yup
-//     .string()
-//     .required("Let's choose gender!")
-//     .notOneOf(["Select your gender"], "Let's choose gender!"),
-//   phone: yup
-//     .string()
-//     .required("Phone cannot be empty!")
-//     .min(10, "Phone number be at least 10 characters")
-//     .max(11, "Phone number maximum of 11 characters"),
-//   address: yup.string().required("Address cannot be empty!"),
-// });
+import DefaultImg from "../../assets/images/default.png";
 
 const InfoProfile = () => {
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [activeTab, setActiveTab] = useState("1");
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
@@ -75,7 +56,7 @@ const InfoProfile = () => {
   });
 
   useLayoutEffect(() => {
-    console.log("user", userDetail);
+    setSelectedImageUrl(userDetail.image);
     if (userDetail) {
       reset({
         email: userDetail.email,
@@ -83,7 +64,7 @@ const InfoProfile = () => {
         phone: userDetail.phone,
         image: userDetail.image,
         gender: userDetail.gender,
-        userfullname: userDetail.gender,
+        userfullname: userDetail.userfullname,
       });
     }
   }, [dispatch, userDetail]);
@@ -122,12 +103,10 @@ const InfoProfile = () => {
   };
   const handleErrors = () => {};
   const onSubmit = (data) => {
-    const newData = { ...data, id: userProfile.id };
+    const newData = { ...data, id: userDetail.id, image: selectedImageUrl };
     console.log(newData);
-    // dispatch(updateProfile(newData));
+    dispatch(updateProfile(newData));
   };
-
-
 
   // handle change event of input file
   const onChangeFile = async (event) => {
@@ -135,61 +114,19 @@ const InfoProfile = () => {
     await imageApi
       .uploadImage(imageUrl)
       .then((res) => {
-        console.log("upload anh thành công!: ", res);
+        setSelectedImageUrl(res.data.data.url);
       })
       .catch((error) => {
         console.error(error);
-        // const snackBarPayload = {
-        //   type: "error",
-        //   message: "Tải hình ảnh không thành công!",
-        // };
-        // dispatch(openSnackbar(snackBarPayload));
       });
   };
-  
 
   return (
     <React.Fragment>
       <div className="page-content mt-3">
         <Container fluid>
           <Row>
-            <Col xxl={3}>
-              <Card className="mt-n5">
-                <CardBody className="p-4">
-                  <div className="text-center">
-                    <div className="profile-user position-relative d-inline-block mx-auto  mb-4">
-                      <img
-                        src={userProfile?.image}
-                        className="rounded-circle avatar-xl img-thumbnail user-profile-image"
-                        alt="user-profile"
-                      />
-                      <div className="avatar-xs p-0 rounded-circle profile-photo-edit">
-                        <input
-                          id="profile-img-file-input"
-                          type="file"
-                          className="profile-img-file-input"
-                          accept="image/*"
-                          onChange={onChangeFile}
-                          name="image"
-                        />
-                        <Label
-                          htmlFor="profile-img-file-input"
-                          className="profile-photo-edit avatar-xs"
-                        >
-                          <span className="avatar-title rounded-circle bg-light text-body">
-                            <i className="ri-camera-fill"></i>
-                          </span>
-                        </Label>
-                      </div>
-                    </div>
-                    <h5 className="fs-16 mb-1">{userProfile?.userfullname}</h5>
-                    <p className="text-muted mb-0">{userProfile?.email}</p>
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-
-            <Col xxl={9}>
+            <Col xxl={12}>
               <Card className="mt-xxl-n5">
                 <CardHeader>
                   <Nav
@@ -207,7 +144,7 @@ const InfoProfile = () => {
                         Personal Details
                       </NavLink>
                     </NavItem>
-                    <NavItem>
+                    {/* <NavItem>
                       <NavLink
                         to="#"
                         className={classnames({ active: activeTab === "2" })}
@@ -219,7 +156,7 @@ const InfoProfile = () => {
                         <i className="far fa-user"></i>
                         Change Password
                       </NavLink>
-                    </NavItem>
+                    </NavItem> */}
                   </Nav>
                 </CardHeader>
                 <CardBody className="p-4">
@@ -227,6 +164,41 @@ const InfoProfile = () => {
                     <TabPane tabId="1">
                       <form onSubmit={handleSubmit(onSubmit, handleErrors)}>
                         <Row>
+                          <Col lg={6}>
+                            <div className="text-center">
+                              <div className="profile-user position-relative d-inline-block mx-auto  mb-4">
+                                <img
+                                  src={selectedImageUrl || DefaultImg}
+                                  className="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                                  alt="user-profile"
+                                />
+                                <div className="avatar-xs p-0 rounded-circle profile-photo-edit">
+                                  <input
+                                    id="profile-img-file-input"
+                                    type="file"
+                                    className="profile-img-file-input"
+                                    accept="image/*"
+                                    onChange={onChangeFile}
+                                    name="image"
+                                  />
+                                  <Label
+                                    htmlFor="profile-img-file-input"
+                                    className="profile-photo-edit avatar-xs"
+                                  >
+                                    <span className="avatar-title rounded-circle bg-light text-body">
+                                      <i className="ri-camera-fill"></i>
+                                    </span>
+                                  </Label>
+                                </div>
+                              </div>
+                              <h5 className="fs-16 mb-1">
+                                {userProfile?.userfullname}
+                              </h5>
+                              <p className="text-muted mb-0">
+                                {userProfile?.email}
+                              </p>
+                            </div>
+                          </Col>
                           <Col lg={6}>
                             <div className="mb-3">
                               <Label
@@ -268,8 +240,10 @@ const InfoProfile = () => {
                                   profileOptions.userfullname
                                 )}
                               />
-                              
-                              <p className="text-red-500">{errors?.userfullname?.message}</p>
+
+                              <p className="text-red-500">
+                                {errors?.userfullname?.message}
+                              </p>
                             </div>
                           </Col>
 
@@ -284,12 +258,27 @@ const InfoProfile = () => {
                               <select
                                 className="form-select mb-3"
                                 name="gender"
-                                {...register("gender",profileOptions.gender)}
+                                {...register("gender", profileOptions.gender)}
                               >
-                                <option >Select your gender </option>
-                                <option selected={userDetail.gender==1} value="1">Male</option>
-                                <option selected={userDetail.gender==2} value="2">Female</option>
-                                <option selected={userDetail.gender==3} value="3">Others</option>
+                                <option>Select your gender </option>
+                                <option
+                                  selected={userDetail.gender == 1}
+                                  value="1"
+                                >
+                                  Male
+                                </option>
+                                <option
+                                  selected={userDetail.gender == 2}
+                                  value="2"
+                                >
+                                  Female
+                                </option>
+                                <option
+                                  selected={userDetail.gender == 3}
+                                  value="3"
+                                >
+                                  Others
+                                </option>
                               </select>
                               <small className="text-red-500">
                                 {errors?.gender && errors.gender.message}
@@ -311,9 +300,11 @@ const InfoProfile = () => {
                                 id="phoneInput"
                                 placeholder="Enter your phone number"
                                 name="phone"
-                                {...register("phone",profileOptions.phone)}
+                                {...register("phone", profileOptions.phone)}
                               />
-                              <p className="text-red-500">{errors?.phone?.message}</p>
+                              <p className="text-red-500">
+                                {errors?.phone?.message}
+                              </p>
                             </div>
                           </Col>
 
@@ -331,9 +322,11 @@ const InfoProfile = () => {
                                 id="addressInput"
                                 placeholder="Enter your address"
                                 name="address"
-                                {...register("address",profileOptions.address)}
+                                {...register("address", profileOptions.address)}
                               />
-                              <p className="text-red-500">{errors?.address?.message}</p>
+                              <p className="text-red-500">
+                                {errors?.address?.message}
+                              </p>
                             </div>
                           </Col>
 
@@ -354,8 +347,8 @@ const InfoProfile = () => {
                       </form>
                     </TabPane>
 
-                    <TabPane tabId="2">
-                      <Form>
+                    {/* <TabPane tabId="2">
+                      <form>
                         <Row className="g-2">
                           <Col lg={4}>
                             <div>
@@ -365,7 +358,7 @@ const InfoProfile = () => {
                               >
                                 Old Password*
                               </Label>
-                              <Input
+                              <input
                                 type="password"
                                 className="form-control"
                                 id="oldpasswordInput"
@@ -382,7 +375,7 @@ const InfoProfile = () => {
                               >
                                 New Password*
                               </Label>
-                              <Input
+                              <input
                                 type="password"
                                 className="form-control"
                                 id="newpasswordInput"
@@ -399,7 +392,7 @@ const InfoProfile = () => {
                               >
                                 Confirm Password*
                               </Label>
-                              <Input
+                              <input
                                 type="password"
                                 className="form-control"
                                 id="confirmpasswordInput"
@@ -427,80 +420,9 @@ const InfoProfile = () => {
                             </div>
                           </Col>
                         </Row>
-                      </Form>
-                      <div className="mt-4 mb-3 border-bottom pb-2">
-                        <div className="float-end">
-                          <Link to="#" className="link-primary">
-                            All Logout
-                          </Link>
-                        </div>
-                        <h5 className="card-title">Login History</h5>
-                      </div>
-                      <div className="d-flex align-items-center mb-3">
-                        <div className="flex-shrink-0 avatar-sm">
-                          <div className="avatar-title bg-light text-primary rounded-3 fs-18">
-                            <i className="ri-smartphone-line"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 ms-3">
-                          <h6>iPhone 12 Pro</h6>
-                          <p className="text-muted mb-0">
-                            Los Angeles, United States - March 16 at 2:47PM
-                          </p>
-                        </div>
-                        <div>
-                          <Link to="#">Logout</Link>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-center mb-3">
-                        <div className="flex-shrink-0 avatar-sm">
-                          <div className="avatar-title bg-light text-primary rounded-3 fs-18">
-                            <i className="ri-tablet-line"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 ms-3">
-                          <h6>Apple iPad Pro</h6>
-                          <p className="text-muted mb-0">
-                            Washington, United States - November 06 at 10:43AM
-                          </p>
-                        </div>
-                        <div>
-                          <Link to="#">Logout</Link>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-center mb-3">
-                        <div className="flex-shrink-0 avatar-sm">
-                          <div className="avatar-title bg-light text-primary rounded-3 fs-18">
-                            <i className="ri-smartphone-line"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 ms-3">
-                          <h6>Galaxy S21 Ultra 5G</h6>
-                          <p className="text-muted mb-0">
-                            Conneticut, United States - June 12 at 3:24PM
-                          </p>
-                        </div>
-                        <div>
-                          <Link to="#">Logout</Link>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-center">
-                        <div className="flex-shrink-0 avatar-sm">
-                          <div className="avatar-title bg-light text-primary rounded-3 fs-18">
-                            <i className="ri-macbook-line"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 ms-3">
-                          <h6>Dell Inspiron 14</h6>
-                          <p className="text-muted mb-0">
-                            Phoenix, United States - July 26 at 8:10AM
-                          </p>
-                        </div>
-                        <div>
-                          <Link to="#">Logout</Link>
-                        </div>
-                      </div>
-                    </TabPane>
+                      </form>
+                     
+                    </TabPane> */}
                   </TabContent>
                 </CardBody>
               </Card>
@@ -509,7 +431,6 @@ const InfoProfile = () => {
         </Container>
       </div>
     </React.Fragment>
-
   );
 };
 

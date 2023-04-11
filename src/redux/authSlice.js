@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser,getProfile } from "./authActions";
+import { loginUser, registerUser,getProfile,updateProfile } from "./authActions";
+import { toast } from "react-toastify";
 
 const authToken = localStorage.getItem("auth_token");
 const data = JSON.parse(localStorage.getItem("data_user"));
@@ -72,6 +73,23 @@ const authSlice = createSlice({
         state.success=true;
       })
       .addCase(getProfile.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      .addCase(updateProfile.pending, (state, { payload }) => {
+        state.loading = true;
+        state.error = null;
+        state.success=false;
+      })
+      .addCase(updateProfile.fulfilled, (state, { payload }) => {
+        state.data=payload;        
+        state.loading = false;
+        state.success=true;
+        toast.success("Update profile success !", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      })
+      .addCase(updateProfile.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
       });

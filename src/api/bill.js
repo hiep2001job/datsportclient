@@ -49,3 +49,8 @@ export const updateOrderApi = async (payload) => {
   const response = await axiosClient.post(`${BASE_URL}/api/checkout`, payload);
   return response.data;
 };
+
+export const fetchAllOrdersApi = async () => {
+  const response = await axiosClient.get(`${BASE_URL}/admin/getallbill`);
+  return response.data;
+};

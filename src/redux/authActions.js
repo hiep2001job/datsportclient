@@ -29,7 +29,7 @@ export const getProfile = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
   "auth/updateProfile",
   async (
-    { id, userfullname, email, password, phone, gender, address },
+    { id, userfullname, email, password, image,phone, gender, address },
     { rejectWithValue }
   ) => {
     try {
@@ -37,6 +37,7 @@ export const updateProfile = createAsyncThunk(
         id,
         userfullname,
         email,
+        image,
         password,
         phone,
         gender,

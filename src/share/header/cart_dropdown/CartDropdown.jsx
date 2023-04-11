@@ -14,23 +14,20 @@ import {
 } from "../../../redux/cartSlice";
 import DefaultImg from "../../../assets/images/default.png";
 import { formatVnd } from "../../../utils/common";
+import useUserDetail from '../../../hooks/useUserDetail';
 
-//import images
-import image1 from "../../../assets/images/products/img-1.png";
-import image2 from "../../../assets/images/products/img-2.png";
-import image3 from "../../../assets/images/products/img-3.png";
-import image6 from "../../../assets/images/products/img-6.png";
-import image5 from "../../../assets/images/products/img-5.png";
+
 
 const CartDropdown = () => {
 
   const cardItemTotal = useRef(null);
-
+  const userDetail=useUserDetail();
   const dispatch = useDispatch();
   const {cartItems,billTotal} = useSelector((state) => state.cart);
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    if(!userDetail.id)
+      dispatch(fetchProducts());
   }, [dispatch]);
 
   const [isCartDropdown, setIsCartDropdown] = useState(false);

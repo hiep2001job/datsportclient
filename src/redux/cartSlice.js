@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import {
   fetchProductsApi,
   addToCartApi,
@@ -101,6 +102,9 @@ const cartSlice = createSlice({
             acc + product.billdetailPrice * product.billdetailQuantity,
           0
         );
+        toast.success("Added to cart !", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
     },
     [addToCart.rejected]: (state, action) => {
       state.status = "failed";
@@ -121,6 +125,9 @@ const cartSlice = createSlice({
             acc + product.billdetailPrice * product.billdetailQuantity,
           0
         );
+        toast.success("Update success !", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
     },
     [updateCartItemQuantity.rejected]: (state, action) => {
       state.status = "failed";
@@ -138,6 +145,9 @@ const cartSlice = createSlice({
           acc + product.billdetailPrice * product.billdetailQuantity,
         0
       );
+      toast.success("Deleted cart item !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     },
     [deleteCartItem.rejected]: (state, action) => {
       state.status = "failed";

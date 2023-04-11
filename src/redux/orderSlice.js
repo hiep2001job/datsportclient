@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchOrdersApi, fetchOrderByIdApi,updateOrderApi } from '../api/bill';
+import { fetchOrdersApi, fetchOrderByIdApi,updateOrderApi,fetchAllOrdersApi } from '../api/bill';
+import { toast } from "react-toastify";
 
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', async (payload) => {
   const orders = await fetchOrdersApi(payload);
@@ -14,6 +15,11 @@ export const fetchOrderById = createAsyncThunk('orders/fetchOrderById', async (o
 
 export const updateOrder = createAsyncThunk('orders/updateOrder', async (payload) => {
   const order = await updateOrderApi(payload);
+  return order;
+});
+
+export const fetchAllOrders = createAsyncThunk('orders/fetchAllOrders', async (orderId) => {
+  const order = await fetchAllOrdersApi(orderId);
   return order;
 });
 
@@ -57,9 +63,22 @@ const ordersSlice = createSlice({
       })
       .addCase(updateOrder.fulfilled, (state, action) => {
         state.selectedOrder = action.payload;
+        toast.success("Success !", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         console.log(action.payload);
       })
       .addCase(updateOrder.rejected, (state, action) => {
+        console.error(action.error);
+      })
+      .addCase(fetchAllOrders.pending, (state) => {
+        state.orders = [];
+      })
+      .addCase(fetchAllOrders.fulfilled, (state, action) => {
+        state.orders = [...action.payload];
+        console.log(action.payload);
+      })
+      .addCase(fetchAllOrders.rejected, (state, action) => {
         console.error(action.error);
       });
   },

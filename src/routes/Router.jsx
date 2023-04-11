@@ -12,12 +12,15 @@ import Posts from "../admin/posts/Posts";
 import User from "../admin/user/User";
 import Slider from "../admin/slider/Slider";
 import Order from "../admin/order/Order";
+import ProcessOrder from "../admin/order/ProcessOrder";
 
 import About from "../pages/about/About";
 import ProductDetail from "../pages/detail_product/ProductDetail";
 
 import GlobalNavigation from "../pages/global_navigation/GlobalNavigation";
 import Home from "../pages/home/Home";
+import PostList from "../pages/posts/PostList";
+import DetailPost from "../pages/detail_post/DetailPost";
 import InfoProfile from "../pages/info_profile/InfoProfile";
 import Login from "../pages/login/Login";
 import NotFound from "../pages/not_found/NotFound";
@@ -64,6 +67,7 @@ const Router = () => {
           <Route path="slider" element={<Slider />} />
           <Route path="posts" element={<Posts />} />
           <Route path="order" element={<Order />} />
+          <Route path="process-order/:billId" element={<ProcessOrder />} />
         </Route>
         <Route path="/*" element={<Navigate to="/admin" replace />} />
       </Routes>
@@ -78,7 +82,7 @@ const Router = () => {
           <Route index element={<Home />} />
           <Route path="cart" element={<Cart />} />
           <Route path="home" element={<Home />} />
-         
+          <Route path="post" element={<PostList />} />
           <Route path="user/profile" element={<UserProfile />}>
             <Route index element={<InfoProfile />} />
             <Route path="info" element={<InfoProfile />} />
@@ -87,6 +91,7 @@ const Router = () => {
 
           </Route>
           <Route path="detail-product/:id" element={<ProductDetail />} />
+          <Route path="detail-post/:id" element={<DetailPost />} />
           <Route path="product-listing/:id" element={<ProductListing />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="about" element={<About />} />

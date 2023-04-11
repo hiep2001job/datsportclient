@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import DefaultImg from "../../../assets/images/default.png";
 import {
   Dropdown,
   DropdownItem,
@@ -38,7 +39,7 @@ const ProfileDropdown = () => {
           <span className="d-flex align-items-center">
             <img
               className="rounded-circle header-profile-user"
-              src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+              src={user.image||DefaultImg}
               alt="Header Avatar"
             />
             <span className="text-start ms-xl-2">
