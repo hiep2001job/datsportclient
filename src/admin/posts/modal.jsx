@@ -148,6 +148,7 @@ function Modals(args) {
       setValue("posts_content", dataPosts.posts_content);
       setContent(dataPosts.posts_content);
       setValue("posts_image", dataPosts.posts_image);
+      setImageReview( dataPosts.posts_image);
       setValue("posts_status", dataPosts.posts_status);
     }
   }, [loading, success, error]);
@@ -260,7 +261,7 @@ function Modals(args) {
   if (actionName === "create") {
     return (
       <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
+        <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
           <ModalHeader toggle={toggle}>Add New Posts</ModalHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>{formPosts}</ModalBody>
@@ -284,7 +285,7 @@ function Modals(args) {
   } else if (actionName === "edit") {
     return (
       <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
+        <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
           <ModalHeader toggle={toggle}>Update posts</ModalHeader>
           <ModalBody>{formPosts}</ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>

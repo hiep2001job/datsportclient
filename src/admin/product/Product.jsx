@@ -59,10 +59,7 @@ function Slide() {
     dispatch(openModal(payload));
   };
 
-  const handleRemove = () => {
-    const payload = { id: 27, actionName: "delete" };
-    dispatch(openModal(payload));
-  };
+
 
   const statusProduct = ["Disnable", "Enabled"];
 
@@ -180,16 +177,6 @@ function Slide() {
                                   onClick={() => handleEdit(product.productId)}
                                 >
                                   Edit
-                                </button>
-                              </div>
-                              <div className="remove">
-                                <button
-                                  className="btn btn-sm btn-danger remove-item-btn"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#deleteRecordModal"
-                                  onClick={handleRemove}
-                                >
-                                  Remove
                                 </button>
                               </div>
                             </div>

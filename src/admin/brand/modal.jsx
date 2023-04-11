@@ -160,7 +160,7 @@ function Modals(args) {
   if (actionName === "create") {
     return (
       <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
+        <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
           <ModalHeader toggle={toggle}>Add New Brand</ModalHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>{formBrand}</ModalBody>
@@ -184,7 +184,7 @@ function Modals(args) {
   } else if (actionName === "edit") {
     return (
       <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
+        <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg"> 
           <ModalHeader toggle={toggle}>Update Brand</ModalHeader>
           <ModalBody>{formBrand}</ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>

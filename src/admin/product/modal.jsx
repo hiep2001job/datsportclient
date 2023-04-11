@@ -337,7 +337,11 @@ function Modals(args) {
       <FormGroup className="mt-2">
         <Label for="brandSelect">Description</Label>
         <br />
-        <input name="productDescription" {...register("productDescription")} />
+        <input
+          name="productDescription"
+          {...register("productDescription")}
+          hidden
+        />
         <JoditEditor
           ref={editor}
           tabIndex={1}
@@ -347,28 +351,6 @@ function Modals(args) {
           }}
         />
       </FormGroup>
-      {/* <FormGroup className="mt-2">
-        <Label for="brandSelect">Brand</Label>
-        <SunEditor
-        setOptions={{
-          buttonList: [["font", "fontSize", "bold", "italic", "underline"]],
-        }}
-
-        ref={register}
-        {...register("productDescription")}
-        name="productDescription"
-      />
-        <p className="text-danger">{errors?.productDescription?.message}</p>
-      </FormGroup> */}
-
-      {/* <JoditEditor
-        ref={editor}
-        config={config}
-        onBlur={handleUpdate}
-        onChange={(newContent) => {}}
-        name="productDetail"
-        {...register("productDetail")}
-      /> */}
 
       <Row>
         <Col md={6}>
@@ -399,209 +381,101 @@ function Modals(args) {
         </Col>
       </Row>
 
-      <Row className="mt-2">
-        <Col md={4}>
-          <FormGroup>
-            <Label for="color1">Color 1</Label>
-            <input
-              className="form-control"
-              id="color1"
-              name="color1"
-              {...register("color1")}
-            />
-          </FormGroup>
-        </Col>
-        <Col md={4}>
-          <FormGroup>
-            <Label for="color2">Color 2</Label>
-            <input
-              className="form-control"
-              id="color2"
-              name="color2"
-              {...register("color2")}
-            />
-          </FormGroup>
-        </Col>
-        <Col md={4}>
-          <FormGroup>
-            <Label for="color3">Color 3</Label>
-            <input
-              className="form-control"
-              id="color3"
-              name="color3"
-              {...register("color3")}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
       <Row>
-        <Col md={4}>
+        <Col md={6}>
           <FormGroup>
-            <Label for="color4">Color 4</Label>
+            <Label for="exampleFile">Product image 1</Label>
             <input
-              className="form-control"
-              id="color4"
-              name="color4"
-              {...register("color4")}
+              type="text"
+              name="productImage1"
+              {...register("productImage1")}
+              hidden
             />
+            <br />
+            <img src={imageReview[0]} width={"100px"} />
+            <br />
+            <br />
+            <input
+              id="productImage1"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={onChangeFile(0)}
+            />
+            <p className="text-danger">{errors?.productImage1?.message}</p>
           </FormGroup>
         </Col>
-        <Col md={4}>
+        <Col md={6}>
           <FormGroup>
-            <Label for="color5">Color 5</Label>
+            {" "}
+            <Label for="exampleFile">Product image 2</Label>
             <input
-              className="form-control"
-              id="color5"
-              name="color5"
-              {...register("color5")}
+              type="text"
+              name="productImage2"
+              {...register("productImage2")}
+              hidden
+            />
+            <br />
+            <img src={imageReview[1]} width={"100px"} />
+            <br />
+            <br />
+            <input
+              id="productImage2"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={onChangeFile(1)}
             />
           </FormGroup>
         </Col>
       </Row>
+
       <Row>
-        <Col md={4}>
+        <Col md={6}>
           <FormGroup>
-            <Label for="size1">Size 1</Label>
+            <Label for="exampleFile">Product image 3</Label>
             <input
-              className="form-control"
-              id="size1"
-              name="size1"
-              {...register("size1")}
+              type="text"
+              name="productImage3"
+              {...register("productImage3")}
+              hidden
+            />
+            <br />
+            <img src={imageReview[2]} width={"100px"} />
+            <br />
+            <br />
+            <input
+              id="productImage3"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={onChangeFile(2)}
             />
           </FormGroup>
         </Col>
-        <Col md={4}>
+        <Col md={6}>
           <FormGroup>
-            <Label for="size2">Size 2</Label>
+            <Label for="exampleFile">Product image 4</Label>
             <input
-              className="form-control"
-              id="size2"
-              name="size2"
-              {...register("size2")}
+              type="text"
+              name="productImage4"
+              {...register("productImage4")}
+              hidden
             />
-          </FormGroup>
-        </Col>
-        <Col md={4}>
-          <FormGroup>
-            <Label for="size3">Size 3</Label>
+            <br />
+            <img src={imageReview[3]} width={"100px"} />
+            <br />
+            <br />
             <input
-              className="form-control"
-              id="size3"
-              name="size3"
-              {...register("size3")}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={4}>
-          <FormGroup>
-            <Label for="size4">Size 4</Label>
-            <input
-              className="form-control"
-              id="size4"
-              name="size4"
-              {...register("size4")}
-            />
-          </FormGroup>
-        </Col>
-        <Col md={4}>
-          <FormGroup>
-            <Label for="size5">Size 5</Label>
-            <input
-              className="form-control"
-              id="size5"
-              name="size5"
-              {...register("size5")}
+              id="productImage4"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={onChangeFile(3)}
             />
           </FormGroup>
         </Col>
       </Row>
-
-      <FormGroup>
-        <Label for="exampleFile">Product image 1</Label>
-        <input
-          type="text"
-          name="productImage1"
-          {...register("productImage1")}
-          hidden
-        />
-        <br />
-        <img src={imageReview[0]} width={"100px"} />
-        <br />
-        <br />
-        <input
-          id="productImage1"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={onChangeFile(0)}
-        />
-        <p className="text-danger">{errors?.productImage1?.message}</p>
-      </FormGroup>
-
-      <FormGroup>
-        <Label for="exampleFile">Product image 2</Label>
-        <input
-          type="text"
-          name="productImage2"
-          {...register("productImage2")}
-          hidden
-        />
-        <br />
-        <img src={imageReview[1]} width={"100px"} />
-        <br />
-        <br />
-        <input
-          id="productImage2"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={onChangeFile(1)}
-        />
-      </FormGroup>
-
-      <FormGroup>
-        <Label for="exampleFile">Product image 3</Label>
-        <input
-          type="text"
-          name="productImage3"
-          {...register("productImage3")}
-          hidden
-        />
-        <br />
-        <img src={imageReview[2]} width={"100px"} />
-        <br />
-        <br />
-        <input
-          id="productImage3"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={onChangeFile(2)}
-        />
-      </FormGroup>
-
-      <FormGroup>
-        <Label for="exampleFile">Product image 4</Label>
-        <input
-          type="text"
-          name="productImage4"
-          {...register("productImage4")}
-          hidden
-        />
-        <br />
-        <img src={imageReview[3]} width={"100px"} />
-        <br />
-        <br />
-        <input
-          id="productImage4"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={onChangeFile(3)}
-        />
-      </FormGroup>
 
       <FormGroup>
         <Label for="exampleFile">Product image 5</Label>
@@ -679,7 +553,7 @@ function Modals(args) {
   if (actionName === "create") {
     return (
       <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
+        <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
           <ModalHeader toggle={toggle}>Add New Product</ModalHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>{formCategory}</ModalBody>
@@ -703,7 +577,7 @@ function Modals(args) {
   } else if (actionName === "edit") {
     return (
       <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
+        <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
           <ModalHeader toggle={toggle}>Update Slider</ModalHeader>
           <ModalBody>{formCategory}</ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -714,35 +588,6 @@ function Modals(args) {
               <Button color="secondary" onClick={toggle}>
                 Close
               </Button>
-            </ModalFooter>
-          </form>
-        </Modal>
-      </>
-    );
-  } else if (actionName === "delete") {
-    return (
-      <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <ModalBody>
-              <ContentModalDel
-                content={
-                  <>
-                    <h4>Are you Sure ?</h4>
-                    <p className="text-muted mx-4 mb-0">
-                      Are you Sure You want to Remove this Record ?
-                    </p>
-                  </>
-                }
-              />
-            </ModalBody>
-            <ModalFooter>
-              <Button color="default" onClick={toggle}>
-                Close
-              </Button>
-              <button type="submit" className="btn btn-danger">
-                Yes, Delete it!
-              </button>
             </ModalFooter>
           </form>
         </Modal>

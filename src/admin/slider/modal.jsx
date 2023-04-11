@@ -200,7 +200,7 @@ function Modals(args) {
   if (actionName === "create") {
     return (
       <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
+        <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
           <ModalHeader toggle={toggle}>Add New Slider</ModalHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>{formCategory}</ModalBody>
@@ -224,7 +224,7 @@ function Modals(args) {
   } else if (actionName === "edit") {
     return (
       <>
-        <Modal isOpen={isOpen} toggle={toggle} {...args}>
+        <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
           <ModalHeader toggle={toggle}>Update Slider</ModalHeader>
           <ModalBody>{formCategory}</ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
