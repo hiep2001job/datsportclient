@@ -12,6 +12,7 @@ import {
   PaginationLink,
 } from "reactstrap";
 import Modals from "./modal";
+import {formatVnd} from '../../utils/common';
 
 // redux
 import { useSelector, useDispatch } from "react-redux";
@@ -142,10 +143,8 @@ function Slide() {
                           </td>
                           <td className="price">
                             <span className="">
-                              {product.productPrice.toLocaleString("en-US", {
-                                style: "currency",
-                                currency: "USD",
-                              })}
+                              {formatVnd(product.productPrice)
+                              }
                             </span>
                           </td>
                           <td className="productQuantity">

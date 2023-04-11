@@ -3,24 +3,24 @@ import { Link, useLocation } from 'react-router-dom';
 import './SideBar.scss';
 
 const sidebarNavItems = [
-    {
-        display: 'Dashboard',
-        icon: <i className='bx bx-home'></i>,
-        to: '/admin',
-        section: '/admin'
-    },
+    // {
+    //     display: 'Dashboard',
+    //     icon: <i className='bx bx-home'></i>,
+    //     to: '/admin',
+    //     section: '/admin'
+    // },
     {
         display: 'Products',
         icon: <i className='bx bx-star'></i>,
         to: '/admin/product',
         section: '/admin/product'
     },
-    {
-        display: 'User',
-        icon: <i className='bx bx-calendar'></i>,
-        to: '/admin/user',
-        section: '/admin/user'
-    },
+    // {
+    //     display: 'User',
+    //     icon: <i className='bx bx-calendar'></i>,
+    //     to: '/admin/user',
+    //     section: '/admin/user'
+    // },
     {
         display: 'Category',
         icon: <i className='bx bx-user'></i>,
@@ -72,7 +72,10 @@ const Sidebar = () => {
     useEffect(() => {
 
         let curPath = window.location.pathname;
+
         if(curPath.includes('/process-order')) curPath='/admin/order';
+        if(curPath==='/admin')curPath='/admin/product';
+        
         const activeItem = sidebarNavItems.findIndex(item => item.section === curPath);
         setActiveIndex(curPath.length === 0 ? 0 : activeItem);
         

@@ -57,7 +57,7 @@ const Router = () => {
     return (
       <Routes>
         <Route exact path="/admin" element={<Admin />}>
-          <Route index element={<Dashboard />} />
+          <Route index element={<Product />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="product" element={<Product />} />
           <Route path="user" element={<User />} />
