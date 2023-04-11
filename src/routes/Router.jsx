@@ -7,6 +7,8 @@ import Dashboard from "../admin/dashboard/Dashboard";
 import Product from "../admin/product/Product";
 import Category from "../admin/category/Category";
 import Brand from "../admin/brand/Brand";
+import Posts from "../admin/posts/Posts";
+
 import User from "../admin/user/User";
 import Slider from "../admin/slider/Slider";
 import Order from "../admin/order/Order";
@@ -60,6 +62,7 @@ const Router = () => {
           <Route path="category" element={<Category />} />
           <Route path="brand" element={<Brand />} />
           <Route path="slider" element={<Slider />} />
+          <Route path="posts" element={<Posts />} />
           <Route path="order" element={<Order />} />
         </Route>
         <Route path="/*" element={<Navigate to="/admin" replace />} />

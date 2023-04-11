@@ -22,6 +22,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { productActions } from "../../redux/productActions";
 import { categoryActions } from "../../redux/categoryActions";
 import { brandActions } from "../../redux/brandActions";
+import JoditEditor from "jodit-react";
 
 import {
   selectLoading,
@@ -57,7 +58,7 @@ const schema = yup.object().shape({
   productStatus: yup
     .mixed()
     .notOneOf(["0"], "Invalid category selected!")
-    .required("Product status must be either 'On' or 'Off'!")
+    .required("Product status must be either 'On' or 'Off'!"),
 });
 
 function Modals(args) {
@@ -73,7 +74,8 @@ function Modals(args) {
 
   const categoryData = useSelector((state) => state.category.dataAllCategory);
   const brandData = useSelector((state) => state.brand.dataAllBrand);
-
+  const [content, setContent] = useState("");
+  const editor = useRef(null);
   const [imageReview, setImageReview] = useState([
     uploadIcon,
     uploadIcon,
@@ -101,8 +103,6 @@ function Modals(args) {
     // setValue("phone", userDetail.phone);
   }, []);
 
-  const editor = useRef(null);
-  const [content, setContent] = useState("Start writing proudct detail...");
   const config = {
     readonly: false,
     height: 400,
@@ -196,6 +196,8 @@ function Modals(args) {
     ) {
       setValue("productName", dataProduct.productName);
       setValue("productDescription", dataProduct.productDescription);
+      setContent(dataProduct.productDescription);
+
       setValue("productPrice", dataProduct.productPrice);
       setValue("productQuantity", dataProduct.productQuantity);
 
@@ -335,10 +337,14 @@ function Modals(args) {
       <FormGroup className="mt-2">
         <Label for="brandSelect">Description</Label>
         <br />
-        <textarea
-          style={{ width: "100%", height: "30%" }}
-          name="productDescription"
-          {...register("productDescription")}
+        <input name="productDescription" {...register("productDescription")} />
+        <JoditEditor
+          ref={editor}
+          tabIndex={1}
+          value={content}
+          onBlur={(newContent) => {
+            setValue("productDescription", newContent);
+          }}
         />
       </FormGroup>
       {/* <FormGroup className="mt-2">

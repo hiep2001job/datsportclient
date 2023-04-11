@@ -45,6 +45,12 @@ const sidebarNavItems = [
         to: '/admin/order',
         section: '/admin/order'
     },
+    {
+        display: 'Posts',
+        icon: <i className='bx bx-user'></i>,
+        to: '/admin/posts',
+        section: '/admin/posts'
+    },
 ]
 
 const Sidebar = () => {

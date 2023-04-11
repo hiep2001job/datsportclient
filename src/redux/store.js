@@ -9,7 +9,7 @@ import categoryReducer from "./categorySlice";
 import brandReducer from "./brandSlice";
 import sliderReducer from "./sliderSlice";
 import orderReducer from "./orderSlice";
-
+import postsReducer from "./postSlice";
 
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
 const store = configureStore({
@@ -22,7 +22,8 @@ const store = configureStore({
     brand: brandReducer,
     slider: sliderReducer,
     toast: toastReducer,
-    order:orderReducer
+    order: orderReducer,
+    posts: postsReducer,
   },
 });
 
