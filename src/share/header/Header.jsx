@@ -58,8 +58,7 @@ const Header = () => {
   }, []);
   // call api
   const navigate = useNavigate();
-  const { success } = useSelector((state) => state.auth);
-  const authToken = useSelector((state) => state.auth.authToken);
+  const { success, authToken } = useSelector((state) => state.auth);
 
   return (
     <div id="header" className="header-wrapper">
@@ -80,14 +79,12 @@ const Header = () => {
             <ul className="navbar-dropdown-list">
               {dataCategory?.map((category, idx) => {
                 return (
-                  <Link
-                    to={`/product-listing/${category.categoryId}`}
-                    key={idx}
-                  >
-                    <li className="navbar-dropdown-item hover:bg-slate-50">
-                      {category?.categoryName}
-                    </li>
-                  </Link>
+                  <li key={idx} className="navbar-dropdown-item hover:bg-slate-50">
+                    <Link
+                      to={`/product-listing/${category.categoryId}`}>
+                      {category?.categoryName} </Link>
+                  </li>
+
                 );
               })}
             </ul>
@@ -126,8 +123,8 @@ const Header = () => {
       {/* search area  */}
       <div className="search-box">
         <div className="cart-icon">
-        <div><SearchOption /></div>
-          
+          <div><SearchOption /></div>
+
           <div>
             <CartDropdown />
           </div>
@@ -148,6 +145,7 @@ const Header = () => {
         </div>
       </div>
     </div>
+
   );
 };
 

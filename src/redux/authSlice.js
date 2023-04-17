@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser,getProfile,updateProfile } from "./authActions";
+import { loginUser, registerUser,getProfile,updateProfile, changePassword } from "./authActions";
 import { toast } from "react-toastify";
 
 const authToken = localStorage.getItem("auth_token");
@@ -30,7 +30,7 @@ const authSlice = createSlice({
     },
     setCredentials: (state, { payload }) => {
       state.userInfo = payload;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -54,7 +54,8 @@ const authSlice = createSlice({
         state.success=false;
       })
       .addCase(registerUser.fulfilled, (state, { payload }) => {
-        state.loading = false;        
+        state.loading = false;       
+        state.success=true; 
         toast.success("Register success !", {
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -72,8 +73,7 @@ const authSlice = createSlice({
         state.success=false;
       })
       .addCase(getProfile.fulfilled, (state, { payload }) => {
-        state.userProfile=payload;
-        
+        state.userDetail=payload;        
         state.loading = false;
         state.success=true;
       })
@@ -97,6 +97,28 @@ const authSlice = createSlice({
       .addCase(updateProfile.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+      })
+      .addCase(changePassword.pending, (state, { payload }) => {
+        state.loading = true;
+        state.error = null;
+        state.success=false;
+      })
+      .addCase(changePassword.fulfilled, (state, { payload }) => {
+        state.data=payload;        
+        state.loading = false;
+        state.success=true;
+        toast.success("Update profile success !", {
+          position: toast.POSITION.TOP_RIGHT,
+          delay:1000
+        });
+      })
+      .addCase(changePassword.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+        toast.error(payload,{
+          position:toast.POSITION.TOP_RIGHT,
+          delay:1000
+        })
       });
   },
 });

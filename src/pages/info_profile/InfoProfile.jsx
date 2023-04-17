@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Button from "../../share/button/Button";
 
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+
+import { useController, useForm } from "react-hook-form";
+
 
 import {
   Card,
@@ -12,8 +10,7 @@ import {
   CardHeader,
   Col,
   Container,
-  Form,
-  Input,
+
   Label,
   Nav,
   NavItem,
@@ -23,30 +20,29 @@ import {
   TabPane,
 } from "reactstrap";
 import classnames from "classnames";
-import Flatpickr from "react-flatpickr";
+
 import imageApi from "../../api/img";
 
 //import images
-import progileBg from "../../assets/images/profile-bg.jpg";
-import avatar1 from "../../assets/images/users/avatar-1.jpg";
+
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserDetail } from "../../redux/authSlice";
-import useUserDetail from "../../hooks/useUserDetail";
-import { updateProfile, getProfile } from "../../redux/authActions";
-import { useEffect, useLayoutEffect } from "react";
+import { updateProfile } from "../../redux/authActions";
+import { useLayoutEffect } from "react";
 import DefaultImg from "../../assets/images/default.png";
+import BreadCrumb from "../../component/common/BreadCrumb";
+import ChangePasswordForm from "./change_password_form/ChangePasswordForm";
+import Loader from "../../component/common/Loader";
 
 const InfoProfile = () => {
+  const dispatch = useDispatch();
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [activeTab, setActiveTab] = useState("1");
   const tabChange = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
-  const dispatch = useDispatch();
-  const userDetail = useUserDetail();
-  const userProfile = useSelector((state) => state.auth.userProfile);
-  const {
+  const { userDetail } = useSelector((state) => state.auth);
+  const {control,
     register,
     handleSubmit,
     reset,
@@ -56,7 +52,7 @@ const InfoProfile = () => {
   });
 
   useLayoutEffect(() => {
-    setSelectedImageUrl(userDetail.image);
+    setSelectedImageUrl(userDetail?.image);
     if (userDetail) {
       reset({
         email: userDetail.email,
@@ -67,7 +63,7 @@ const InfoProfile = () => {
         userfullname: userDetail.userfullname,
       });
     }
-  }, [dispatch, userDetail]);
+  }, [userDetail]);
 
   const profileOptions = {
     email: {
@@ -101,10 +97,24 @@ const InfoProfile = () => {
       required: "Address cannot be empty!",
     },
   };
-  const handleErrors = () => {};
+
+  const genderOptions = [
+    { label: 'Men', value: 0 },
+    { label: 'Women', value: 1 },
+    { label: 'Others', value: 2 }
+  ];
+
+  const { field: genderField } = useController({
+    name: 'gender',
+    control,
+    rules: { required: true }
+  });
+
+  const handleErrors = () => { };
+
   const onSubmit = (data) => {
-    const newData = { ...data, id: userDetail.id, image: selectedImageUrl };
-    console.log(newData);
+    const newData = { ...data, id: userDetail.id, image: selectedImageUrl, gender:parseInt(data.gender) };
+    console.log('form',newData);
     dispatch(updateProfile(newData));
   };
 
@@ -122,8 +132,10 @@ const InfoProfile = () => {
   };
 
   return (
+    userDetail &&
     <React.Fragment>
-      <div className="page-content mt-3">
+      <BreadCrumb title='User profile' />
+      <div className="page-content">
         <Container fluid>
           <Row>
             <Col xxl={12}>
@@ -144,7 +156,7 @@ const InfoProfile = () => {
                         Personal Details
                       </NavLink>
                     </NavItem>
-                    {/* <NavItem>
+                    <NavItem>
                       <NavLink
                         to="#"
                         className={classnames({ active: activeTab === "2" })}
@@ -156,7 +168,7 @@ const InfoProfile = () => {
                         <i className="far fa-user"></i>
                         Change Password
                       </NavLink>
-                    </NavItem> */}
+                    </NavItem>
                   </Nav>
                 </CardHeader>
                 <CardBody className="p-4">
@@ -192,10 +204,10 @@ const InfoProfile = () => {
                                 </div>
                               </div>
                               <h5 className="fs-16 mb-1">
-                                {userProfile?.userfullname}
+                                {userDetail?.userfullname}
                               </h5>
                               <p className="text-muted mb-0">
-                                {userProfile?.email}
+                                {userDetail?.email}
                               </p>
                             </div>
                           </Col>
@@ -256,29 +268,16 @@ const InfoProfile = () => {
                                 Gender
                               </Label>
                               <select
+                                {...genderField}
                                 className="form-select mb-3"
                                 name="gender"
-                                {...register("gender", profileOptions.gender)}
+                                
                               >
-                                <option>Select your gender </option>
-                                <option
-                                  selected={userDetail.gender == 1}
-                                  value="1"
-                                >
-                                  Male
-                                </option>
-                                <option
-                                  selected={userDetail.gender == 2}
-                                  value="2"
-                                >
-                                  Female
-                                </option>
-                                <option
-                                  selected={userDetail.gender == 3}
-                                  value="3"
-                                >
-                                  Others
-                                </option>
+                              {genderOptions.map((option)=>
+                                <option key={option.value} value={option.value}>{option.label} </option>
+                                )}
+                              
+                               
                               </select>
                               <small className="text-red-500">
                                 {errors?.gender && errors.gender.message}
@@ -337,7 +336,7 @@ const InfoProfile = () => {
                               </button>
                               <button
                                 type="button"
-                                className="btn btn-soft-success"
+                                className="btn btn-soft-danger"
                               >
                                 Cancel
                               </button>
@@ -347,82 +346,10 @@ const InfoProfile = () => {
                       </form>
                     </TabPane>
 
-                    {/* <TabPane tabId="2">
-                      <form>
-                        <Row className="g-2">
-                          <Col lg={4}>
-                            <div>
-                              <Label
-                                htmlFor="oldpasswordInput"
-                                className="form-label"
-                              >
-                                Old Password*
-                              </Label>
-                              <input
-                                type="password"
-                                className="form-control"
-                                id="oldpasswordInput"
-                                placeholder="Enter current password"
-                              />
-                            </div>
-                          </Col>
+                    <TabPane tabId="2">
+                      <ChangePasswordForm />
 
-                          <Col lg={4}>
-                            <div>
-                              <Label
-                                htmlFor="newpasswordInput"
-                                className="form-label"
-                              >
-                                New Password*
-                              </Label>
-                              <input
-                                type="password"
-                                className="form-control"
-                                id="newpasswordInput"
-                                placeholder="Enter new password"
-                              />
-                            </div>
-                          </Col>
-
-                          <Col lg={4}>
-                            <div>
-                              <Label
-                                htmlFor="confirmpasswordInput"
-                                className="form-label"
-                              >
-                                Confirm Password*
-                              </Label>
-                              <input
-                                type="password"
-                                className="form-control"
-                                id="confirmpasswordInput"
-                                placeholder="Confirm password"
-                              />
-                            </div>
-                          </Col>
-
-                          <Col lg={12}>
-                            <div className="mb-3">
-                              <Link
-                                to="#"
-                                className="link-primary text-decoration-underline"
-                              >
-                                Forgot Password ?
-                              </Link>
-                            </div>
-                          </Col>
-
-                          <Col lg={12}>
-                            <div className="text-end">
-                              <button type="button" className="btn btn-success">
-                                Change Password
-                              </button>
-                            </div>
-                          </Col>
-                        </Row>
-                      </form>
-                     
-                    </TabPane> */}
+                    </TabPane>
                   </TabContent>
                 </CardBody>
               </Card>
@@ -430,7 +357,7 @@ const InfoProfile = () => {
           </Row>
         </Container>
       </div>
-    </React.Fragment>
+    </React.Fragment> || <Loader />
   );
 };
 

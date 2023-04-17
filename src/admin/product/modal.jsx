@@ -578,7 +578,7 @@ function Modals(args) {
     return (
       <>
         <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
-          <ModalHeader toggle={toggle}>Update Slider</ModalHeader>
+          <ModalHeader toggle={toggle}>Update Product</ModalHeader>
           <ModalBody>{formCategory}</ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalFooter>

@@ -3,35 +3,32 @@ import "./Login.scss";
 import React, { useEffect, useState } from "react";
 
 import { BiShow } from "react-icons/bi";
+// @ts-ignore
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import googleLogo from "../../assets/images/google-logo.svg";
-import loginLogo from "../../assets/images/logo.png";
-import { loginUser } from "../../redux/authActions";
+import { getProfile, loginUser } from "../../redux/authActions";
 import LoadingSpinner from "../../share/loading_spinner/LoadingSpinner";
 
 const Login = () => {
   // ==== hook ====
   const navigate = useNavigate();
   const [typePassword, setTypePassword] = useState("password");
-  const { success, loading, authToken, userRole } = useSelector(
+  const { success, loading } = useSelector(
     (state) => state.auth
   );
 
+
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (success) {
-      navigate("/");
-    }
-  }, [navigate, success]);
+
 
   // ==== handleFunciton ====
 
   const handleClickBtnSubmit = async (data) => {
     await dispatch(loginUser(data));
-    
+    await dispatch(getProfile());
+    navigate("/");
   };
 
   const handleClickRedirectSignUp = () => {
@@ -44,7 +41,7 @@ const Login = () => {
     typePassword === "password"
       ? setTypePassword("text")
       : setTypePassword("password");
-  const handleErrors = (errors) => {};
+  const handleErrors = (errors) => { };
   const {
     register,
     handleSubmit,
@@ -68,9 +65,7 @@ const Login = () => {
       },
     },
   };
-  // if (success) {
-  //   return <Navigate to="/home" />;
-  // }
+
   return (
     <React.Fragment>
       {loading ? (
@@ -116,7 +111,7 @@ const Login = () => {
 
                             <div className="form-outline mb-4">
                               <input
-                               
+
                                 id="form2Example17"
                                 className="form-control form-control-lg"
                                 {...register("username", loginOptions.username)}
@@ -125,7 +120,7 @@ const Login = () => {
                                 className="form-label"
                                 htmlFor="form2Example17"
                               >
-                                Email address
+                                Username
                               </label>
                               <small className="text-red-500">
                                 {errors?.username && errors.username.message}
@@ -162,7 +157,7 @@ const Login = () => {
                               </button>
                             </div>
 
-                            <a className="small text-muted" href="#!">
+                            <a onClick={handleClickForgotPassword} className="small text-muted" href="#!">
                               Forgot password?
                             </a>
                             <p
@@ -177,8 +172,8 @@ const Login = () => {
                                 Register here
                               </a>
                             </p>
-                           
-                           
+
+
                           </form>
                         </div>
                       </div>

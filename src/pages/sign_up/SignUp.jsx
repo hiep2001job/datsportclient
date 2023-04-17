@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiShow } from "react-icons/bi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import loginLogo from "../../assets/images/loginLogo.avif";
 import { registerUser } from "../../redux/authActions";
@@ -9,6 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [typePassword, setTypePassword] = useState("password");
   const dispatch = useDispatch();
+  const {success}=useSelector(state=>state.auth)
 
   const {
     register,
@@ -19,8 +20,9 @@ const Login = () => {
     mode: "onBlur",
   });
 
-  const handleClickBtnSubmit = (data) => {
-    dispatch(registerUser(data));
+  const handleClickBtnSubmit = async (data) => {
+   await dispatch(registerUser(data));
+   if(success){}
     reset();
   };
 

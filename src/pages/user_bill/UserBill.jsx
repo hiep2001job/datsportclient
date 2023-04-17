@@ -595,7 +595,7 @@ const UserBill = () => {
                     SearchPlaceholder="Search for order ID, customer, order status or something..."
                   />
                 ) : (
-                  <Loader />
+                  <p className="w-full text-center mt-3">No bills to show</p>
                 )}
               </div>
 

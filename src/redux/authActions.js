@@ -3,33 +3,34 @@ import axios from "axios";
 import authApi from "../api/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const BASE_URL=process.env.REACT_APP_API_URL;
+
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const getProfile = createAsyncThunk(
   "auth/getProfile",
-  async (
-    payload,
-    { rejectWithValue }
+  async (_,
+    { rejectWithValue,getState }
   ) => {
     try {
-      const rs = await authApi.getDetails(payload);
-      
+      const { data } = getState().auth;
+      const rs = await authApi.getDetails(data.userName);
+      console.log('call get profile');
       return rs.data;
     } catch (error) {
-      console.log(error)
-      // return custom error message from backend if present
-      // if (error.response && error.response.data.message) {
-      //   return rejectWithValue(error.response.data.message);
-      // } else {
-      //   return rejectWithValue(rs.message);
-      // }
+
+      //return custom error message from backend if present
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue("Failed");
+      }
     }
   }
 );
 export const updateProfile = createAsyncThunk(
   "auth/updateProfile",
   async (
-    { id, userfullname, email, password, image,phone, gender, address },
+    { id, userfullname, email, password, image, phone, gender, address },
     { rejectWithValue }
   ) => {
     try {
@@ -43,8 +44,29 @@ export const updateProfile = createAsyncThunk(
         gender,
         address,
       });
-      
+
       return rs.data;
+    } catch (error) {
+      // return custom error message from backend if present
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async (
+    payload,
+    { rejectWithValue }
+  ) => {
+    try {
+      const rs = await authApi.changePassword(payload);
+      if (rs.data != null) return rs.data;
+      else return rejectWithValue(rs.message);
     } catch (error) {
       // return custom error message from backend if present
       if (error.response && error.response.data.message) {

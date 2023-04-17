@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+// @ts-ignore
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import Admin from "../admin/Admin";
