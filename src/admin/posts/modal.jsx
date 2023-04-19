@@ -39,12 +39,12 @@ import uploadIcon from "../../assets/images/Upload-PNG-Image-File.png";
 
 const schema = yup.object().shape({
   posts_title: yup.string().required("Posts title cannot be empty!"),
-  posts_content: yup.string().required("Posts content name cannot be empty!"),
-  posts_image: yup.string().required("Posts image name cannot be empty!"),
+  posts_content: yup.string().required("Posts content cannot be empty!"),
+  posts_image: yup.string().required("Posts image cannot be empty!"),
   posts_status: yup
     .mixed()
-    .notOneOf(["0"], "Invalid category selected!")
-    .required("Category status cannot be empty!"),
+    .notOneOf([""], "Invalid posts status selected!")
+    .required("Posts status cannot be empty!"),
 });
 
 function Modals(args) {
@@ -88,12 +88,9 @@ function Modals(args) {
   }, []);
 
   const onSubmit = (data) => {
-    console.log("submit ne");
-    // dispatch(submitFormModal());
 
     switch (actionName) {
       case "create":
-        console.log("create...");
         const payloadCreate = {
           ...data,
           posts_create_date: getDateTime(),
@@ -101,12 +98,10 @@ function Modals(args) {
           posts_update_date: getDateTime(),
           posts_update_user: "Admin",
         };
-        console.log("submit payload: ", payloadCreate);
 
         dispatch(postsActions.create(payloadCreate));
         break;
       case "edit":
-        console.log("update...");
 
         const payloadUpdate = {
           ...data,
@@ -134,9 +129,6 @@ function Modals(args) {
     if (actionName === "edit") dispatch(postsActions.getSingle(postsId));
   }, [actionName]);
 
-  useEffect(() => {
-    console.log("dataPosts: ", dataPosts);
-  }, [dataPosts]);
 
   useEffect(() => {
     if (success && actionName !== "edit") {
@@ -162,14 +154,6 @@ function Modals(args) {
     setValue("posts_status", "");
     dispatch(closeModal());
   };
-
-  useEffect(() => {
-    console.log("isOpen: ", isOpen);
-
-    console.log("postsId: ", postsId);
-    console.log("selectActionName: ", actionName);
-    console.log("selectActionSubmit: ", actionSubmit);
-  }, [postsId, isOpen, actionSubmit]);
 
   // handle change event of input file
   const onChangeFile = (imageIndex) => async (event) => {

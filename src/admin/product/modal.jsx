@@ -55,9 +55,13 @@ const schema = yup.object().shape({
   productPrice: yup.string().required("Price cannot be empty!"),
   productQuantity: yup.string().required("Quantity cannot be empty!"),
   productImage1: yup.string().required("Please upload a file image 1"),
+  productHot: yup
+    .mixed()
+    .notOneOf([""], "Invalid product hot selected!")
+    .required("Product hot must be either 'Hot' or 'Normal'!"),
   productStatus: yup
     .mixed()
-    .notOneOf(["0"], "Invalid category selected!")
+    .notOneOf([""], "Invalid product status selected!")
     .required("Product status must be either 'On' or 'Off'!"),
 });
 
@@ -114,11 +118,9 @@ function Modals(args) {
   };
 
   const onSubmit = (data) => {
-    console.log("submit ne: ", data);
 
     switch (actionName) {
       case "create":
-        console.log("create...");
         const payloadCreate = {
           ...data,
           productCreateDate: getDateTime(),
@@ -126,7 +128,6 @@ function Modals(args) {
           productUpdateDate: getDateTime(),
           productUpdateUser: "Admin",
         };
-        console.log("submit payload: ", payloadCreate);
 
         dispatch(productActions.create(payloadCreate));
         break;
@@ -139,7 +140,6 @@ function Modals(args) {
           productUpdateDate: getDateTime(),
           productUpdateUser: "Admin",
         };
-        console.log("update...", payloadUpdate);
         dispatch(productActions.update(payloadUpdate));
         dispatch(updateForm());
         break;
@@ -181,7 +181,7 @@ function Modals(args) {
   const [categorySelected, setCategorySelected] = useState(0);
   const [brandSelected, setBrandSelected] = useState(0);
   const [productHotSelected, setProductHotSelected] = useState(0);
-  const [productStatusSeleted, setProductStatusSeleted] = useState(0);
+  const [productStatusSeleted, setProductStatusSeleted] = useState("");
 
   useEffect(() => {
     if (success && actionName !== "edit") {
@@ -229,9 +229,6 @@ function Modals(args) {
     }
   }, [loading, success, error]);
 
-  useEffect(() => {
-    console.log("success: ", success);
-  }, [loading, success, error]);
 
   // const [modal, setModal] = useState(isOpen);
   // const toggle = () => setModal(!modal);
@@ -266,7 +263,7 @@ function Modals(args) {
         setImageReview(updatedImageReview); // set the updated array as the new state
 
         setValue(`productImage${imageIndex + 1}`, newImage);
-        console.log("res img: ", res.data.data.display_url);
+        // console.log("res img: ", res.data.data.display_url);
       })
       .catch((error) => {
         console.error(error);

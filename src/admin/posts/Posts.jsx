@@ -29,7 +29,6 @@ function Category(args) {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("allPosts: ", allPosts);
     setIsLoad(true);
   }, [allPosts]);
 

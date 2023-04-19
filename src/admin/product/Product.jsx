@@ -12,7 +12,7 @@ import {
   PaginationLink,
 } from "reactstrap";
 import Modals from "./modal";
-import {formatVnd} from '../../utils/common';
+import { formatVnd } from "../../utils/common";
 
 // redux
 import { useSelector, useDispatch } from "react-redux";
@@ -31,6 +31,7 @@ function Slide() {
 
   const [pageNumber, setPageNumber] = useState(0);
   const [search, setSearch] = useState("");
+  const [isLoad, setIsLoad] = useState(false);
 
   // useEffect(() => {
   //   console.log("totalPages: ", totalPages);
@@ -38,13 +39,29 @@ function Slide() {
   // }, [pageNumber, search]);
 
   useEffect(() => {
+    if (allProducts.length > 0) {
+      setIsLoad(true);
+    } else {
+      setIsLoad(false);
+    }
+  }, [allProducts]);
+  useEffect(() => {
     //Get active category
 
-    const queryProduct = {
+    let queryProduct = {
       pageNumber: pageNumber,
-      pageSize: 4,
+      pageSize: 2,
       keyword: search,
     };
+
+    if (search) {
+      queryProduct = {
+        pageNumber: 0,
+        pageSize: 2,
+        keyword: search,
+      };
+      setPageNumber(0);
+    }
 
     dispatch(productActions.getAll(queryProduct));
   }, [dispatch, search, pageNumber]);
@@ -59,8 +76,6 @@ function Slide() {
     const payload = { id: id, actionName: "edit" };
     dispatch(openModal(payload));
   };
-
-
 
   const statusProduct = ["Disnable", "Enabled"];
 
@@ -143,8 +158,7 @@ function Slide() {
                           </td>
                           <td className="price">
                             <span className="">
-                              {formatVnd(product.productPrice)
-                              }
+                              {formatVnd(product.productPrice)}
                             </span>
                           </td>
                           <td className="productQuantity">
@@ -184,7 +198,10 @@ function Slide() {
                       ))}
                     </tbody>
                   </table>
-                  <div className="noresult" style={{ display: "none" }}>
+                </div>
+
+                {isLoad || (
+                  <div className="noresult">
                     <div className="text-center">
                       {/* <lord-icon
                         src="https://cdn.lordicon.com/msoeawqm.json"
@@ -194,39 +211,42 @@ function Slide() {
                       ></lord-icon> */}
                       <h5 className="mt-2">Sorry! No Result Found</h5>
                       <p className="text-muted mb-0">
-                        We've searched more than 150+ Orders We did not find any
-                        orders for you search.
+                        We did not find any products for your search.
                       </p>
                     </div>
                   </div>
-                </div>
+                )}
 
-                <Pagination>
-                  <PaginationItem>
-                    <PaginationLink
-                      previous
-                      onClick={() => setPageNumber(pageNumber - 1)}
-                    />
-                  </PaginationItem>
-                  {Array(totalPages)
-                    .fill()
-                    .map((_, index) => (
-                      <PaginationItem key={index}>
-                        <PaginationLink onClick={() => setPageNumber(index)}>
-                          {index + 1}
-                        </PaginationLink>
+                {isLoad && (
+                  <Pagination>
+                    {pageNumber > 0 ? (
+                      <PaginationItem>
+                        <PaginationLink
+                          previous
+                          onClick={() => setPageNumber(pageNumber - 1)}
+                        />
                       </PaginationItem>
-                    ))}
+                    ) : (<></>)}
+                    {Array(totalPages)
+                      .fill()
+                      .map((_, index) => (
+                        <PaginationItem key={index} active={pageNumber === index}>
+                          <PaginationLink onClick={() => setPageNumber(index)}>
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
 
-                  {lastPage || (
-                    <PaginationItem>
-                      <PaginationLink
-                        next
-                        onClick={() => setPageNumber(pageNumber + 1)}
-                      />
-                    </PaginationItem>
-                  )}
-                </Pagination>
+                    {lastPage || (
+                      <PaginationItem>
+                        <PaginationLink
+                          next
+                          onClick={() => setPageNumber(pageNumber + 1)}
+                        />
+                      </PaginationItem>
+                    )}
+                  </Pagination>
+                )}
               </div>
             </div>
           </div>

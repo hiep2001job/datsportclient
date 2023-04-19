@@ -39,7 +39,7 @@ const schema = yup.object().shape({
   slider_name: yup.string().required("Slider name cannot be empty!"),
   slider_status: yup
     .mixed()
-    .notOneOf(["0"], "Invalid status selected!")
+    .notOneOf([""], "Invalid status selected!")
     .required("Category status cannot be empty!"),
 
   slider_image: yup.string().required("Please upload a file image"),
@@ -83,12 +83,9 @@ function Modals(args) {
   }, []);
 
   const onSubmit = (data) => {
-    console.log("submit ne");
-    // dispatch(submitFormModal());
 
     switch (actionName) {
       case "create":
-        console.log("create...");
         dispatch(sliderActions.create(data));
         break;
       case "edit":
@@ -133,10 +130,6 @@ function Modals(args) {
 
       setImageReview(dataSlider.slider_image || uploadIcon);
     }
-  }, [loading, success, error]);
-
-  useEffect(() => {
-    console.log("success: ", success);
   }, [loading, success, error]);
 
   // const [modal, setModal] = useState(isOpen);

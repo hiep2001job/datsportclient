@@ -38,7 +38,7 @@ const schema = yup.object().shape({
   categoryName: yup.string().required("Category name cannot be empty!"),
   categoryStatus: yup
     .mixed()
-    .notOneOf(["0"], "Invalid category selected!")
+    .notOneOf([""], "Invalid category status selected!")
     .required("Category status cannot be empty!"),
 });
 
@@ -79,16 +79,12 @@ function Modals(args) {
   }, []);
 
   const onSubmit = (data) => {
-    console.log("submit ne");
-    // dispatch(submitFormModal());
 
     switch (actionName) {
       case "create":
-        console.log("create...");
         dispatch(categoryActions.create(data));
         break;
       case "edit":
-        console.log("update...");
         dispatch(categoryActions.update(data));
         dispatch(updateForm());
         break;
@@ -101,9 +97,6 @@ function Modals(args) {
     if (actionName === "edit") dispatch(categoryActions.getSingle(categoryId));
   }, [actionName]);
 
-  useEffect(() => {
-    console.log("dataCategory: ", dataCategory);
-  }, [dataCategory]);
 
   useEffect(() => {
     if (success && actionName !== "edit") {
@@ -126,13 +119,6 @@ function Modals(args) {
     dispatch(closeModal());
   };
 
-  useEffect(() => {
-    console.log("isOpen: ", isOpen);
-
-    console.log("categoryId: ", categoryId);
-    console.log("selectActionName: ", actionName);
-    console.log("selectActionSubmit: ", actionSubmit);
-  }, [categoryId, isOpen, actionSubmit]);
 
   const formCategory = (
     <>

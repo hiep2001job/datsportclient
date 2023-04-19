@@ -29,7 +29,6 @@ function Category(args) {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("allCategory: ", allCategory);
     setIsLoad(true);
   }, [allCategory]);
 
