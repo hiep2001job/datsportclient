@@ -34,7 +34,7 @@ import { showToast } from '../../redux/toastSlice';
 import product1 from "../../assets/images/products/img-1.png";
 import product6 from "../../assets/images/products/img-6.png";
 import product8 from "../../assets/images/products/img-8.png";
-import BreadCrumb from "../../component/common/BreadCrumb";
+import BreadCrumb from "../../component/Common/BreadCrumb";
 import useProductDetail from "../../hooks/useProductDetail";
 import { formatVnd } from "../../utils/common.js";
 import {

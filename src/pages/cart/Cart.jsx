@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import CartRow from "../../component/cart_row/CartRow";
+import CartRow from "../../component/CartRow/CartRow";
 import { Link } from "react-router-dom";
 //redux
 import { useEffect } from "react";

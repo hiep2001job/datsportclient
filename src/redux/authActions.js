@@ -14,7 +14,6 @@ export const getProfile = createAsyncThunk(
     try {
       const { data } = getState().auth;
       const rs = await authApi.getDetails(data.userName);
-      console.log('call get profile');
       return rs.data;
     } catch (error) {
 
@@ -77,6 +76,27 @@ export const changePassword = createAsyncThunk(
     }
   }
 );
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (
+    payload,
+    { rejectWithValue }
+  ) => {
+    try {
+      const rs = await authApi.resetPassword(payload);
+      if (rs.message === 'Send Mail Success') return rs.message;
+      else return rejectWithValue(rs.message);
+    } catch (error) {
+      // return custom error message from backend if present
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {
@@ -101,7 +121,7 @@ export const loginUser = createAsyncThunk(
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (
-    { username, email, password, phone, gender, address },
+    { username, email,userfullname, password, phone, gender, address },
     { rejectWithValue }
   ) => {
     try {
@@ -112,7 +132,7 @@ export const registerUser = createAsyncThunk(
       };
       await axios.post(
         `${BASE_URL}/api/register`,
-        { username, email, password, phone, address, gender },
+        { username, email,userfullname, password, phone, address, gender },
         config
       );
     } catch (error) {

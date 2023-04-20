@@ -62,7 +62,7 @@ const Sidebar = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            const sidebarItem = sidebarRef.current.querySelector('.sidebar__menu__item');
+            const sidebarItem = sidebarRef?.current?.querySelector('.sidebar__menu__item');
             indicatorRef.current.style.height = `${sidebarItem.clientHeight}px`;
             setStepHeight(sidebarItem.clientHeight);
         }, 50);

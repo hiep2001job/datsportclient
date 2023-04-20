@@ -5,28 +5,35 @@ import { Link } from 'react-router-dom'
 import { Col, Label, Row } from 'reactstrap'
 import { changePassword } from '../../../redux/authActions'
 import useUserDetail from '../../../hooks/useUserDetail'
+import { resetSuccess } from '../../../redux/authSlice'
 
 
 const ChangePasswordForm = () => {
-    const dispatch=useDispatch();
-    const userDetail=useUserDetail();
-    const {success,}=useSelector(state=>state.auth);
+    const dispatch = useDispatch();
+    const userDetail = useUserDetail();
+    const { success, } = useSelector(state => state.auth);
     // form process
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = data => {
-        const formData={...data,username:userDetail.username};
+        const formData = { password: data.password, newPassword: data.newPassword, username: userDetail.username };
         console.log(formData);
-    //   dispatch(changePassword({
-    //     data
-    //   }));
-    const changePasswordOptions={
-        password:{},
-        newPassword:{},
-        retypePassword:{}
-    } 
-      
+        dispatch(changePassword(formData));
+        dispatch(resetSuccess);
     };
+    const changePasswordOptions = {
+        password: {
+            required: "Please enter password"
+        },
+        newPassword: {
+            required: "Please enter new password"
+        },
+        retypePassword: {
+            required: "Please confirm new password"
+        }
+    }
+
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Row className="g-2">
@@ -43,9 +50,9 @@ const ChangePasswordForm = () => {
                             className="form-control"
                             id="oldpasswordInput"
                             placeholder="Enter current password"
-                            {...register("password", { required: true })}
+                            {...register("password", changePasswordOptions.password)}
                         />
-                        <small className='text-red-500'> {errors.password && <span>Please enter current password</span>}</small>
+                        <small className='text-red-500'> {errors.password && <span>{errors.password.message}</span>}</small>
                     </div>
                 </Col>
 
@@ -62,8 +69,9 @@ const ChangePasswordForm = () => {
                             className="form-control"
                             id="newpasswordInput"
                             placeholder="Enter new password"
-                            {...register("newPassword", { required: true })}
+                            {...register("newPassword", changePasswordOptions.newPassword)}
                         />
+                        <small className='text-red-500'> {errors.newPassword && <span>{errors.newPassword.message}</span>}</small>
                     </div>
                 </Col>
 
@@ -80,15 +88,16 @@ const ChangePasswordForm = () => {
                             className="form-control"
                             id="confirmpasswordInput"
                             placeholder="Confirm password"
-                            {...register("newPassword", { required: true })}
+                            {...register("retypePassword", changePassword.retypePassword)}
                         />
+                        <small className='text-red-500'> {errors.retypePassword && <span>{errors.retypePassword.message}</span>}</small>
                     </div>
                 </Col>
 
                 <Col lg={12}>
                     <div className="mb-3">
                         <Link
-                            to="#"
+                            to="/forgot-password"
                             className="link-primary text-decoration-underline"
                         >
                             Forgot Password ?

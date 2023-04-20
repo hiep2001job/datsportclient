@@ -15,24 +15,25 @@ import Slider from "../admin/slider/Slider";
 import Order from "../admin/order/Order";
 import ProcessOrder from "../admin/order/ProcessOrder";
 
-import About from "../pages/about/About";
-import ProductDetail from "../pages/detail_product/ProductDetail";
+import About from "../pages/About/About";
+import ProductDetail from "../pages/DetailProduct/ProductDetail";
 
-import GlobalNavigation from "../pages/global_navigation/GlobalNavigation";
-import Home from "../pages/home/Home";
-import PostList from "../pages/posts/PostList";
-import DetailPost from "../pages/detail_post/DetailPost";
-import InfoProfile from "../pages/info_profile/InfoProfile";
-import Login from "../pages/login/Login";
-import NotFound from "../pages/not_found/NotFound";
-import ProductListing from "../pages/product_listing/ProductListing";
-import SignUp from "../pages/sign_up/SignUp";
-import UserBill from "../pages/user_bill/UserBill";
-import Checkout from "../pages/checkout/Checkout";
-import BillDetail from "../pages/bill_detail/BillDetail";
-import UserPassword from "../pages/user_password/UserPassword";
+import GlobalNavigation from "../pages/GlobalNavigation/GlobalNavigation";
+import Home from "../pages/Home/Home";
+import PostList from "../pages/Posts/PostList";
+import DetailPost from "../pages/DetailPost/DetailPost";
+import InfoProfile from "../pages/InfoProfile/InfoProfile";
+import Login from "../pages/Login/Login";
+import NotFound from "../pages/NotFound/NotFound";
+import ProductListing from "../pages/ProductListing/ProductListing";
+import SignUp from "../pages/SignUp/SignUp";
+import UserBill from "../pages/UserBill/UserBill";
+import Checkout from "../pages/Checkout/Checkout";
+import BillDetail from "../pages/BillDetail/BillDetail";
+
 import UserProfile from "../pages/user_profile/UserProfile";
-import Cart from "../pages/cart/Cart";
+import Cart from "../pages/Cart/Cart";
+import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 
 const Router = () => {
   const authToken = useSelector((state) => state.auth.authToken);
@@ -79,6 +80,7 @@ const Router = () => {
     return (
       <Routes>
         <Route exact path="/login" element={<Login />} />
+        <Route exact path="/forgot-password" element={<ForgotPassword />} />
         <Route exact path="/404" element={<NotFound />} />
         <Route path="/" element={<GlobalNavigation />}>
           <Route index element={<Home />} />

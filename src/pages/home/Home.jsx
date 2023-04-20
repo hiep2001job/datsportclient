@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { BiUpArrow } from "react-icons/bi";
 import ScrollToTop from "react-scroll-to-top";
 import productApi from "../../api/product";
-import ProductSection from "../../component/product_section/ProductSection";
-import WhoChooseProduct from "../../component/who_choose_product/WhoChooseProduct";
+import ProductSection from "../../component/ProductSection/ProductSection";
 import Banner from "../../share/banner/Banner";
 
 const Home = () => {

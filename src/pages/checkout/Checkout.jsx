@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { formatVnd } from "../../utils/common";
 
 //Import Breadcrumb
-import BreadCrumb from "../../component/common/BreadCrumb";
+import BreadCrumb from "../../component/Common/BreadCrumb";
 
 import { useEffect } from "react";
 

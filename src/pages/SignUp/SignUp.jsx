@@ -1,16 +1,21 @@
+import './SignUp.scss';
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { BiShow } from "react-icons/bi";
+import { BiHide, BiShow } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import loginLogo from "../../assets/images/loginLogo.avif";
+import { Link, useNavigate } from "react-router-dom";
+import Logo from '../../assets/images/logo.png';
 import { registerUser } from "../../redux/authActions";
+import { useLayoutEffect } from 'react';
+import { useEffect } from 'react';
+import { resetSuccess } from '../../redux/authSlice';
 const Login = () => {
   const navigate = useNavigate();
   const [typePassword, setTypePassword] = useState("password");
   const dispatch = useDispatch();
-  const {success}=useSelector(state=>state.auth)
+  const { success } = useSelector(state => state.auth)
 
+  // init form
   const {
     register,
     handleSubmit,
@@ -20,22 +25,27 @@ const Login = () => {
     mode: "onBlur",
   });
 
+  // Handle submit form
   const handleClickBtnSubmit = async (data) => {
-   await dispatch(registerUser(data));
-   if(success){}
-    reset();
+    await dispatch(registerUser(data));
   };
 
-  const handleClickRedirectLogin = () => {
-    navigate("/login");
-  };
+  useEffect(() => {
+    if (success) {
+      dispatch(resetSuccess());
+      navigate('/login');
+    }
+  }, [success]);
+  
 
+// Toggle password
   const handleClickToggleShowPassword = () =>
     typePassword === "password"
       ? setTypePassword("text")
       : setTypePassword("password");
-  const handleErrors = (errors) => {};
+  const handleErrors = (errors) => { };
 
+  // Login options for validation
   const loginOptions = {
     email: {
       required: "Email cannot be empty!",
@@ -52,10 +62,10 @@ const Login = () => {
       },
     },
     userfullname: {
-      required: "Username cannot be empty!",
+      required: "Fullname cannot be empty!",
       minLength: {
         value: 5,
-        message: "Username must be at least 5 characters",
+        message: "Fullname must be at least 5 characters",
       },
     },
     password: {
@@ -98,11 +108,11 @@ const Login = () => {
               <div className="col col-xl-10">
                 <div className="card" style={{ borderRadius: "1rem" }}>
                   <div className="row g-0">
-                    <div className="col-md-6 col-lg-5 d-none d-md-block">
+                    <div className="col-md-6 col-lg-5 d-none d-md-flex justify-content-center align-items-start py-5 px-2">
                       <img
-                        src={loginLogo}
+                        src={Logo}
                         alt="login form"
-                        className="img-fluid"
+                        className="img-fluid sticky-top"
                         style={{ borderRadius: "1rem 0 0 1rem" }}
                       />
                     </div>
@@ -144,36 +154,42 @@ const Login = () => {
                             >
                               Username
                             </label>
-                            <small className="text-red-500 ml-5">
+                            <br /><small className="text-red-500 ml-5">
                               {errors?.username && errors.username.message}
                             </small>
                           </div>
 
-                          <div className="form-outline mb-4">
-                            <input
-                              type={typePassword}
-                              placeholder="Password"
-                              className="form-control form-control-lg"
-                              {...register("password", loginOptions.password)}
-                            />
-                            <span
-                              onClick={handleClickToggleShowPassword}
-                              className="show-password"
-                            >
-                              <BiShow size={15} />
-                            </span>
+                          <div className="form-outline">
+                            <div className='relative'>
+                              <input
+                                type={typePassword}
+                                placeholder="Password"
+                                className="form-control form-control-lg"
+                                {...register("password", loginOptions.password)}
+                              />
+                              <span
+                                onClick={handleClickToggleShowPassword}
+                                className="show-password"
+                              >
+                                {(typePassword === 'password' && <BiShow size={15} />) || <BiHide size={15} />}
+                              </span>
+                            </div>
+
+
                             <label
                               className="form-label"
                               htmlFor="form2Example27"
                             >
                               Password
                             </label>
+                            <br />
                             <small className="text-red-500">
                               {errors?.password && errors.password.message}
                             </small>
                           </div>
 
                           <div className="form-outline mb-4">
+
                             <input
                               type={typePassword}
                               id="form2Example27"
@@ -185,19 +201,14 @@ const Login = () => {
                                 loginOptions.retypepassword
                               )}
                             />
-                            <span
-                              onClick={handleClickToggleShowPassword}
-                              className="show-password"
-                            >
-                              <BiShow size={15} />
-                            </span>
+
                             <label
                               className="form-label"
                               htmlFor="form2Example27"
                             >
                               Retype password
                             </label>
-                            <small className="text-red-500 ml-5">
+                            <br /><small className="text-red-500 ml-5">
                               {errors?.retypepassword &&
                                 errors.retypepassword.message}
                             </small>
@@ -221,7 +232,7 @@ const Login = () => {
                             >
                               Full name
                             </label>
-                            <small className="text-red-500 ml-5">
+                            <br /><small className="text-red-500 ml-5">
                               {errors?.userfullname &&
                                 errors.userfullname.message}
                             </small>
@@ -242,27 +253,27 @@ const Login = () => {
                             >
                               Email
                             </label>
-                            <small className="text-red-500 ml-5">
+                            <br /><small className="text-red-500 ml-5">
                               {errors?.email && errors.email.message}
                             </small>
                           </div>
 
                           <div className="form-outline mb-4">
-                            <div className="flex items-center">
-                              <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
+                            <div className="d-flex justify-content-around">
+                              <div className="d-flex justify-content-center mr-2 text-sm cursor-pointer">
                                 <input
                                   id="men"
                                   name="gender"
                                   {...register("gender", loginOptions.gender)}
                                   type="radio"
                                   value="0"
-                                  className="mr-1"
+                                  className="mr-2"
                                 />
                                 <label class htmlFor="men">
                                   Men
                                 </label>
                               </div>
-                              <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
+                              <div className="d-flex justify-content-center mr-2 text-sm cursor-pointer">
                                 <input
                                   type="radio"
                                   id="women"
@@ -273,7 +284,7 @@ const Login = () => {
                                 />
                                 <label htmlFor="women">Women</label>
                               </div>
-                              <div className="flex items-center mr-2 text-sm [&>*]:cursor-pointer">
+                              <div className="d-flex justify-content-center mr-2 text-sm cursor-pointer">
                                 <input
                                   type="radio"
                                   id="other"
@@ -291,12 +302,12 @@ const Login = () => {
                             >
                               Gender
                             </label>
-                          </div>
-                          <div className="form-outline mb-4">
+                            <br />
                             <small className="text-red-500">
                               {errors?.gender && errors.gender.message}
                             </small>
                           </div>
+
 
                           <div className="form-outline mb-4">
                             <input
@@ -313,7 +324,7 @@ const Login = () => {
                               htmlFor="form2Example27"
                             >
                               Phone
-                            </label>
+                            </label><br />
                             <small className="text-red-500">
                               {errors?.phone && errors.phone.message}
                             </small>
@@ -332,7 +343,7 @@ const Login = () => {
                               htmlFor="form2Example17"
                             >
                               Address
-                            </label>
+                            </label><br />
                             <small className="text-red-500">
                               {errors?.address && errors.address.message}
                             </small>
@@ -347,20 +358,20 @@ const Login = () => {
                             </button>
                           </div>
 
-                          <a className="small text-muted" href="#!">
+                          <Link className="small text-muted" to={'/forgot-password'}>
                             Forgot password?
-                          </a>
+                          </Link>
                           <p
                             className="mb-5 pb-lg-2"
                             style={{ color: "#393f81" }}
                           >
-                            Don't have an account?{" "}
-                            <a
-                              onClick={handleClickRedirectLogin}
+                            Already have an account?{" "}
+                            <Link
+                              to={'/login'}
                               style={{ color: "#393f81" }}
                             >
                               Sign in here
-                            </a>
+                            </Link>
                           </p>
                         </form>
                       </div>

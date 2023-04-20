@@ -27,6 +27,10 @@ const authApi = {
     const url = `${BASE_URL}/api/changepassword`;
     return await axiosClient.post(url, payload);
   },
+  resetPassword: async (payload) => {
+    const url = `${BASE_URL}/api/forgotpassword`;
+    return await axiosClient.post(url, payload);
+  },
   changeStatus: async (payload) => {
     const url = `${BASE_URL}/admin/updatestatusaccount`;
     return await axiosClient.post(url, payload);

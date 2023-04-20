@@ -1,5 +1,4 @@
-import "./Login.scss";
-
+import './ForgotPassword.scss';
 import React, { useState } from "react";
 
 import { BiHide, BiLoader, BiShow } from "react-icons/bi";
@@ -8,45 +7,37 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
-import { getProfile, loginUser } from "../../redux/authActions";
-import {resetSuccess} from '../../redux/authSlice';
-
+import { getProfile, loginUser, resetPassword } from "../../redux/authActions";
 import LoadingSpinner from "../../share/loading_spinner/LoadingSpinner";
 
 import Logo from '../../assets/images/logo.png';
-import { useEffect } from "react";
-import { useRef } from "react";
+import { resetSuccess } from '../../redux/authSlice';
+import { useEffect } from 'react';
 
-
-const Login = () => {
+const ForgotPassword = () => {
   // ==== hook ====
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [typePassword, setTypePassword] = useState("password");
+
   const { success, loading } = useSelector(
     (state) => state.auth
   );
-  const mountedRef = useRef(false);
   // ==== handleFunciton ====
 
   const handleClickBtnSubmit = async (data) => {
-    await dispatch(loginUser(data));
+    await dispatch(resetPassword(data));
+   
   };
-
-//navigate to home if login success
+  
   useEffect(() => {
-    if (success) {
-      dispatch(getProfile());
+    if(success){
       dispatch(resetSuccess());
-      navigate("/");
+      navigate('/login')
     }
-  }, [success]);
+  }, [success])
+  
 
-  const handleClickToggleShowPassword = () =>
-    typePassword === "password"
-      ? setTypePassword("text")
-      : setTypePassword("password");
   const handleErrors = (errors) => { };
   const {
     register,
@@ -56,25 +47,18 @@ const Login = () => {
     mode: "onBlur",
   });
   const loginOptions = {
-    username: {
-      required: "Username cannot be empty!",
-      minLength: {
-        value: 5,
-        message: "Username must be at least 6 characters",
+    mail: {
+        required: "Email cannot be empty!",
+        pattern: {
+          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+          message: "Invalid email address",
+        },
       },
-    },
-    password: {
-      required: "Password cannot be empty! ",
-      minLength: {
-        value: 5,
-        message: "Password must be at least 6 characters",
-      },
-    },
+  
   };
 
   return (
     <React.Fragment>
-    
         <div className="login-wrapper">
           <section className="vh-100" style={{ backgroundColor: "##eeeeee" }}>
             <div className="container py-5 h-100">
@@ -110,7 +94,7 @@ const Login = () => {
                               className="fw-normal mb-3 pb-3"
                               style={{ letterSpacing: "1px" }}
                             >
-                              Sign into your account
+                              Enter your email that you used to register you account
                             </h5>
 
                             <div className="form-outline mb-4">
@@ -118,54 +102,43 @@ const Login = () => {
 
                                 id="form2Example17"
                                 className="form-control form-control-lg"
-                                {...register("username", loginOptions.username)}
+                                {...register("mail", loginOptions.mail)}
                               />
                               <label
                                 className="form-label"
                                 htmlFor="form2Example17"
                               >
-                                Username
-                              </label>
+                                Email
+                              </label><br/>
                               <small className="text-red-500">
-                                {errors?.username && errors.username.message}
+                                {errors?.mail && errors.mail.message}
                               </small>
                             </div>
 
-                            <div className="form-outline mb-4">
-                              <div className='relative'>
-                                <input
-                                  type={typePassword}
-                                  id="form2Example27"
-                                  className="form-control form-control-lg"
-                                  {...register("password", loginOptions.password)}
-                                />
-                                <span
-                                  onClick={handleClickToggleShowPassword}
-                                  className="show-password"
-                                >
-                                  {(typePassword === 'password' && <BiShow size={15} />) || <BiHide size={15} />}
-                                </span>
-                              </div>
-                              <label
-                                className="form-label"
-                                htmlFor="form2Example27"
-                              >
-                                Password
-                              </label>
-                            </div>
+                            
 
                             <div className="pt-1 mb-4">
                               <button
                                 className="btn btn-dark btn-lg btn-block"
                                 type="submit"
                               >
-                                {loading && <BiLoader /> || 'Login'}
+                                {loading && <BiLoader /> || 'Reset Password'}
                               </button>
                             </div>
 
-                            <Link to={'/forgot-password'} className="small text-muted" >
-                              Forgot password?
+                            <p
+                            className="mb-5 pb-lg-2"
+                            style={{ color: "#393f81" }}
+                          >
+                            Have you remember your account?{" "}
+                            <Link
+                              to={'/login'}
+
+                              style={{ color: "#393f81" }}
+                            >
+                              Login here
                             </Link>
+                          </p>
                             <p
                               className="mb-5 pb-lg-2"
                               style={{ color: "#393f81" }}
@@ -191,9 +164,9 @@ const Login = () => {
             </div>
           </section>
         </div>
-  
+     
     </React.Fragment>
   );
 };
 
-export default Login;
+export default ForgotPassword;

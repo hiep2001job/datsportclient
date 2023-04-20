@@ -22,8 +22,8 @@ import { Link } from "react-router-dom";
 import Select from "react-select";
 import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
-import BreadCrumb from "../../component/common/BreadCrumb";
-import TableContainer from "../../component/common/TableContainer";
+import BreadCrumb from "../../component/Common/BreadCrumb";
+import TableContainer from "../../component/Common/TableContainer";
 
 import { isEmpty } from "lodash";
 
@@ -43,7 +43,7 @@ import { fetchOrderById, fetchOrders } from "../../redux/orderSlice";
 //   deleteOrder as onDeleteOrder,
 // } from "../../../store/ecommerce/action";
 
-import Loader from "../../component/common/Loader";
+import Loader from "../../component/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

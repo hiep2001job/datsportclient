@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import productApi from "../../api/product";
 import LoadingSpinner from "../../share/loading_spinner/LoadingSpinner";
 import { formatVnd } from "../../utils/common";
-import ProductSection from '../../component/product_section/ProductSection';
+import ProductSection from '../../component/ProductSection/ProductSection';
 
 const ProductListing = () => {
   const [dataCategory, setDataCategory] = useState([]);

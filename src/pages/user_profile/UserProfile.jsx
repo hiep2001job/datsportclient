@@ -1,12 +1,11 @@
 import React from "react";
-import Content from "./content/Content";
-import SideBar from "./side_bar/SideBar";
+
+import { Outlet } from "react-router-dom";
 const UserProfile = () => {
   return (
-    <React.Fragment>
-      <SideBar />
-      <Content />
-    </React.Fragment>
+    
+      <Outlet />
+    
   );
 };
 

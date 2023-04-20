@@ -13,7 +13,7 @@ import classnames from "classnames";
 import { Link, useParams } from "react-router-dom";
 import { formatVnd } from "../../utils/common.js";
 
-import BreadCrumb from "../../component/common/BreadCrumb";
+import BreadCrumb from "../../component/Common/BreadCrumb.js";
 import { productDetails } from "../../common/data/ecommerce";
 import ProductDetails from "./ProductDetails";
 import avatar3 from "../../assets/images/users/avatar-3.jpg";

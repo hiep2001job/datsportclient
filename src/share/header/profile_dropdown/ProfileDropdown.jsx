@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import useUserDetail from "../../../hooks/useUserDetail";
-import Loader from "../../../component/common/Loader";
+import Loader from "../../../component/Common/Loader";
 
 
 //import images
