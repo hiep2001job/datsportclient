@@ -26,9 +26,6 @@ function Brand(args) {
     dispatch(brandActions.getAll(1));
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log("allBrand: ", allBrand);
-  }, [allBrand]);
 
   //   const toggle = () => setModal(!modal);
   const handleCreateNew = () => {

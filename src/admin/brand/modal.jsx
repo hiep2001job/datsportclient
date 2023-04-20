@@ -38,7 +38,7 @@ const schema = yup.object().shape({
   brand_name: yup.string().required("Brand name cannot be empty!"),
   brand_status: yup
     .mixed()
-    .notOneOf(["0"], "Invalid brand selected!")
+    .notOneOf([""], "Invalid brand status selected!")
     .required("Brand status cannot be empty!"),
 });
 
@@ -80,7 +80,6 @@ function Modals(args) {
   const onSubmit = (data) => {
     switch (actionName) {
       case "create":
-        console.log("data: ", brandActions)
         dispatch(brandActions.create(data));
         break;
       case "edit":
@@ -96,9 +95,6 @@ function Modals(args) {
     if (actionName === "edit") dispatch(brandActions.getSingle(categoryId));
   }, [actionName]);
 
-  useEffect(() => {
-    console.log("dataBrand: ", dataBrand);
-  }, [dataBrand]);
 
   useEffect(() => {
     if (success && actionName !== "edit") {
