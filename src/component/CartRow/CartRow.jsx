@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { formatVnd } from "../../utils/common";
+import { formatCurrency } from "../../utils/common";
 import {
   fetchProducts,
   addToCart,
@@ -100,7 +100,7 @@ const CartRow = ({ cartItem }) => {
               <h5 className="fs-14">
                 
                 <span id="ticket_price" className="product-price">
-                {formatVnd(cartItem.billdetailPrice)}
+                {formatCurrency(cartItem.billdetailPrice)}
                 </span>
               </h5>
             </div>
@@ -133,7 +133,7 @@ const CartRow = ({ cartItem }) => {
               <div>Total :</div>
               <h5 className="fs-14 mb-0">
                 <span className="product-line-price">
-                  {formatVnd(cartItem.billdetailQuantity * cartItem.billdetailPrice)}
+                  {formatCurrency(cartItem.billdetailQuantity * cartItem.billdetailPrice)}
                 </span>
               </h5>
             </div>

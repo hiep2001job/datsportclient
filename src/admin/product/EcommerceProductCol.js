@@ -1,6 +1,6 @@
 import React from "react";
 import * as moment from "moment";
-import formatVnd from '../../../utils/common';
+import formatCurrency from '../../../utils/common';
 
 const handleValidDate = date => {
   const date1 = moment(new Date(date)).format("DD MMM Y");
@@ -48,7 +48,7 @@ const Published = (cell) => {
 const Price = ({value}) => {
   return (
     <React.Fragment>
-      {formatVnd(value )}
+      {formatCurrency(value )}
     </React.Fragment>
   );
 };

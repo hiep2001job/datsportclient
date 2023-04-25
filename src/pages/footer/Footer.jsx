@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <div className="footer-wrapper">
       <p className="footer-content">
-        @2023 DatSport limited liability company
+        @{new Date().getFullYear()} DatSport limited liability company
       </p>
     </div>
   );

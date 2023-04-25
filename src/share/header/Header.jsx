@@ -1,10 +1,20 @@
 import "./Header.scss";
 
 import React, { useEffect, useState } from "react";
-import { Dropdown, DropdownMenu, DropdownToggle, Form } from "reactstrap";
-import { FiUser } from "react-icons/fi";
-import { MdShoppingCart } from "react-icons/md";
-import { TfiSearch } from "react-icons/tfi";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarToggler,
+  Collapse,
+  Nav,
+  NavItem,
+  NavLink,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
+
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -16,23 +26,23 @@ import ProfileDropdown from "./profile_dropdown/ProfileDropdown";
 import CartDropdown from "./cart_dropdown/CartDropdown";
 import SearchOption from "./search_option/SearchOption";
 
+import { BiCaretDown } from "react-icons/bi";
+
 const Header = () => {
-  const [anchorEl, setAnchorEl] = useState(false);
   const [dataCategory, setDataCategory] = useState([]);
-
   const [dataBrands, setDataBrands] = useState([]);
-  const [search, setSearch] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const toogleSearch = () => {
-    setSearch(!search);
-  };
-  const open = Boolean(anchorEl);
-  const handleClickProfile = () => {
-    setAnchorEl(!anchorEl);
-  };
-  const handleCloseProfile = () => {
-    setAnchorEl(null);
-  };
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const toggle = () => setIsOpen(!isOpen);
+
+  const categoryDropdownToggle = () =>
+    setCategoryDropdownOpen(!categoryDropdownOpen);
+  const brandDropdownToggle = () => setBrandDropdownOpen(!brandDropdownOpen);
+
   const getAllDataCategory = async () => {
     try {
       const rsData = await categoryApi.getAll(1);
@@ -53,99 +63,92 @@ const Header = () => {
   useEffect(() => {
     getAllDataCategory();
     getAllDataBrand();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // call api
-  const navigate = useNavigate();
-  const { success, authToken } = useSelector((state) => state.auth);
 
   return (
-    <div id="header" className="header-wrapper">
-      <div className="logo-wrapper" onClick={() => navigate("/home")}>
-        <img className="logo" src={Logo} alt="logo web app" />
-      </div>
-      {/* menu list  */}
-      <ul className="navbar">
-        <Link to="/home">
-          <li className="navbar-item">
-            <p className="navbar-item-text">Home</p>
-          </li>
-        </Link>
-
-        <li className="navbar-item">
-          <p className="navbar-item-text">Category</p>
-          <div className="navbar-dropdown">
-            <ul className="navbar-dropdown-list">
-              {dataCategory?.map((category, idx) => {
-                return (
-                  <li key={idx} className="navbar-dropdown-item hover:bg-slate-50">
-                    <Link
-                      to={`/product-listing/${category.categoryId}`}>
-                      {category?.categoryName} </Link>
-                  </li>
-
-                );
-              })}
-            </ul>
+    <div className="header">
+      <Navbar style={{ backgroundColor: "#fff" }} expand="lg">
+        <NavbarBrand href="#">
+          <div className="logo-wrapper" onClick={() => navigate("/home")}>
+            <img className="logo" width={70} src={Logo} alt="logo web app" />
           </div>
-        </li>
+        </NavbarBrand>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar className="collapse-nav">
+          <Nav
+            className="me-auto flex-grow-1 justify-content-evenlys order-2 order-lg-0"
+            navbar
+          >
+            <NavItem>
+              <NavLink active>
+                <Link to={"/"}>
+                  <h4>Home</h4>
+                </Link>
+              </NavLink>
+            </NavItem>
 
-        <li className="navbar-item ">
-          <p className="navbar-item-text">Brand</p>
-          <div className="navbar-dropdown">
-            <ul className="">
-              {dataBrands?.map((brand, idx) => {
-                return (
-                  <Link path="" key={idx}>
-                    <li className="py-1 px-2 pr-3 text-15 border-b hover:bg-slate-50">
-                      {brand?.brand_name}
-                    </li>
+            <Dropdown
+              nav
+              isOpen={categoryDropdownOpen}
+              toggle={categoryDropdownToggle}
+            >
+              <DropdownToggle nav>
+                <h4>
+                  Categories <BiCaretDown />
+                </h4>
+              </DropdownToggle>
+              <DropdownMenu>
+                {dataCategory.map((category, idx) => (
+                  <Link
+                    key={idx}
+                    to={`/product-listing/${category.categoryId}`}
+                  >
+                    <DropdownItem>{category.categoryName}</DropdownItem>{" "}
                   </Link>
-                );
-              })}
-            </ul>
-          </div>
-        </li>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
 
-        <Link to="/post">
-          <li className="navbar-item">
-            <p className="navbar-item-text ">Post</p>
-          </li>
-        </Link>
-        <Link to="about">
-          <li className="navbar-item">
-            <p className="navbar-item-text ">About</p>
-          </li>
-        </Link>
-      </ul>
-
-      {/* search area  */}
-      <div className="search-box">
-        <div className="cart-icon">
-          <div><SearchOption /></div>
-
-          <div>
-            <CartDropdown />
-          </div>
-          <div className="user-group">
-            {!authToken ? (
-              <ul className="user-group-menu">
-                <Link to="/login">
-                  <li className="user-group-menu-item">Login</li>
+            <Dropdown
+              nav
+              isOpen={brandDropdownOpen}
+              toggle={brandDropdownToggle}
+            >
+              <DropdownToggle nav>
+                <h4>
+                  Brands <BiCaretDown />
+                </h4>
+              </DropdownToggle>
+              <DropdownMenu>
+                {dataBrands.map((brand, idx) => (
+                  <Link key={idx} to={`/product-listing/${brand.brand_id}`}>
+                    <DropdownItem>{brand.brand_name}</DropdownItem>{" "}
+                  </Link>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+            <NavItem>
+              <NavLink>
+                <Link to={"/about"}>
+                  <h4>About</h4>
                 </Link>
-                <Link to="/signup">
-                  <li className="user-group-menu-item">Signup</li>
-                </Link>
-              </ul>
-            ) : (
+              </NavLink>
+            </NavItem>
+          </Nav>
+          <div className="d-flex flex-grow-1 options">
+            <div className="flex-grow-1 order-xs-0 order-lg-1">
+              <SearchOption />
+            </div>
+            <div className="d-flex  nav-options order-xs-1 order-lg-2">
+              <CartDropdown />
               <ProfileDropdown />
-            )}
+            </div>
           </div>
-        </div>
-      </div>
+        </Collapse>
+      </Navbar>
     </div>
-
   );
 };
 

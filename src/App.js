@@ -10,15 +10,16 @@ import React from "react";
 import SwiperCore, { Autoplay } from "swiper";
 
 import Router from "./routes/Router";
+import { BrowserRouter } from "react-router-dom";
 
 const App = () => {
   SwiperCore.use([Autoplay]);
-  
+
   return (
-    <>
-     <Router />
-    <ToastContainer />;
-    </>
+      <BrowserRouter>
+        <Router /> 
+        <ToastContainer />;
+      </BrowserRouter>
   );
 };
 

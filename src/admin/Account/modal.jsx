@@ -1,10 +1,11 @@
-import {  useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Input,
   Label,
   FormGroup,
 } from "reactstrap";
@@ -14,13 +15,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 // redux
 import { useSelector, useDispatch } from "react-redux";
-import { categoryActions } from "../../redux/categoryActions";
+import { brandActions } from "../../redux/brandActions";
+import {
+  updateAccountStatus,
+  getAccountByUsername,
+  listAccounts,
+  resetSuccess
+} from "../../redux/accountSlice";
 import {
   selectLoading,
   selectSuccess,
   selectError,
-  selectDataCategory,
-} from "../../redux/categorySlice";
+  selectDataBrand,
+} from "../../redux/brandSlice";
 
 import {
   selectIsOpen,
@@ -28,31 +35,32 @@ import {
   closeModal,
   selectId,
   selectActionName,
-
+  selectActionSubmit,
   updateForm,
 } from "../../redux/modalSlice";
 import ContentModalDel from "../components/contentModalDel";
 
 const schema = yup.object().shape({
-  categoryName: yup.string().required("Category name cannot be empty!"),
-  categoryStatus: yup
+  username: yup.mixed().required("Username cannot be empty"),
+  status: yup
     .mixed()
-    .notOneOf([""], "Invalid category status selected!")
-    .required("Category status cannot be empty!"),
+    .notOneOf([""], "Invalid status!")
+    .required("Please select account status!"),
 });
 
 function Modals(args) {
   const dispatch = useDispatch();
-  const categoryId = useSelector(selectId);
+  const username = useSelector(selectId);
   const actionName = useSelector(selectActionName);
-
   const isOpen = useSelector(selectIsOpen);
 
-  const loading = useSelector(selectLoading);
-  const success = useSelector(selectSuccess);
-  const error = useSelector(selectError);
-  const dataCategory = useSelector(selectDataCategory);
-
+  // const loading = useSelector(selectLoading);
+  // const success = useSelector(selectSuccess);
+  // const error = useSelector(selectError);
+  // const dataBrand = useSelector(selectDataBrand);
+  const { success, loading, currentAccount } = useSelector(
+    (state) => state.account
+  );
   const {
     register,
     handleSubmit,
@@ -64,24 +72,27 @@ function Modals(args) {
   });
 
   const onSubmit = (data) => {
-
     switch (actionName) {
       case "create":
-        dispatch(categoryActions.create(data));
+        dispatch(brandActions.create(data));
         break;
       case "edit":
-        dispatch(categoryActions.update(data));
+        dispatch(updateAccountStatus(data));
+        dispatch(resetSuccess());
         dispatch(updateForm());
         break;
       default:
     }
   };
 
-  // get category detail
   useEffect(() => {
-    if (actionName === "edit") dispatch(categoryActions.getSingle(categoryId));
-  }, [actionName]);
+    if (success && !loading) dispatch(listAccounts());
+  }, [success, loading]);
 
+  // get account detail
+  useEffect(() => {
+    if (actionName === "edit") dispatch(getAccountByUsername(username));
+  }, [actionName]);
 
   useEffect(() => {
     if (success && actionName !== "edit") {
@@ -89,53 +100,49 @@ function Modals(args) {
     }
 
     if (success && actionName === "edit") {
-      setValue("categoryId", dataCategory.categoryId);
-      setValue("categoryName", dataCategory.categoryName);
-      setValue("categoryStatus", dataCategory.categoryStatus);
+      setValue("username", currentAccount.username);
+      setValue("status", currentAccount.status);
     }
-  }, [loading, success, error]);
+  }, [loading, success]);
 
-  // const [modal, setModal] = useState(isOpen);
-  // const toggle = () => setModal(!modal);
   const toggle = () => {
-    setValue("categoryId", "");
-    setValue("categoryName", "");
-    setValue("categoryStatus", "");
     dispatch(closeModal());
   };
 
-
-  const formCategory = (
+  const formBrand = (
     <>
       <div>
-        <Label for="categoryNameInput" className="form-label">
-          Category Name
+        <Label for="brand_nameInput" className="form-label">
+          <p> Account:{currentAccount?.username}</p>
+
+          <p> Fullname:{currentAccount?.userfullname}</p>
+
+          <p> Email : {currentAccount?.email}</p>
         </Label>
         <input
           type="text"
           className="form-control"
-          id="categoryNameInput"
-          placeholder="Enter category name"
-          name="categoryName"
-          {...register("categoryName")}
+          id="brandNameInput"
+          hidden
+          placeholder="Enter Brand name"
+          name="username"
+          {...register("username")}
         />
-
-        <p className="text-danger">{errors?.categoryName?.message}</p>
       </div>
+      <label className="form-label"></label>
 
       <FormGroup className="mt-2">
-        <Label for="categoryStatusSelect">Category Status</Label>
+        <Label for="brandStatusSelect">Status</Label>
         <select
           className="form-select"
-          id="categoryStatusSelect"
-          name="categoryStatus"
+          id="brandStatusSelect"
+          name="status"
           type="select"
-          {...register("categoryStatus")}
+          {...register("status")}
         >
           <option value={1}>On</option>
           <option value={0}>Off</option>
         </select>
-        <p className="text-danger">{errors?.categoryStatus?.message}</p>
       </FormGroup>
     </>
   );
@@ -144,9 +151,9 @@ function Modals(args) {
     return (
       <>
         <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
-          <ModalHeader toggle={toggle}>Add New Category</ModalHeader>
+          <ModalHeader toggle={toggle}>Add New Brand</ModalHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <ModalBody>{formCategory}</ModalBody>
+            <ModalBody>{formBrand}</ModalBody>
             <ModalFooter>
               <button type="submit" className="btn btn-success">
                 {loading && (
@@ -168,8 +175,8 @@ function Modals(args) {
     return (
       <>
         <Modal isOpen={isOpen} toggle={toggle} {...args} size="lg">
-          <ModalHeader toggle={toggle}>Update Category</ModalHeader>
-          <ModalBody>{formCategory}</ModalBody>
+          <ModalHeader toggle={toggle}>Update Account Status</ModalHeader>
+          <ModalBody>{formBrand}</ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalFooter>
               <button type="submit" className="btn btn-success">

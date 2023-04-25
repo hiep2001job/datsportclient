@@ -9,17 +9,17 @@ import {
   Collapse,
 } from "reactstrap";
 
-import classnames from "classnames";
+
 import { Link, useParams } from "react-router-dom";
-import { formatVnd } from "../../utils/common.js";
+import { formatCurrency } from "../../utils/common.js";
 
 import BreadCrumb from "../../component/Common/BreadCrumb.js";
-import { productDetails } from "../../common/data/ecommerce";
-import ProductDetails from "../../pages/BillDetail/ProductDetails";
-import avatar3 from "../../assets/images/users/avatar-3.jpg";
+
+import ProductDetails from "../../pages/BillDetail/ProductDetails.jsx";
+
 
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrderById, updateOrder } from "../../redux/orderSlice";
+import { fetchAllOrders, fetchOrderById, updateOrder } from "../../redux/orderSlice.js";
 
 const ProcessOrder = (props) => {
   const { billId } = useParams();
@@ -43,7 +43,9 @@ const ProcessOrder = (props) => {
       })
     );
     dispatch(fetchOrderById({ billId }));
+    dispatch(fetchAllOrders());
   };
+
   const handleConfirmOrder =async () => {
     await dispatch(
       updateOrder({
@@ -57,6 +59,7 @@ const ProcessOrder = (props) => {
       })
     );
     dispatch(fetchOrderById({ billId }));
+    dispatch(fetchAllOrders());
   };
 
   useEffect(() => {
@@ -65,27 +68,12 @@ const ProcessOrder = (props) => {
     }
   }, [dispatch, billId]);
 
-  const [col1, setcol1] = useState(true);
-  const [col2, setcol2] = useState(true);
-  const [col3, setcol3] = useState(true);
 
-  function togglecol1() {
-    setcol1(!col1);
-  }
-
-  function togglecol2() {
-    setcol2(!col2);
-  }
-
-  function togglecol3() {
-    setcol3(!col3);
-  }
-
-  document.title = "Order Details | Velzon - React Admin & Dashboard Template";
+  document.title = "Process Order";
   return (
    
       <Container fluid>
-        <BreadCrumb title="Order Details" pageTitle="Ecommerce" />
+        <BreadCrumb title="Process Order" pageTitle="Admin" />
 
         <Row>
           <Col xl={9}>
@@ -163,14 +151,14 @@ const ProcessOrder = (props) => {
                               <tr>
                                 <td>Sub Total :</td>
                                 <td className="text-end">
-                                  {formatVnd(billDetails[0]?.bill?.billTotal)}
+                                  {formatCurrency(billDetails[0]?.bill?.billTotal)}
                                 </td>
                               </tr>
 
                               <tr className="border-top border-top-dashed">
-                                <th scope="row">Total (VND) :</th>
+                                <th scope="row">Total ($) :</th>
                                 <th className="text-end">
-                                  {formatVnd(billDetails[0]?.bill?.billTotal)}
+                                  {formatCurrency(billDetails[0]?.bill?.billTotal)}
                                 </th>
                               </tr>
                             </tbody>
@@ -291,7 +279,7 @@ const ProcessOrder = (props) => {
                   </div>
                   <div className="flex-grow-1 ms-2">
                     <h6 className="mb-0">
-                      {formatVnd(selectedOrder?.billTotal)}
+                      {formatCurrency(selectedOrder?.billTotal)}
                     </h6>
                   </div>
                 </div>

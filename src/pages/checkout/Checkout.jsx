@@ -1,32 +1,17 @@
 import React, { useState } from "react";
-import { formatVnd } from "../../utils/common";
-
+import { formatCurrency } from "../../utils/common";
 //Import Breadcrumb
 import BreadCrumb from "../../component/Common/BreadCrumb";
-
 import { useEffect } from "react";
-
 //redux
 import { useSelector, useDispatch } from "react-redux";
-
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
 // Form
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-import {
-  fetchProducts,
-  addToCart,
-  updateCartItemQuantity,
-  deleteCartItem,
-  checkout,
-} from "../../redux/cartSlice";
+import { fetchProducts, deleteCartItem, checkout } from "../../redux/cartSlice";
 import {
   Container,
-  Form,
   Row,
   Col,
   Card,
@@ -42,16 +27,12 @@ import {
   ModalHeader,
   ModalBody,
   Label,
-  Input,
 } from "reactstrap";
 
-import Select from "react-select";
 import classnames from "classnames";
-import { orderSummary } from "../../common/data/ecommerce";
+import { BiLoader } from "react-icons/bi";
 
 const Checkout = () => {
-  const [selectedCountry, setselectedCountry] = useState(null);
-  const [selectedState, setselectedState] = useState(null);
   const [activeTab, setactiveTab] = useState(1);
   const [passedSteps, setPassedSteps] = useState([1]);
   const [modal, setModal] = useState(false);
@@ -60,7 +41,7 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { cartItems, status, checkoutStatus, billTotal, successBill } =
+  const { cartItems, status, loading, billTotal, successBill } =
     useSelector((state) => state.cart);
   const userDetail = useSelector((state) => state.auth.data);
 
@@ -70,8 +51,6 @@ const Checkout = () => {
     //Fetch product from cart
     dispatch(fetchProducts());
   }, [dispatch]);
-
-  const [cartCount, setCartCount] = useState(0);
 
   const removeItem = ({ billdetailId }) => {
     dispatch(deleteCartItem({ billdetailId }));
@@ -85,14 +64,6 @@ const Checkout = () => {
     setModal(!modal);
   };
 
-  function handleSelectCountry(selectedCountry) {
-    setselectedCountry(selectedCountry);
-  }
-
-  function handleSelectState(selectedState) {
-    setselectedState(selectedState);
-  }
-
   function toggleTab(tab) {
     if (activeTab !== tab) {
       var modifiedSteps = [...passedSteps, tab];
@@ -104,46 +75,11 @@ const Checkout = () => {
     }
   }
 
-  const productState = [
-    {
-      options: [
-        { label: "Select State...", value: "Select State" },
-        { label: "Alabama", value: "Alabama" },
-        { label: "Alaska", value: "Alaska" },
-        { label: "American Samoa", value: "American Samoa" },
-        { label: "California", value: "California" },
-        { label: "Colorado", value: "Colorado" },
-        { label: "District Of Columbia", value: "District Of Columbia" },
-        { label: "Florida", value: "Florida" },
-        { label: "Georgia", value: "Georgia" },
-        { label: "Guam", value: "Guam" },
-        { label: "Hawaii", value: "Hawaii" },
-        { label: "Idaho", value: "Idaho" },
-        { label: "Kansas", value: "Kansas" },
-        { label: "Louisiana", value: "Louisiana" },
-        { label: "Montana", value: "Montana" },
-        { label: "Nevada", value: "Nevada" },
-        { label: "New Jersey", value: "New Jersey" },
-        { label: "New Mexico", value: "New Mexico" },
-        { label: "New York", value: "New York" },
-      ],
-    },
-  ];
-
-  const productCountry = [
-    {
-      options: [
-        { label: "Select Country...", value: "Select Country" },
-        { label: "United States", value: "United States" },
-      ],
-    },
-  ];
-
   //Form process
 
   const handleClickBtnSubmit = async (data) => {
     await dispatch(checkout(data));
-    toggleTab(activeTab+1);
+    toggleTab(activeTab + 1);
   };
   const handleErrors = (errors) => {};
   const {
@@ -166,14 +102,13 @@ const Checkout = () => {
     bill_address_ship: {
       required: "PLease enter bill shipping address!",
     },
-    
   };
 
   document.title = "Checkout";
 
   return (
     <React.Fragment>
-      <div className="page-content">
+      
         <Container fluid>
           <BreadCrumb title="Checkout" pageTitle="DatSport" />
           {(billTotal !== 0 && (
@@ -229,6 +164,7 @@ const Checkout = () => {
                         <TabPane tabId={1}>
                           <div>
                             <h5 className="mb-1">Shipping Information</h5>
+                            
                             <p className="text-muted mb-4">
                               Please fill all information below
                             </p>
@@ -240,7 +176,7 @@ const Checkout = () => {
                                   htmlFor="billinginfo-firstName"
                                   className="form-label"
                                 >
-                                  Shipping address
+                                  <h6 className="mb-1 mt-3">Shipping address</h6>
                                 </Label>
                                 <input
                                   type="text"
@@ -248,7 +184,10 @@ const Checkout = () => {
                                   id="billinginfo-firstName"
                                   name="bill_address_ship"
                                   placeholder="Enter shipping address"
-                                  {...register("bill_address_ship", checkoutOptions.bill_address_ship)}
+                                  {...register(
+                                    "bill_address_ship",
+                                    checkoutOptions.bill_address_ship
+                                  )}
                                 />
                                 {errors.bill_address_ship &&
                                   errors.bill_address_ship.type ===
@@ -344,109 +283,16 @@ const Checkout = () => {
                             </Col>
                           </Row>
 
-                          <div
-                            className="collapse show"
-                            id="paymentmethodCollapse"
-                          >
-                            <Card className="p-4 border shadow-none mb-0 mt-4">
-                              <Row className="gy-3">
-                                <Col md={12}>
-                                  <Label
-                                    htmlFor="cc-name"
-                                    className="form-label"
-                                  >
-                                    Name on card
-                                  </Label>
-                                  <input
-                                    disabled
-                                    type="text"
-                                    className="form-control"
-                                    id="cc-name"
-                                    placeholder="Enter name"
-                                  />
-                                  <small className="text-muted">
-                                    Full name as displayed on card
-                                  </small>
-                                </Col>
-
-                                <Col md={6}>
-                                  <Label
-                                    htmlFor="cc-number"
-                                    className="form-label"
-                                  >
-                                    Credit card number
-                                  </Label>
-                                  <input
-                                    disabled
-                                    type="text"
-                                    className="form-control"
-                                    id="cc-number"
-                                    placeholder="xxxx xxxx xxxx xxxx"
-                                  />
-                                </Col>
-
-                                <Col md={3}>
-                                  <Label
-                                    htmlFor="cc-expiration"
-                                    className="form-label"
-                                  >
-                                    Expiration
-                                  </Label>
-                                  <input
-                                    disabled
-                                    type="text"
-                                    className="form-control"
-                                    id="cc-expiration"
-                                    placeholder="MM/YY"
-                                  />
-                                </Col>
-
-                                <Col md={3}>
-                                  <Label
-                                    htmlFor="cc-cvv"
-                                    className="form-label"
-                                  >
-                                    CVV
-                                  </Label>
-                                  <input
-                                    disabled
-                                    type="text"
-                                    className="form-control"
-                                    id="cc-cvv"
-                                    placeholder="xxx"
-                                  />
-                                </Col>
-                              </Row>
-                            </Card>
-                            <div className="text-muted mt-2 fst-italic">
-                              <i
-                                data-feather="lock"
-                                className="text-muted icon-xs"
-                              ></i>{" "}
-                              Your transaction is secured with SSL encryption
-                            </div>
-                          </div>
-
-                          <div className="d-flex align-items-start gap-3 mt-4">
-                            <button
-                              type="button"
-                              className="btn btn-light btn-label previestab"
-                              onClick={() => {
-                                toggleTab(activeTab - 1);
-                              }}
-                            >
-                              <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>
-                              Back to Shipping
-                            </button>
+                          <div className="d-flex align-items-end gap-3 mt-4">
+                            
                             <button
                               type="submit"
-                              
                               className="btn btn-secondary btn-label right ms-auto nexttab"
                             >
                               <i className="ri-shopping-basket-line label-icon align-middle fs-16 ms-2"></i>
-                              Complete Order
+                              {(loading&&<BiLoader/>)||'Complete Order'}
                             </button>
-                          </div>
+                        </div>
                         </TabPane>
 
                         <TabPane tabId={2} id="pills-finish">
@@ -541,12 +387,12 @@ const Checkout = () => {
                                     </Link>
                                   </h5>
                                   <p className="text-muted mb-0">
-                                    {formatVnd(item.billdetailPrice)} x{" "}
+                                    {formatCurrency(item.billdetailPrice)} x{" "}
                                     {item.billdetailQuantity}
                                   </p>
                                 </td>
                                 <td className="text-end">
-                                  {formatVnd(
+                                  {formatCurrency(
                                     item.billdetailPrice *
                                       item.billdetailQuantity
                                   )}
@@ -576,7 +422,7 @@ const Checkout = () => {
                               Sub Total :
                             </td>
                             <td className="fw-semibold text-end">
-                              {formatVnd(billTotal)}
+                              {formatCurrency(billTotal)}
                             </td>
                             <td>&nbsp;</td>
                           </tr>
@@ -599,7 +445,7 @@ const Checkout = () => {
                             <th colSpan="2">Total (USD) :</th>
                             <td className="text-end">
                               <span className="fw-semibold">
-                                {formatVnd(
+                                {formatCurrency(
                                   cartItems.reduce(
                                     (acc, product) =>
                                       acc +
@@ -621,7 +467,7 @@ const Checkout = () => {
             </Row>
           )) || (
             <Row>
-              <div className="text-center empty-cart mt-5" id="empty-cart">
+              <div className="text-center empty-cart" id="empty-cart">
                 <div className="avatar-md mx-auto my-3">
                   <div className="avatar-title bg-soft-info text-info fs-36 rounded-circle">
                     <i className="bx bx-cart"></i>
@@ -635,7 +481,7 @@ const Checkout = () => {
             </Row>
           )}
         </Container>
-      </div>
+     
       {/* modal Delete Address */}
       <Modal
         isOpen={deletemodal}

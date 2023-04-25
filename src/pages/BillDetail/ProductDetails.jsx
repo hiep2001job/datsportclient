@@ -1,5 +1,5 @@
 import React,{useEffect} from "react";
-import { formatVnd } from "../../utils/common.js";
+import { formatCurrency } from "../../utils/common.js";
 
 const ProductDetails = ({item}) => {
   return (
@@ -32,7 +32,7 @@ const ProductDetails = ({item}) => {
         </td>
         <td>{item.billdetailPrice}</td>
         <td>{item.billdetailQuantity}</td>
-        <td className="fw-medium text-end">{formatVnd(item.billdetailPrice*item.billdetailQuantity)}</td>
+        <td className="fw-medium text-end">{formatCurrency(item.billdetailPrice*item.billdetailQuantity)}</td>
       </tr>
     </React.Fragment>
   );

@@ -16,6 +16,7 @@ import { brandActions } from "../../redux/brandActions";
 
 import { openModal, closeModal } from "../../redux/modalSlice";
 import { useEffect } from "react";
+import BreadCrumb from "../../component/Common/BreadCrumb";
 
 function Brand(args) {
   const dispatch = useDispatch();
@@ -23,9 +24,8 @@ function Brand(args) {
 
   useEffect(() => {
     //Get active category
-    dispatch(brandActions.getAll(1));
+    dispatch(brandActions.getAll(-1));
   }, [dispatch]);
-
 
   //   const toggle = () => setModal(!modal);
   const handleCreateNew = () => {
@@ -43,15 +43,16 @@ function Brand(args) {
     dispatch(openModal(payload));
   };
 
-  const statusBrand = ["Disnable", "Enable"];
+  const statusBrand = ["Disabled", "Enable"];
 
   return (
     <>
+      <BreadCrumb pageTitle={"Admin"} title={"Brands"} />
       <div className="row">
         <div className="col-lg-12">
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title mb-0">Add, Edit & Remove</h4>
+              <h4 className="card-title mb-0">Brand List</h4>
             </div>
 
             <div className="card-body">
@@ -104,9 +105,7 @@ function Brand(args) {
                           <td className="status">
                             <span
                               className={`badge badge-soft-${
-                                brand.brand_status === 1
-                                  ? "success"
-                                  : "danger"
+                                brand.brand_status === 1 ? "success" : "danger"
                               } text-uppercase`}
                             >
                               {statusBrand[brand.brand_status]}
@@ -124,7 +123,6 @@ function Brand(args) {
                                   Edit
                                 </button>
                               </div>
-                              
                             </div>
                           </td>
                         </tr>

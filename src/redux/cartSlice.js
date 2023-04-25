@@ -56,6 +56,7 @@ const cartSlice = createSlice({
     products: [],
     cartItems: [],
     status: "idle",
+    loading:false,
     error: null,
     billTotal: 0,
     checkoutStatus:"",
@@ -155,15 +156,23 @@ const cartSlice = createSlice({
     },
     [checkout.pending]: (state) => {
       state.status = "loading";
+      state.loading=true;
     },
     [checkout.fulfilled]: (state, action) => {
       state.status = "succeded";
       state.successBill=action.payload;
-
+      state.loading=false;
+      toast.success("Order placed successfully !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     },
     [checkout.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
+      state.loading=false;
+      toast.error("Something went wrong when placing order !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     },
   },
 });

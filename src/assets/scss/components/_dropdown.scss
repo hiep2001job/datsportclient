@@ -12,6 +12,8 @@
 }
 
 .dropdown-menu {
+
+    min-width: 400px;
     box-shadow: $box-shadow-lg;
     animation-name: DropDownSlide;
     animation-duration: .3s;
@@ -50,19 +52,19 @@
     }
 }
 
-@media (min-width: 600px) {
-    .dropdown-menu-xl {
-        width: 420px;
-    }
+// @media (min-width: 600px) {
+//     .dropdown-menu-xl {
+//         width: 100%;
+//     }
 
-    .dropdown-menu-lg {
-        width: 320px;
-    }
+//     .dropdown-menu-lg {
+//         width: 100%;
+//     }
 
-    .dropdown-menu-md {
-        width: 240px;
-    }
-}
+//     .dropdown-menu-md {
+//         width: 100%;
+//     }
+// }
 
 .dropdown-toggle-split {
     border-left: none;

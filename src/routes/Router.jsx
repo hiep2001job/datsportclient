@@ -1,19 +1,25 @@
 import { useSelector } from "react-redux";
 // @ts-ignore
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 
 import Admin from "../admin/Admin";
-import Customer from "../admin/customer/Customer";
-import Dashboard from "../admin/dashboard/Dashboard";
-import Product from "../admin/product/Product";
-import Category from "../admin/category/Category";
-import Brand from "../admin/brand/Brand";
-import Posts from "../admin/posts/Posts";
+import Dashboard from "../admin/DashBoard/Dashboard";
+import Product from "../admin/Product/Product";
+import Category from "../admin/Category/Category";
+import Brand from "../admin/Brand/Brand";
+import Posts from "../admin/Posts/Posts";
 
-import User from "../admin/user/User";
-import Slider from "../admin/slider/Slider";
-import Order from "../admin/order/Order";
-import ProcessOrder from "../admin/order/ProcessOrder";
+import Accounts from "../admin/Account/Accounts";
+import Slider from "../admin/Slider/Slider";
+import Order from "../admin/Order/Order";
+import ProcessOrder from "../admin/Order/ProcessOrder";
 
 import About from "../pages/About/About";
 import ProductDetail from "../pages/DetailProduct/ProductDetail";
@@ -34,52 +40,42 @@ import BillDetail from "../pages/BillDetail/BillDetail";
 import UserProfile from "../pages/user_profile/UserProfile";
 import Cart from "../pages/Cart/Cart";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
+import React, { useCallback, useMemo, useState } from "react";
 
 const Router = () => {
+  // const authToken = localStorage.getItem("auth_token");
+  // const role = JSON.parse(localStorage.getItem("data_user"))?.role;
   const authToken = useSelector((state) => state.auth.authToken);
-  const userRole = useSelector((state) => state.auth.data?.role);
-  const parseJwt = (token) => {
-    try {
-      return JSON.parse(atob(token.split(".")[1]));
-    } catch (e) {
-      return null;
-    }
-  };
-  const isAuthenticated = () => {
-    if (!authToken) return false;
-    console.log(parseJwt(authToken));
-  };
-  const isAdmin = () => {
-    if (authToken && userRole === 0) {
-      return true;
-    }
-    return false;
-  };
+  const role = useSelector((state) => state.auth.data?.role);
+
   const privateRoutes = () => {
     return (
       <Routes>
-        <Route exact path="/admin" element={<Admin />}>
-          <Route index element={<Product />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="product" element={<Product />} />
-          <Route path="user" element={<User />} />
-          <Route path="customer" element={<Customer />} />
-          <Route path="category" element={<Category />} />
-          <Route path="brand" element={<Brand />} />
-          <Route path="slider" element={<Slider />} />
-          <Route path="posts" element={<Posts />} />
-          <Route path="order" element={<Order />} />
-          <Route path="profile" element={<InfoProfile />} />
-          <Route path="process-order/:billId" element={<ProcessOrder />} />
+        <Route exact path="/login" element={<Login />} />
+        <Route element={<AuthWrapper />}>
+          <Route path="/admin" element={<Admin />}>
+            <Route index element={<Dashboard />} />
+            <Route path="product" element={<Product />} />
+            <Route path="account" element={<Accounts />} />
+            <Route path="category" element={<Category />} />
+            <Route path="brand" element={<Brand />} />
+            <Route path="slider" element={<Slider />} />
+            <Route path="posts" element={<Posts />} />
+            <Route path="order" element={<Order />} />
+            <Route path="profile" element={<InfoProfile />} />
+            <Route path="process-order/:billId" element={<ProcessOrder />} />
+          </Route>
         </Route>
-        <Route path="/*" element={<Navigate to="/admin" replace />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     );
   };
+
   const publicRoutes = () => {
     return (
       <Routes>
         <Route exact path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route exact path="/forgot-password" element={<ForgotPassword />} />
         <Route exact path="/404" element={<NotFound />} />
         <Route path="/" element={<GlobalNavigation />}>
@@ -92,7 +88,6 @@ const Router = () => {
             <Route path="info" element={<InfoProfile />} />
             <Route path="bill" element={<UserBill />} />
             <Route path="bill-detail/:billId" element={<BillDetail />} />
-
           </Route>
           <Route path="detail-product/:id" element={<ProductDetail />} />
           <Route path="detail-post/:id" element={<DetailPost />} />
@@ -100,16 +95,31 @@ const Router = () => {
           <Route path="checkout" element={<Checkout />} />
           <Route path="about" element={<About />} />
         </Route>
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/*" element={<Navigate to="/" replace />} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
   };
-  return (
-    <BrowserRouter>
-      {isAdmin() ? privateRoutes() : publicRoutes()}
-    </BrowserRouter>
-  );
+
+  const AuthWrapper = () => {
+    return isTokenExpired(authToken) ? (
+      <Navigate to="/login" replace />
+    ) : (
+      <Outlet/>
+    );
+  };
+
+  const isTokenExpired = (token) =>
+    Date.now() >= JSON.parse(atob(token.split(".")[1])).exp * 1000;
+  
+  const isAuthenticated = !!authToken;
+
+  const isAdmin = () => {
+    if (!isAuthenticated) return false;
+    return role === 0;
+  };
+
+  return isAdmin() ? privateRoutes() : publicRoutes();
 };
 
 export default Router;

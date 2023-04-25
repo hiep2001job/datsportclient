@@ -32,7 +32,7 @@ const ProductSection = ({ sectionName,data }) => {
       <div className="title mb-2">
         <h2>{sectionName}</h2>
       </div>
-      <div className="row mt-5">
+      <div className="row">
       {data.map((product,index)=><CardProduct  key={index} {...product} />)}
       </div>
     </div>

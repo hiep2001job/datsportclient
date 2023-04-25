@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import productApi from "../../api/product";
 import LoadingSpinner from "../../share/loading_spinner/LoadingSpinner";
-import { formatVnd } from "../../utils/common";
+import { formatCurrency } from "../../utils/common";
 import ProductSection from '../../component/ProductSection/ProductSection';
 
 const ProductListing = () => {
@@ -27,8 +27,8 @@ const ProductListing = () => {
     getDataCategoryById();
   }, [id]);
   return (
-    <div className="container pt-5">
-      <div className="row pt-5">
+    <div className="container">
+      <div className="row">
       <ProductSection data={[...dataCategory]} sectionName={dataCategory[0]?.category?.categoryName} />
       </div>
     </div>

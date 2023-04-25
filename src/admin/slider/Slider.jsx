@@ -16,6 +16,7 @@ import { sliderActions } from "../../redux/sliderActions";
 
 import { openModal, closeModal } from "../../redux/modalSlice";
 import { useEffect } from "react";
+import BreadCrumb from "../../component/Common/BreadCrumb";
 
 function Slide() {
   const dispatch = useDispatch();
@@ -42,15 +43,16 @@ function Slide() {
     dispatch(openModal(payload));
   };
 
-  const statusCategory = ["Disnable", "Enable"];
+  const statusCategory = ["Disabled", "Enable"];
 
   return (
     <>
+    <BreadCrumb pageTitle={"Admin"} title={"Sliders"} />
       <div className="row">
         <div className="col-lg-12">
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title mb-0">Add, Edit & Remove</h4>
+              <h4 className="card-title mb-0">Slider List</h4>
             </div>
 
             <div className="card-body">

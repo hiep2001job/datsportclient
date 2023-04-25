@@ -12,7 +12,7 @@ import {
   PaginationLink,
 } from "reactstrap";
 import Modals from "./modal";
-import { formatVnd } from "../../utils/common";
+import { formatCurrency } from "../../utils/common";
 
 // redux
 import { useSelector, useDispatch } from "react-redux";
@@ -22,6 +22,7 @@ import { openModal, closeModal } from "../../redux/modalSlice";
 import { selectTotalPages, selectLastPage } from "../../redux/productSlice";
 
 import { useEffect, useState } from "react";
+import BreadCrumb from "../../component/Common/BreadCrumb";
 
 function Slide() {
   const dispatch = useDispatch();
@@ -33,10 +34,6 @@ function Slide() {
   const [search, setSearch] = useState("");
   const [isLoad, setIsLoad] = useState(false);
 
-  // useEffect(() => {
-  //   console.log("totalPages: ", totalPages);
-  //   console.log("pageNumber: ", pageNumber);
-  // }, [pageNumber, search]);
 
   useEffect(() => {
     if (allProducts.length > 0) {
@@ -50,14 +47,14 @@ function Slide() {
 
     let queryProduct = {
       pageNumber: pageNumber,
-      pageSize: 2,
+      pageSize: 8,
       keyword: search,
     };
 
     if (search) {
       queryProduct = {
         pageNumber: 0,
-        pageSize: 2,
+        pageSize: 8,
         keyword: search,
       };
       setPageNumber(0);
@@ -77,15 +74,16 @@ function Slide() {
     dispatch(openModal(payload));
   };
 
-  const statusProduct = ["Disnable", "Enabled"];
+  const statusProduct = ["Disabled", "Enabled"];
 
   return (
     <>
+    <BreadCrumb pageTitle={"Admin"} title={"Products"} />
       <div className="row">
         <div className="col-lg-12">
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title mb-0">Add, Edit & Remove</h4>
+              <h4 className="card-title mb-0">Product List</h4>
             </div>
 
             <div className="card-body">
@@ -133,7 +131,7 @@ function Slide() {
                         <th>Brand</th>
                         <th>Price</th>
                         <th>Quantity</th>
-                        <th>product Hot</th>
+                        <th>Is Hot</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -158,7 +156,7 @@ function Slide() {
                           </td>
                           <td className="price">
                             <span className="">
-                              {formatVnd(product.productPrice)}
+                              {formatCurrency(product.productPrice)}
                             </span>
                           </td>
                           <td className="productQuantity">

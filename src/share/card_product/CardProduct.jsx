@@ -1,6 +1,6 @@
 import React from "react";
 import './CardProduct.scss';
-import { formatVnd } from "../../utils/common.js";
+import { formatCurrency } from "../../utils/common.js";
 
 import { useEffect } from "react";
 
@@ -72,7 +72,7 @@ const CardProduct = ({
           <div className="d-flex justify-content-between">
             <p>
               <a href="#" className="text-dark">
-                {formatVnd(productPrice)}
+                {formatCurrency(productPrice)}
               </a>
             </p>
           </div>

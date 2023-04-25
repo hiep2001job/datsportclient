@@ -11,7 +11,7 @@ import {
 
 import classnames from "classnames";
 import { Link, useParams } from "react-router-dom";
-import { formatVnd } from "../../utils/common.js";
+import { formatCurrency } from "../../utils/common.js";
 
 import BreadCrumb from "../../component/Common/BreadCrumb.js";
 import { productDetails } from "../../common/data/ecommerce";
@@ -138,14 +138,14 @@ const BillDetail = (props) => {
                               <tr>
                                 <td>Sub Total :</td>
                                 <td className="text-end">
-                                  {formatVnd(billDetails[0]?.bill?.billTotal)}
+                                  {formatCurrency(billDetails[0]?.bill?.billTotal)}
                                 </td>
                               </tr>
 
                               <tr className="border-top border-top-dashed">
-                                <th scope="row">Total (VND) :</th>
+                                <th scope="row">Total ($) :</th>
                                 <th className="text-end">
-                                  {formatVnd(billDetails[0]?.bill?.billTotal)}
+                                  {formatCurrency(billDetails[0]?.bill?.billTotal)}
                                 </th>
                               </tr>
                             </tbody>
@@ -288,7 +288,7 @@ const BillDetail = (props) => {
                   </div>
                   <div className="flex-grow-1 ms-2">
                     <h6 className="mb-0">
-                      {formatVnd(selectedOrder?.billTotal)}
+                      {formatCurrency(selectedOrder?.billTotal)}
                     </h6>
                   </div>
                 </div>

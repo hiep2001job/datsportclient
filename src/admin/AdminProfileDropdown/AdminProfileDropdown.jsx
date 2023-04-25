@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import DefaultImg from "../../../assets/images/default.png";
-import './ProfileDropdown.scss';
+import DefaultImg from "../../assets/images/default.png";
 import {
   Dropdown,
   DropdownItem,
@@ -9,34 +8,43 @@ import {
   DropdownToggle,
 } from "reactstrap";
 import { useDispatch } from "react-redux";
-import { logout } from "../../../redux/authSlice";
-import { Link, useNavigate } from "react-router-dom";
-import useUserDetail from "../../../hooks/useUserDetail";
-import Loader from "../../../component/Common/Loader";
+import { logout } from "../../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 
 //import images
+import { getProfile } from "../../redux/authActions";
+import Loader from "../../component/Common/Loader";
 
-const ProfileDropdown = () => {
+const AdminProfileDropdown = () => {
+  const { userDetail } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { userDetail } = useSelector((state) => state.auth);
+  useEffect(() => {
+    if (userDetail == null) {
+      dispatch(getProfile());
+    }
+  }, []);
 
-  const handleClickLogout = async () => {
-    await dispatch(logout());
+  const handleClickLogout = () => {
+    dispatch(logout());
     navigate("/");
   };
+
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
+
   const toggleProfileDropdown = () => {
     setIsProfileDropdown(!isProfileDropdown);
   };
+
   return (
-    (userDetail && (
+    (userDetail != null && (
       <React.Fragment>
         <Dropdown
           isOpen={isProfileDropdown}
           toggle={toggleProfileDropdown}
-          className="ms-sm-3 header-item topbar-user"
+          className="ms-sm-3 header-item "
         >
           <DropdownToggle
             tag="button"
@@ -50,10 +58,10 @@ const ProfileDropdown = () => {
                 alt="Header Avatar"
               />
               <span className="text-start ms-xl-2">
-                <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
+                <span className="d-none d-md-inline-block ms-1 fw-medium user-name-text">
                   {userDetail.userfullname}
                 </span>
-                <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
+                <span className="d-none d-md-block ms-1 fs-12 text-muted user-name-sub-text">
                   {userDetail.email}
                 </span>
               </span>
@@ -63,14 +71,11 @@ const ProfileDropdown = () => {
             <h6 className="dropdown-header">
               Welcome {userDetail.userfullname}!
             </h6>
-            <DropdownItem href={process.env.PUBLIC_URL + "/user/profile/info"}>
+            <DropdownItem href={process.env.PUBLIC_URL + "/admin/profile"}>
               <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
               <span className="align-middle">Profile</span>
             </DropdownItem>
-            <DropdownItem href={process.env.PUBLIC_URL + "/user/profile/bill"}>
-              <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
-              <span className="align-middle">My bills</span>
-            </DropdownItem>
+
             <div className="dropdown-divider"></div>
             <DropdownItem onClick={handleClickLogout}>
               <i className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>{" "}
@@ -81,17 +86,8 @@ const ProfileDropdown = () => {
           </DropdownMenu>
         </Dropdown>
       </React.Fragment>
-    )) || (
-      <ul className="user-group-menu">
-         <Link to="/login">
-          <li className="user-group-menu-item">Login</li>
-        </Link>
-        <Link to="/signup">
-          <li className="user-group-menu-item">Signup</li>
-        </Link>
-      </ul>
-    )
+    )) || <Loader />
   );
 };
 
-export default ProfileDropdown;
+export default AdminProfileDropdown;

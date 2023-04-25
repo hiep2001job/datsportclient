@@ -10,8 +10,10 @@ import brandReducer from "./brandSlice";
 import sliderReducer from "./sliderSlice";
 import orderReducer from "./orderSlice";
 import postsReducer from "./postSlice";
+import revenueReducer from "./revenueSlice";
 
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import accountSlice from "./accountSlice";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -24,6 +26,8 @@ const store = configureStore({
     toast: toastReducer,
     order: orderReducer,
     posts: postsReducer,
+    account:accountSlice,
+    revenue:revenueReducer
   },
 });
 

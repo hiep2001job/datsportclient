@@ -17,6 +17,7 @@ import { categoryActions } from "../../redux/categoryActions";
 
 import { openModal, closeModal } from "../../redux/modalSlice";
 import { useEffect } from "react";
+import BreadCrumb from "../../component/Common/BreadCrumb";
 
 function Category(args) {
   const dispatch = useDispatch();
@@ -50,15 +51,16 @@ function Category(args) {
     dispatch(openModal(payload));
   };
 
-  const statusCategory = ["Disnable", "Enable"];
+  const statusCategory = ["Disabled", "Enable"];
 
   return (
     <>
+      <BreadCrumb pageTitle={"Admin"} title={"Categories"} />
       <div className="row">
         <div className="col-lg-12">
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title mb-0">Add, Edit & Remove</h4>
+              <h4 className="card-title mb-0">Category List</h4>
             </div>
 
             <div className="card-body">
@@ -135,7 +137,6 @@ function Category(args) {
                                   Edit
                                 </button>
                               </div>
-                             
                             </div>
                           </td>
                         </tr>
@@ -144,12 +145,6 @@ function Category(args) {
                   </table>
                   <div className="noresult" style={{ display: "none" }}>
                     <div className="text-center">
-                      {/* <lord-icon
-                        src="https://cdn.lordicon.com/msoeawqm.json"
-                        trigger="loop"
-                        colors="primary:#121331,secondary:#08a88a"
-                        style="width:75px;height:75px"
-                      ></lord-icon> */}
                       <h5 className="mt-2">Sorry! No Result Found</h5>
                       <p className="text-muted mb-0">
                         We've searched more than 150+ Orders We did not find any
@@ -175,35 +170,6 @@ function Category(args) {
           </div>
         </div>
       </div>
-
-      {/* <Modal isOpen={modal} toggle={toggle} {...args}>
-        <ModalHeader toggle={toggle}>Add New Category</ModalHeader>
-        <ModalBody>
-          <div>
-            <Label for="labelInput" className="form-label">
-              Category Name
-            </Label>
-            <input className="form-control" id="labelInput" />
-          </div>
-
-          <FormGroup className="mt-2">
-            <Label for="exampleSelect">Category Status</Label>
-            <Input id="exampleSelect" name="select" type="select">
-              <option value={0}>Off</option>
-              <option value={1}>On</option>
-            </Input>
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="success" onClick={toggle}>
-            Add
-          </Button>{" "}
-          <Button color="secondary" onClick={toggle}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal> */}
-
       <Modals />
     </>
   );

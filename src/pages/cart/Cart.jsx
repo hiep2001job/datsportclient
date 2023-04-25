@@ -11,7 +11,8 @@ import {
   deleteCartItem,
 } from "../../redux/cartSlice";
 import DefaultImg from "../../assets/images/default.png";
-import { formatVnd } from "../../utils/common";
+import { formatCurrency } from "../../utils/common";
+import BreadCrumb from "../../component/Common/BreadCrumb";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -24,23 +25,8 @@ const Cart = () => {
   };
 
   return (
-    <div className="container pt-5">
-      <div className="row pt-5">
-        <div className="col-12">
-          <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 className="mb-sm-0">Shopping Cart</h4>
-
-            <div className="page-title-right">
-              <ol className="breadcrumb m-0">
-                <li className="breadcrumb-item">
-                  <a href="">Ecommerce</a>
-                </li>
-                <li className="breadcrumb-item active">Shopping Cart</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="container">      
+    <BreadCrumb pageTitle={'Home'} title={'Cart'}/>
       {billTotal!==0&&
       <div className="row mb-3">
         <div className="col-xl-8">
@@ -91,15 +77,15 @@ const Cart = () => {
                       <tr>
                         <td>Sub Total :</td>
                         <td className="text-end" id="cart-subtotal">
-                          {formatVnd(billTotal)}
+                          {formatCurrency(billTotal)}
                         </td>
                       </tr>
 
                       <tr className="table-active">
-                        <th>Total (VND) :</th>
+                        <th>Total ($) :</th>
                         <td className="text-end">
                           <span className="fw-semibold" id="cart-total">
-                            {formatVnd(billTotal)}
+                            {formatCurrency(billTotal)}
                           </span>
                         </td>
                       </tr>

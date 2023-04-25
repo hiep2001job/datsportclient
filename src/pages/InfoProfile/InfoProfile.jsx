@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 import { useController, useForm } from "react-hook-form";
@@ -63,8 +63,12 @@ const InfoProfile = () => {
         gender: userDetail.gender,
         userfullname: userDetail.userfullname,
       });
+      
     }
   }, [userDetail]);
+
+
+  
 
   const profileOptions = {
     email: {
@@ -133,7 +137,7 @@ const InfoProfile = () => {
   };
 
   return (
-    userDetail &&
+    userDetail!=null &&
     <React.Fragment>
       <Container fluid >
         <BreadCrumb title='User profile' />

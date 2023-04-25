@@ -5,7 +5,7 @@ import { Input } from "reactstrap";
 //SimpleBar
 import SimpleBar from "simplebar-react";
 
-import { formatVnd } from "../../../utils/common";
+import { formatCurrency } from "../../../utils/common";
 import productApi from '../../../api/product'
 
 
@@ -64,7 +64,7 @@ const SearchOption = () => {
 
   return (
     <React.Fragment>
-      <form className="app-search d-none d-md-block p-2">
+      <form className="app-search p-2">
         <div className="position-relative">
           <Input
             type="text"
@@ -83,7 +83,7 @@ const SearchOption = () => {
           ></span>
         </div>
         <div className="dropdown-menu dropdown-menu-lg" id="search-dropdown">
-          <SimpleBar style={{ height: "320px" }}>
+          <SimpleBar style={{ height: "320px",width:'100%'}}>
             <div className="dropdown-header mt-2">
               <h6 className="text-overflow text-muted mb-2 text-uppercase">
                 Products
@@ -101,7 +101,7 @@ const SearchOption = () => {
                     />
                     <div className="flex-1">
                       <h6 className="m-0">{product.productName}</h6>
-                      <span className="fs-11 mb-0 text-muted">{formatVnd(product.productPrice)}</span>
+                      <span className="fs-11 mb-0 text-muted">{formatCurrency(product.productPrice)}</span>
                     </div>
                   </div>
                 </Link>

@@ -6,28 +6,17 @@ import SimpleBar from "simplebar-react";
 
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchProducts,
-  addToCart,
-  updateCartItemQuantity,
-  deleteCartItem,
-} from "../../../redux/cartSlice";
-import DefaultImg from "../../../assets/images/default.png";
-import { formatVnd } from "../../../utils/common";
-import useUserDetail from '../../../hooks/useUserDetail';
-
-
+import { fetchProducts, deleteCartItem } from "../../../redux/cartSlice";
+import { formatCurrency } from "../../../utils/common";
+import useUserDetail from "../../../hooks/useUserDetail";
 
 const CartDropdown = () => {
-
-  const cardItemTotal = useRef(null);
-  const userDetail=useUserDetail();
+  const userDetail = useUserDetail();
   const dispatch = useDispatch();
-  const {cartItems,billTotal} = useSelector((state) => state.cart);
+  const { cartItems, billTotal } = useSelector((state) => state.cart);
 
   useEffect(() => {
-    if(!userDetail.id)
-      dispatch(fetchProducts());
+    if (!userDetail.id) dispatch(fetchProducts());
   }, [dispatch]);
 
   const [isCartDropdown, setIsCartDropdown] = useState(false);
@@ -126,14 +115,14 @@ const CartDropdown = () => {
                           Quantity:{" "}
                           <span>
                             {item.billdetailQuantity} x{" "}
-                            {formatVnd(item.billdetailPrice)}
+                            {formatCurrency(item.billdetailPrice)}
                           </span>
                         </p>
                       </div>
                       <div className="px-2">
                         <h5 className="m-0 fw-normal">
                           <span className="cart-item-price">
-                            {formatVnd(
+                            {formatCurrency(
                               item.billdetailQuantity * item.billdetailPrice
                             )}
                           </span>
@@ -157,26 +146,27 @@ const CartDropdown = () => {
                 ))}
             </div>
           </SimpleBar>
-
-          <div
-            className="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border"
-            id="checkout-elem"
-          >
-            <div className="d-flex justify-content-between align-items-center pb-3">
-              <h5 className="m-0 text-muted">Total:</h5>
-              <div className="px-2">
-                <h5 className="m-0">
-                  <span  id="cart-item-total">
-                    {formatVnd(billTotal)}
-                  </span>
-                </h5> 
+          {cartItems.length > 0 && (
+            <div
+              className="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border"
+              id="checkout-elem"
+            >
+              <div className="d-flex justify-content-between align-items-center pb-3">
+                <h5 className="m-0 text-muted">Total:</h5>
+                <div className="px-2">
+                  <h5 className="m-0">
+                    <span id="cart-item-total">
+                      {formatCurrency(billTotal)}
+                    </span>
+                  </h5>
+                </div>
               </div>
-            </div>
 
-            <Link to="/cart" className="btn btn-success text-center w-100">
-              Go to cart
-            </Link>
-          </div>
+              <Link to="/cart" className="btn btn-success text-center w-100">
+                Go to cart
+              </Link>
+            </div>
+          )}
         </DropdownMenu>
       </Dropdown>
     </React.Fragment>
