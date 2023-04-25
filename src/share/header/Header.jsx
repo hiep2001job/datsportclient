@@ -131,6 +131,13 @@ const Header = () => {
             </Dropdown>
             <NavItem>
               <NavLink>
+                <Link to={"/post"}>
+                  <h4>Posts</h4>
+                </Link>
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink>
                 <Link to={"/about"}>
                   <h4>About</h4>
                 </Link>
